@@ -1,0 +1,237 @@
+*{
+	margin: 0;
+	padding: 0;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	line-height: normal;
+}
+
+::-webkit-input-placeholder {
+	color:#aaa;
+	font-weight: 300;
+}
+::-moz-placeholder {
+	color:#aaa;
+	font-weight: 300;
+}
+:-ms-input-placeholder {
+	color:#aaa;
+	font-weight: 300;
+}
+input:-moz-placeholder {
+	color:#aaa;
+	font-weight: 300;
+}
+
+body {
+    background-image: url("/img/taimau_symbol_h411_opaque.png");
+    background-size: auto 800px;
+    background-repeat: no-repeat;
+    background-position: top;
+	background-color: #FFF;
+	font-family: 'Lato', sans-serif;
+	font-size: 16px;
+}
+
+.subtitle {
+	margin-top: 0;
+	margin-left: 0;
+	color: #9E9E9E;
+}
+
+.container {
+	max-width: 92%;
+	width: 100%;
+	padding: 10px;
+	margin: 0 auto;
+}
+
+
+.form textarea.form-field{
+	min-height: 200px;
+}
+
+.form .post-submit-button{
+	display: inline-block;
+	padding: 8px 16px;
+	font-size: 18px;
+	color: #FFF;
+	background: #03A9F4;
+	text-decoration: none;
+	border-radius: 4px;
+}
+
+.form.appear {
+	display: block;
+}
+
+.single-post {
+	margin: 20px 0;
+	padding: 15px;
+	border-radius: 2px;
+}
+
+.single-post .post-title{
+	font-size: 28px;
+	margin-bottom: 16px;
+	font-weight: 400;
+	color: #616161;
+}
+
+.single-post.post-detail .post-title{
+	font-size: 42px;
+	color: #454545;
+}
+
+.single-post .post-title a{
+	text-decoration: none;
+	color: #616161;
+}
+
+.single-post .author-name{
+	font-size: 16px;
+	margin-bottom: 16px;
+	color: #757575;
+}
+
+.single-post .post-desc{
+	font-size: 14px;
+	color: #888;
+	margin-bottom: 8px;
+}
+
+.single-post.post-detail .post-desc{
+	font-size: 16px;
+	color: #555;
+}
+
+.single-post .post-action a{
+	color: #555;
+	text-decoration: none;
+	font-size: 14px;
+	font-style: italic;
+}
+
+.single-post .post-action a:hover{
+	color: #EF5350;
+}
+
+.single-post .divider{
+	border: 0;
+    height: 1px;
+    background: #ccc;
+    width: 250px;
+    margin: 32px auto 0;
+}
+
+.header {
+/*	background-color: rgb(243, 112, 34);  Logo orange */
+	background-color: rgb(243, 155, 34);
+	border-bottom: 1px solid #ccc;
+}
+
+.header .header-content {
+	width: 100%;
+	max-width: 980px;
+	margin: auto;
+	overflow: auto;
+}
+
+.site-title {
+	font-weight: 300;
+	font-size: 42px;
+	float: left;
+}
+
+.site-title a{
+	text-decoration: none;
+	color: #FFF;
+}
+
+.add-post-button {
+	display: inline-block;
+    color: #FFF;
+    background: #03A9F4;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 1000px;
+    float: right;
+}
+
+.footer{
+	text-align: center;
+	padding: 25px 0;
+/*	background-color: rgb(0, 88, 37);  Logo green */
+	background-color: rgb(0, 129, 54);
+}
+
+.footer p{
+	margin: 0 0 8px 0;
+	font-size: 14px;
+	color: #FFF;
+}
+
+.footer a{
+	color: #FFF;
+	text-decoration: none;
+	font-weight: 700;
+}
+
+@media (max-width: 767px){
+	.add-post-button{
+		float: left;
+		margin-top: 16px;
+	}
+}
+
+.row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.form-group {
+    margin-bottom: 6px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.form-control {
+    border-radius: 0px;
+    padding: 6px 4px;
+}
+
+.cell-button {
+     cursor: pointer;
+    width: 30px;
+}
+
+.btn-margin {
+    margin: 3px;
+}
+
+.btn-warning {
+    color: #000;
+}
+
+hr {
+    margin: 10px 30px;
+    border-color: darkgreen;
+    border-style: dashed;
+}
+
+.cell-height-min > tbody > tr > td {
+    padding: 2px 12px;
+}
+
+.cell-height-min > tbody > tr:nth-child(5n) {
+    background-color: antiquewhite;
+}
+
+th {
+    background-color: whitesmoke;
+}
+
+.cell-height-min > * > tr > th,td {
+    text-align: center;
+}

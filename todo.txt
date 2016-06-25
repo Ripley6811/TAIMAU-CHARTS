@@ -1,0 +1,5 @@
+- Rethink the initial fetchShipments algoritm. Add multiple page loading on client side.
+- Add "filter history based on entries"
++ Remove delete button from history viewing. Should be on edit mode only.
+- History viewing will need filtering fields also. Need to refactor.
+
