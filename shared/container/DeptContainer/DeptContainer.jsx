@@ -3,20 +3,37 @@ import { connect } from 'react-redux';
 
 import MainTable from './MainTable';
 
-class DeptContainer extends Component {
-    constructor(...args) {
-        super(...args);  
-        this.dateRange = (function() {
-            let length = new Date(Date.UTC(2016, 5, 0)).getDate();
-            let retArray = [];
-            for (let i=1; i<=length; i++) {
-                retArray.push(new Date(Date.UTC(2016, 4, i)));
+class DeptContainer extends Component {  
+    static propTypes = {
+        query: PropTypes.shape({
+                year: PropTypes.string,
+                month: PropTypes.string,
+        }).isRequired,
+    };
+
+    static defaultProps = {
+        query: {},
+    }
+
+    componentWillUpdate(nextProps, nextState) {  
+        const dateRange = (function() {
+            const year = nextProps.query.year,
+                  month = nextProps.query.month,
+                  retArray = [];
+            
+            if (typeof year === "string" && year && month === undefined) {
+                for (let i=0; i<12; i++) {
+                    retArray.push( new Date(Date.UTC(year, i, 1)) );
+                }
+            } else if (typeof year === "string" && typeof month === "string") {
+                for (let i=new Date(Date.UTC(year, Number(month)+1, 0)).getDate(); i>0; i--) {
+                    retArray.unshift(new Date(Date.UTC(year, month, i)));
+                }
             }
+            
             return retArray;
         })();
-    }
-    
-    componentWillUpdate(nextProps, nextState) {    
+        
 //        this.test = d3.nest()
 //            .key(d => d.unit)
 //            .key(d => d.name)
@@ -58,7 +75,7 @@ class DeptContainer extends Component {
         }
         
         // Creates 2D array of dates and data
-        this.dataArray = this.dateRange.map(each => [each]);
+        this.dataArray = dateRange.map(each => [each]);
         for (let i=0; i<this.dataArray.length; i++) {
             let dateString = this.dataArray[i][0].toISOString().substring(0,10);
             for (let headIndex=0; headIndex<headArray.length; headIndex++) {
@@ -82,18 +99,10 @@ class DeptContainer extends Component {
         
     }
     
-    componentDidUpdate(prevProps, prevState) {
-        
-    }
-    
-    componentDidMount() {
-        
-    }
-    
     render() {
       return (
         <div className="container">
-            <h2> {this.props.selectedDept ? this.props.selectedDept.dept : ""}</h2>
+            <h2> {this.props.query.dept}</h2>
               
                   <MainTable 
                       data={this.dataArray} 
@@ -102,24 +111,12 @@ class DeptContainer extends Component {
       );
     }
 }
-                  
-
 
 
 // Retrieve data from store as props
-function mapStateToProps(store) {
-  return {
+const mapStateToProps = (store) => ({
       shipments: store.shipments,
-      selectedDept: store.selectedDept || {},
-  };
-}
-
-DeptContainer.propTypes = {
-    selectedDept: PropTypes.object.isRequired,
-};
-
-DeptContainer.defaultProps = {
-    selectedDept: {},
-}
+      query: store.query || {},
+});
 
 export default connect(mapStateToProps)(DeptContainer);

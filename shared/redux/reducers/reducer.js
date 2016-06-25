@@ -33,7 +33,7 @@ export default (state = initialState, action) => {
                 {shipments: [action.shipment, ...state.shipments]});
 
     case ADD_SHIPMENTS :
-        return Object.assign({}, state, {shipments: action.shipments});
+        return Object.assign({}, state, {shipments: action.shipments, query: action.params});
 
     case ADD_SELECTED_SHIPMENT :
         return Object.assign({}, state, {shipment: action.shipment});

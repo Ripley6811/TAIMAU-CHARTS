@@ -8,7 +8,19 @@ export function getShipments(req, res) {
         query.company = req.query.company;
         query.dept = req.query.dept;
     }
-  Shipment.find(query).sort('-date').limit(Number(req.query.limit)).exec((err, shipments) => {
+    if (req.query.year && !req.query.month) {
+        query.date = {
+            "$gte": new Date(req.query.year, 0, 1),
+            "$lt": new Date(req.query.year, 12, 1)
+        }
+    } else if (req.query.year && req.query.month) {
+        query.date = {
+            "$gte": new Date(req.query.year, req.query.month, 1),
+            "$lt": new Date(req.query.year, Number(req.query.month) + 1, 1)
+        }
+    }
+    
+  Shipment.find(query).sort('-date').exec((err, shipments) => {
     if (err) {
       return res.status(500).send(err);
     }

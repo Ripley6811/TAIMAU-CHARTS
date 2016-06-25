@@ -3,20 +3,12 @@ import { connect } from 'react-redux';
 import * as Actions from '../../redux/actions/actions';
 
 class ShipmentCreateView extends Component {
-    constructor(props, context) {
-        // TODO: See if passing props and context to super is necessary.
-        super(props, context);
-        this.addShipment = this.addShipment.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.clearForm = this.clearForm.bind(this);
-    }
-
     /**
      * Checks data then calls the main `addShipment` method on props obj.
      * 
      * Refs are the html element
      */
-    addShipment() {
+    addShipment = () => {
         const shipment = this.props.shipment;
         const requiredFields = [
             'company',
@@ -42,7 +34,7 @@ class ShipmentCreateView extends Component {
     }
     
 
-    handleChange(event) {
+    handleChange = (event) => {
         const update = {};
         update[event.target.name] = event.target.value;
         // Update the current shipment
@@ -55,7 +47,7 @@ class ShipmentCreateView extends Component {
         ));
     }
 
-    clearForm() {
+    clearForm = () => {
         // Clear values by adding empty shipment object.
         this.props.dispatch(Actions.addSelectedShipment({}))
     }

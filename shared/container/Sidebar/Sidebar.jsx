@@ -4,6 +4,8 @@ import { browserHistory } from 'react-router'
 
 import * as Actions from '../../redux/actions/actions';
 
+import SelectYearMonth from './SelectYearMonth';
+
 function ButtonStyle(selected) {
     if (typeof selected !== 'boolean') throw "'selected' parameter must be a boolean value.";
     
@@ -18,49 +20,6 @@ function ButtonStyle(selected) {
 }
 
 
-const SelectYearMonth = (props) => {
-    const years = [2010],
-          months = ["All",0,1,2,3,4,5,6,7,8,9,10,11],
-          currYear = new Date().getFullYear(),
-          currMonth = new Date().getMonth();  // January = 0
-    while (years[0] < currYear) {
-        years.unshift(years[0]+1);
-    }
-    
-    return <div className="row">
-        <div className="col-md-7" style={{paddingRight: "0px"}}>
-            <select className="form-control btn btn-warning" defaultValue={currYear}>
-                {
-                    years.map((year) => 
-                        <option key={year} value={year}>{year}年</option>
-                    )
-                }
-                
-            </select>
-        </div>
-        <div className="col-md-5" style={{paddingLeft: "0px"}}>
-            <select className="form-control btn btn-warning" defaultValue={currMonth}>
-                {
-                    months.map((month) => 
-                       <option key={month} value={month}>
-                           {(typeof month === "number" ? month+1 + "月" : month)}
-                       </option>
-                    )
-                }
-            </select>
-        </div>
-        <div className="row">
-            <div className=" col-md-12">
-                <button className="btn btn-warning form-control" type="button"
-                        onClick={() => (4)}>
-                    Load Dates
-                </button>
-            </div>
-        </div>
-    </div>
-}
-    
-
 const CompanyColumn = (props) =>
 <div className="col-md-6 text-center">
     <h4>{props.title}</h4>
@@ -68,7 +27,7 @@ const CompanyColumn = (props) =>
       props.depts.map((each) =>
           <button className="btn btn-warning form-control" 
               key={each} 
-              style={ButtonStyle(each === props.selectedDept.dept)}
+              style={ButtonStyle(each === props.selectedDept)}
               type="button" 
               onClick={() => props.onClick({company: props.title, dept: each})} >{each}</button>
       )
@@ -76,29 +35,49 @@ const CompanyColumn = (props) =>
 </div>
     
 
-class Sidebar extends Component {
-    constructor(...args) {
-        super(...args);
-        this.setSelectedDept = this.setSelectedDept.bind(this);
-    }
-    
-    static propTypes = {
+class Sidebar extends Component {    
+    static propTypes = {  // ES7 style
         selectedDept: PropTypes.shape({
             company: PropTypes.string.isRequired,
             dept: PropTypes.string.isRequired,
         }),
-    //    deptLinks: PropTypes.object.isRequired,
         width: PropTypes.string.isRequired,
         dispatch: PropTypes.func.isRequired,
     }
     
-    setSelectedDept(obj) {
-        this.props.dispatch(Actions.addSelectedDept(obj));
+    state = {  // Initial state
+        company: undefined,
+        dept: undefined,
+        year: new Date().getFullYear(),
+        month: new Date().getMonth(),
+    }
+    
+    setSelectedDept = (obj) => {  // ES7 style
+        if (!('company' in obj)) throw "'company' parameter is missing."
+        if (!('dept' in obj)) throw "'dept' parameter is missing."
+        
+        this.setState(Object.assign(this.state, {
+            company: obj.company,
+            dept: obj.dept,
+        }), this.requestNewData);
+        
         browserHistory.push('/');
     }
     
-    setSelectedDateRange(obj) {
-        
+    setDateRange = (obj) => {
+        if (!('year' in obj)) throw "'year' parameter is missing."
+        if (!('month' in obj)) throw "'month' parameter is missing."
+        console.dir(obj);
+        this.setState(Object.assign(this.state, {
+            year: obj.year,
+            month: obj.month,
+        }), this.requestNewData);
+        console.dir(this.state);
+    }
+    
+    requestNewData() {
+        console.log(this.state);
+        this.props.dispatch(Actions.fetchShipments(this.state));
     }
     
     render() {
@@ -118,13 +97,13 @@ class Sidebar extends Component {
               Object.keys(props.deptLinks).map((key) =>
                 <CompanyColumn title={key} key={key} 
                     onClick={this.setSelectedDept}
-                    selectedDept={props.selectedDept || {}} 
+                    selectedDept={this.state.dept} 
                     depts={props.deptLinks[key]} />
               )
             }
               </div>
                   <hr />
-                <SelectYearMonth />
+                <SelectYearMonth onClick={this.setDateRange} />
               
               
               <hr />
@@ -149,22 +128,9 @@ class Sidebar extends Component {
 }
 
 // Retrieve data from store as props
-function mapStateToProps(store) {
-    return {
-        selectedDept: store.selectedDept,
-        deptLinks: store.deptLinks,
-    };
-}
-
-//Sidebar.propTypes = {
-//    selectedDept: PropTypes.shape({
-//        company: PropTypes.string.isRequired,
-//        dept: PropTypes.string.isRequired,
-//    }),
-////    deptLinks: PropTypes.object.isRequired,
-//    width: PropTypes.string.isRequired,
-//    dispatch: PropTypes.func.isRequired,
-//};
-
+const mapStateToProps = (store) => ({
+    selectedDept: store.selectedDept,
+    deptLinks: store.deptLinks,
+});
 
 export default connect(mapStateToProps)(Sidebar);

@@ -60,43 +60,47 @@ export function addSelectedShipment(shipment) {
     };
 }
 
-export function addSelectedDept(obj) {
-    if (!('company' in obj)) throw "'company' parameter missing."
-    if (!('dept' in obj)) throw "'dept' parameter missing."
-    
-    const reducerFormat = (shipments) => ({
-        type: ADD_SELECTED_DEPT,
-        obj,
-        shipments,
-    });
-    
-    const limit = 500;
-    // "dispatch" is a callback that runs the reducer.
-    return (dispatch) => {
-        return fetch(`${baseURL}/api/getShipments?limit=${limit}&company=${obj.company}&dept=${obj.dept}` ).
-        then((response) => response.json()).
-        then((response) => dispatch(reducerFormat(response.shipments)));
-    };
-}
+//export function addSelectedDept(obj) {
+//    if (!('company' in obj)) throw "'company' parameter missing."
+//    if (!('dept' in obj)) throw "'dept' parameter missing."
+//    
+//    const reducerFormat = (shipments) => ({
+//        type: ADD_SELECTED_DEPT,
+//        obj,
+//        shipments,
+//    });
+//    
+//    const limit = 500;
+//    // "dispatch" is a callback that runs the reducer.
+//    return (dispatch) => {
+//        return fetch(`${baseURL}/api/getShipments?limit=${limit}&company=${obj.company}&dept=${obj.dept}` ).
+//        then((response) => response.json()).
+//        then((response) => dispatch(reducerFormat(response.shipments)));
+//    };
+//}
 
 /**
  * Runs on server side first in ShipmentContainer.
  * @returns {[[Type]]} [[Description]]
  */
-export function fetchShipments(limit = 50) {
-    if (typeof limit !== "number") {
-        throw '"limit" parameter must be a number';
-        return;
-    }
-    
+export function fetchShipments(params = {}) {
     const reducerFormat = (shipments) => ({
         type: ADD_SHIPMENTS,
         shipments,
+        params,
     });
+    
+    for (let key in params) {
+        if (!params[key]) delete params[key];
+    }
+    
+    const paramString = "?" + Object.keys(params).map(key => `${key}=${params[key]}`).join("&");
+    console.log("fetching shipments with following parameters:");
+    console.dir(paramString);
 
     // "dispatch" is a callback that runs the reducer.
     return (dispatch) => {
-        return fetch(`${baseURL}/api/getShipments?limit=${limit}` ).
+        return fetch(`${baseURL}/api/getShipments` + paramString).
         then((response) => response.json()).
         then((response) => dispatch(reducerFormat(response.shipments)));
     };

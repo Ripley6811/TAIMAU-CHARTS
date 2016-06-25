@@ -102,6 +102,7 @@ MyComponent.defaultProps = {}  // Default values if any prop is not received.
 
 /** ES5 Function DECLARATION: (Will be "hoisted")
  * Basic format. 
+ * Allows putting propTypes and defaultProps before function (hoisting).
  */
 function MyComponent(props) {
     /**
@@ -126,11 +127,11 @@ const MyComponent = (props) => {
      */
     
     return <div></div>
-}
+};
 
 // Externally.
-MyComponent.propTypes = {}  // Ensure incoming types are acceptable.
-MyComponent.defaultProps = {}  // Default values if any prop is not received.
+MyComponent.propTypes = {};  // Ensure incoming types are acceptable.
+MyComponent.defaultProps = {};  // Default values if any prop is not received.
         
         
 /**
