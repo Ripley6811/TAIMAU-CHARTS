@@ -8,6 +8,17 @@ import Config from '../../../server/config';
  */
 import fetch from 'isomorphic-fetch';
 
+/**
+ * 
+ * @param   {object} params Simple one-level (non-nested) object.
+ * @returns {string} Query parameter string to add after "?".
+ */
+function encodeQueryParameters(params) {
+    return Object.keys(params).map(
+                            key => encodeURI(`${key}=${params[key]}`)
+                        ).join("&");
+}
+
 const baseURL = typeof window === 'undefined' ? process.env.BASE_URL || (`http://localhost:${Config.port}`) : '';
 
 export const ADD_SHIPMENT = 'ADD_SHIPMENT';
@@ -84,6 +95,7 @@ export function addSelectedShipment(shipment) {
  * @returns {[[Type]]} [[Description]]
  */
 export function fetchShipments(params = {}) {
+    const LIMIT = 50;
     const reducerFormat = (shipments) => ({
         type: ADD_SHIPMENTS,
         shipments,
@@ -94,7 +106,9 @@ export function fetchShipments(params = {}) {
         if (!params[key]) delete params[key];
     }
     
-    const paramString = "?" + Object.keys(params).map(key => `${key}=${params[key]}`).join("&");
+    if (!('year' in params)) params.limit = LIMIT;
+    
+    const paramString = "?" + encodeQueryParameters(params);
     console.log("fetching shipments with following parameters:");
     console.dir(paramString);
 

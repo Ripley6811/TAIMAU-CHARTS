@@ -20,12 +20,13 @@ export function getShipments(req, res) {
         }
     }
     
-  Shipment.find(query).sort('-date').exec((err, shipments) => {
-    if (err) {
-      return res.status(500).send(err);
-    }
-    res.json({ shipments });
-  });
+    Shipment.find(query).sort('-date').limit(Number(req.query.limit))
+        .exec((err, shipments) => {
+            if (err) {
+                return res.status(500).send(err);
+            }
+            res.json({ shipments });
+        });
 }
 
 /**
