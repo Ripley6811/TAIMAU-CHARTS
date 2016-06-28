@@ -1,7 +1,7 @@
 {
-  "name": "mern-starter",
+  "name": "taimau-charts",
   "version": "1.0.0",
-  "description": "Boilerplate project for building Isomorphic apps using React and Redux",
+  "description": "Isomorphic app using React and Redux",
   "scripts": {
     "test": "node_modules/.bin/mocha shared/tests/*.spec.js --compilers js:babel-register",
     "test:server": "node_modules/.bin/cross-env NODE_ENV=test PORT=8080 MONGO_URL=mongodb://localhost:27017/mern-test mocha --compilers js:babel-register --recursive server/tests/**/*.spec.js",
@@ -21,13 +21,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Hashnode/mern-starter.git"
+    "url": "git+https://github.com/Ripley6811/TAIMAU-CHARTS.git"
   },
   "bugs": {
-    "url": "https://github.com/Hashnode/mern-starter/issues"
+    "url": "https://github.com/Ripley6811/TAIMAU-CHARTS/issues"
   },
-  "homepage": "https://github.com/Hashnode/mern-starter#readme",
-  "author": "Prashant Abhishek <prashant.abhishek7g@gmail.com>, Mayank Chandola <imayankchd@gmail.com>, Sandeep Panda <sandeep@hashnode.com>, Syed Fazle Rahman <fazle@hashnode.com>, Alkshendra Maurya <alkshendra@hashnode.com>",
+  "homepage": "https://github.com/Ripley6811/TAIMAU-CHARTS#readme",
+  "author": "Jay W Johnson",
   "license": "MIT",
   "dependencies": {
     "babel-core": "^6.4.5",
