@@ -1,16 +1,16 @@
 import { Route, IndexRoute } from 'react-router';
 import React from 'react';
-import App from './container/App';
-import ShipmentContainer from './container/ShipmentContainer/ShipmentContainer';
-import TemplatesContainer from './container/TemplatesContainer/TemplatesContainer';
+import AppLayout from './container/AppLayout';
+import ShipmentsView from './container/ShipmentsView';
+import ShipmentTemplates from './container/ShipmentTemplates';
 import DeptContainer from './container/DeptContainer/DeptContainer';
 
 const routes = (
-  <Route path="/" component={App} >
+  <Route path="/" component={AppLayout} >
     <IndexRoute component={DeptContainer} />
-    <Route path="/shipment_history" component={ShipmentContainer} />
-    <Route path="/shipment_history/:secret" component={ShipmentContainer} />
-    <Route path="/shipment_templates" component={TemplatesContainer} />
+    <Route path="/shipment_history" component={ShipmentsView} />
+    <Route path="/shipment_history/:secret" component={ShipmentsView} />
+    <Route path="/shipment_templates" component={ShipmentTemplates} />
   </Route>
 );
 

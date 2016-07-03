@@ -1,24 +1,27 @@
+/**
+ * @overview Main Container that will hold all other containers.
+ * This container includes the navigation "Sidebar".
+ */
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 /**
  * Helmet is a library for automating <head> construction.
  */
 import Helmet from 'react-helmet';
-import Sidebar from './Sidebar/Sidebar';
+import Sidebar from './AppSidebar';
 
 import * as Actions from '../redux/actions/actions';
 
-class App extends Component {
-  constructor(props, context) {
-    super(props, context);
-  }
-    
-  get sidebarWidth() {
-      return '200px';
-  }
+class AppLayout extends Component {
+    static propTypes = {
+        children: PropTypes.object.isRequired,
+    }
 
-  render() {
-    return (
+    get sidebarWidth() {
+        return '200px';
+    }
+
+    render() {
+        return (
       <div>
         <Helmet
           title="Taimau Charts"
@@ -40,18 +43,9 @@ class App extends Component {
             { this.props.children }
         </div>
       </div>
-    );
-  }
+        );
+    }
 }
 
-// Actions required to provide data for this component to render in server side.
-App.need = [() => { return Actions.fetchDeptLinks(); }];
-
-App.propTypes = {
-  children: PropTypes.object.isRequired,
-};
-
-/**
- * Inject just `dispatch` and don't listen to store
- */
-export default connect()(App);
+// Inject `dispatch` and don't listen to store
+export default AppLayout;

@@ -36,10 +36,10 @@ class DeptContainer extends Component {
         
 //        this.test = d3.nest()
 //            .key(d => d.unit)
-//            .key(d => d.name)
+//            .key(d => d.product)
 //            .rollup(v => {return{
 //                unit: v[0].unit,
-//                name: v[0].name,
+//                name: v[0].product,
 //                amount: d3.sum(v, d => d.amount),
 //            }})
 //            .map(nextProps.shipments);
@@ -49,14 +49,14 @@ class DeptContainer extends Component {
         // Calculates the product totals across all dates
         this.prodTotals = d3.nest()
             .key(d => d.unit)
-            .key(d => d.name)
+            .key(d => d.product)
             .rollup(v => d3.sum(v, d => d.amount))
             .map(nextProps.shipments);
         
         // Creates a object tree of units->depts
         this.header = d3.nest()
             .key(d => d.unit)
-            .key(d => d.name)
+            .key(d => d.product)
             .rollup(v => ({}))
             .map(nextProps.shipments);
         
@@ -70,8 +70,8 @@ class DeptContainer extends Component {
         // Adds daily totals to `header`
         for (let i=0; i<nextProps.shipments.length; i++) {
             const s = nextProps.shipments[i];
-            const oldAmt = this.header[s.unit][s.name][s.date.substring(0,10)] || 0;
-            this.header[s.unit][s.name][s.date.substring(0,10)] = s.amount + oldAmt;
+            const oldAmt = this.header[s.unit][s.product][s.date.substring(0,10)] || 0;
+            this.header[s.unit][s.product][s.date.substring(0,10)] = s.amount + oldAmt;
         }
         
         // Creates 2D array of dates and data

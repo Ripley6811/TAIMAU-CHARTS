@@ -1,10 +1,15 @@
+/**
+ * @overview The Sidebar contains buttons to set the query parameters for
+ * pages and links to pages.
+ */
+
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router'
 
-import * as Actions from '../../redux/actions/actions';
+import * as Actions from '../redux/actions/actions';
 
-import SelectYearMonth from './SelectYearMonth';
+import SelectYearMonth from '../components/SelectYearMonth';
 
 function ButtonStyle(selected) {
     if (typeof selected !== 'boolean') throw "'selected' parameter must be a boolean value.";
@@ -21,8 +26,12 @@ function ButtonStyle(selected) {
 
 
 const CompanyColumn = (props) =>
-<div className="col-md-6 text-center">
-    <h4>{props.title}</h4>
+<div className="col-md-6 text-center btn-group btn-group-vertical"
+    style={{padding: '0px'}}>
+  <button className="btn btn-warning form-control" 
+      style={ButtonStyle(props.title === props.selectedCompany)}
+      type="button" 
+      onClick={() => props.onClick({company: props.title})} ><strong>{props.title}</strong></button>
     {
       props.depts.map((each) =>
           <button className="btn btn-warning form-control" 
@@ -45,39 +54,50 @@ class Sidebar extends Component {
         dispatch: PropTypes.func.isRequired,
     }
     
-    state = {  // Initial state
+    state = {  // Initial state == Query parameters
         company: undefined,
         dept: undefined,
         year: new Date().getFullYear(),
-        month: new Date().getMonth(),
+        month: undefined,
+    }
+    
+    componentWillMount() {
+        this.props.dispatch(Actions.fetchDepartments());
     }
     
     setSelectedDept = (obj) => {  // ES7 style
         if (!('company' in obj)) throw "'company' parameter is missing."
-        if (!('dept' in obj)) throw "'dept' parameter is missing."
         
-        this.setState(Object.assign(this.state, {
+        this.setState({
             company: obj.company,
             dept: obj.dept,
-        }), this.requestNewData);
-        
-        browserHistory.push('/');
+        }, this.requestNewData);
     }
     
     setDateRange = (obj) => {
         if (!('year' in obj)) throw "'year' parameter is missing."
         if (!('month' in obj)) throw "'month' parameter is missing."
-        console.dir(obj);
-        this.setState(Object.assign(this.state, {
+        
+        this.setState({
             year: obj.year,
             month: obj.month,
-        }), this.requestNewData);
-        console.dir(this.state);
+        }, this.requestNewData);
+    }
+    
+    setLocation(val) {
+        this.props.dispatch(Actions.setLocation(val));
     }
     
     requestNewData() {
-        console.log(this.state);
         this.props.dispatch(Actions.fetchShipments(this.state));
+    }
+    
+    get navButtons() {
+        return [
+            {text: "Shipment Table", route: "/shipment_table"},
+            {text: "Shipment History", route: "/shipment_history"},
+            {text: "Shipment Templates", route: "/shipment_templates"},
+        ]
     }
     
     render() {
@@ -97,24 +117,33 @@ class Sidebar extends Component {
               Object.keys(props.deptLinks).map((key) =>
                 <CompanyColumn title={key} key={key} 
                     onClick={this.setSelectedDept}
+                    selectedCompany={this.state.company}
                     selectedDept={this.state.dept} 
                     depts={props.deptLinks[key]} />
               )
             }
               </div>
                   <hr />
-                <SelectYearMonth onClick={this.setDateRange} />
+                <SelectYearMonth setDateRange={this.setDateRange} />
               
               
               <hr />
-            <div className="row">
-                <div className=" col-md-12">
-              <button className="btn btn-warning form-control" type="button"
-                  onClick={() => browserHistory.push('/shipment_history')}>
-                Shipment History
-                </button>
+              {
+                  this.navButtons.map(({text, route}, i) =>
+                    <div className="row" key={i}>
+                        <div>
+                        <button className="btn btn-warning form-control" type="button"
+                          style={ButtonStyle(route === this.props.location)}
+                          onClick={() => {
+                                    this.setLocation(route);
+                                    browserHistory.push(route);
+                                }}>
+                            {text}
+                        </button>
+                        </div>
                     </div>
-              </div>
+                    )
+              }
           </div>
 
 
@@ -131,6 +160,7 @@ class Sidebar extends Component {
 const mapStateToProps = (store) => ({
     selectedDept: store.selectedDept,
     deptLinks: store.deptLinks,
+    location: store.location,
 });
 
 export default connect(mapStateToProps)(Sidebar);

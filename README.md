@@ -11,6 +11,15 @@ Stop with
 sudo service mongodb stop
 ```
 
+### Mongo Indexes
+
+```
+db.shipments.createIndex({date:-1, company:1, dept:1});  // For editing views
+db.shipments.createIndex({company:1, date:1, dept:1});  // For client views
+// "Options" contains unique signatures used in form input suggestions.
+db.options.createIndex({company:1, dept:1, unit:1, product:1}, {unique:1});
+```
+
 ## [Generators](https://www.npmjs.com/package/mern-cli)
 Generate components, routes, controllers, models using mern generator
 

@@ -30,7 +30,10 @@ const MyComponent = React.createClass({
         
     },
 
-    render: () => (<div></div>),
+    // render: () => (<div></div>),  !! "this" will be undefined.
+    render: function() {
+        return (<div></div>);
+    }
 });
 
 /** ES6 class declaration. (Will be "hoisted")
@@ -62,18 +65,18 @@ class MyComponent extends Component {
      */
       
     static defaultProps = {  // ES7 only!
-        // Static method or externally or in constructor
+        // ES7 Static method or define within constructor or externally
     }
     
     static propTypes = {  // ES7 only!
-        
+        // ES7 Static method or define within constructor or externally
     }
     
     state = {  // ES7 only!
-        // InitialState here or in constructor
+        // InitialState here or within constructor
     }
     
-    methodES7 = (obj) => {  // ES7 only!
+    methodES7 = (obj) => {  // ES7 only! Binds "this" to MyComponent instance
         
     }
     
@@ -95,7 +98,7 @@ MyComponent.defaultProps = {}  // Default values if any prop is not received.
 
 
 
-/** STATELESS FUNCTIONS
+/** STATELESS FUNCTIONS below
  * No internal state or lifecycle methods.
  * Just supply props and go
  */
@@ -139,5 +142,9 @@ MyComponent.defaultProps = {};  // Default values if any prop is not received.
         
 "A valid React element (or null) must be returned."
         May have forgotten to use () after a "return"
+        
+"Warning: React.createElement: type should not be null, undefined, boolean, or number. It should be a string (for DOM elements) or a ReactClass (for composite components). Check the render method of `ShipmentTemplates`.
+Invariant Violation: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object. Check the render method of `ShipmentTemplates`."
+        May have forgotten to "export" a component from its file.
         
 **/

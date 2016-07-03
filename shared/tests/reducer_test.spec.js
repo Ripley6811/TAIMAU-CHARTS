@@ -1,7 +1,7 @@
 import expect from 'expect';
 import postReducer from '../redux/reducers/reducer';
 import deepFreeze from 'deep-freeze';
-import * as ActionTypes from '../redux/constants/constants';
+//import * as ActionTypes from '../redux/constants/constants';
 
 describe('reducer tests', () => {
   it('action ADD_POST is working', () => {

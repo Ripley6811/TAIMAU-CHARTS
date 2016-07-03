@@ -29,8 +29,7 @@ import Helmet from 'react-helmet';
 // Import required modules
 import routes from '../shared/routes';
 import { fetchComponentData } from './util/fetchData';
-import shipments from './routes/shipment.routes';
-import options from './routes/options.routes';
+import apiRoutes from './api.routes';
 import serverConfig from './config';
 
 // MongoDB Connection
@@ -39,16 +38,15 @@ mongoose.connect(serverConfig.mongoURL, (error) => {
     console.error('Please make sure Mongodb is installed and running!'); // eslint-disable-line no-console
     throw error;
   }
-    
-    // Run script here to enter data into MongoDB
 });
 
 // Apply body Parser and server public assets and routes
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(Express.static(path.resolve(__dirname, '../static')));
-app.use('/api', shipments);
-app.use('/api', options);
+app.use('/api', apiRoutes);
+//app.use('/api', shipment);
+//app.use('/api', shipmentTemplate);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
@@ -108,13 +106,14 @@ app.use((req, res, next) => {
       /**
        * Updated to hold "shipments"
        */
-    const initialState = { 
-        selectedDept: null,
-        deptLinks: [],
-        templates: [], 
-        options: {}, 
-        shipments: [], 
-        shipment: {}
+    const initialState = {
+        deptLinks: {},
+        currDept: undefined,
+        templates: [],
+        currTemplate: undefined,
+        shipments: [],
+        currShipment: undefined,
+        shipmentQuery: {},
     };
 
     const store = configureStore(initialState);

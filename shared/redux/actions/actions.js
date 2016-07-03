@@ -14,22 +14,25 @@ import fetch from 'isomorphic-fetch';
  * @returns {string} Query parameter string to add after "?".
  */
 function encodeQueryParameters(params) {
-    return Object.keys(params).map(
-                            key => encodeURI(`${key}=${params[key]}`)
-                        ).join("&");
+    return Object.keys(params)
+        .map(
+            key => encodeURI(`${key}=${params[key]}`)
+        ).join("&");
 }
 
 const baseURL = typeof window === 'undefined' ? process.env.BASE_URL || (`http://localhost:${Config.port}`) : '';
 
-export const ADD_SHIPMENT = 'ADD_SHIPMENT';
 export const DELETE_SHIPMENT = 'DELETE_SHIPMENT';
 export const ADD_SELECTED_SHIPMENT = 'ADD_SELECTED_SHIPMENT';
 export const ADD_SHIPMENTS = 'ADD_SHIPMENTS';
-export const UPDATE_OPTIONS = 'UPDATE_OPTIONS';
+export const LOAD_SHIPMENTS = 'LOAD_SHIPMENTS';
+export const UPDATE_TEMPLATES = 'UPDATE_TEMPLATES';
 export const ADD_TEMPLATES = 'ADD_TEMPLATES';
+export const ADD_TEMPLATE = 'ADD_TEMPLATE';
 export const DELETE_TEMPLATE = 'DELETE_TEMPLATE';
 export const ADD_DEPT_LINKS = 'ADD_DEPT_LINKS';
 export const ADD_SELECTED_DEPT = 'ADD_SELECTED_DEPT';
+export const SET_LOCATION = 'SET_LOCATION';
 
 /**
  * Used in `ShipmentContainer`.
@@ -37,27 +40,53 @@ export const ADD_SELECTED_DEPT = 'ADD_SELECTED_DEPT';
  * @returns {function} Function to post a new shipment request and accepts a callback.
  */
 export function addShipmentRequest(shipment) {
-    const reducerFormat = (shipment) => ({
-        type: ADD_SHIPMENT,
-        shipment
+    addShipmentsRequest([shipment]);
+}
+
+export function addShipmentsRequest(shipments) {
+    const reducerFormat = (shipments) => ({
+        type: ADD_SHIPMENTS,
+        shipments,
     });
 
+    // "dispatch" is a callback that runs the reducer.
     return (dispatch) => {
-        /**
-         * AJAX req to `addShipment` in `server/routes/shipment.routes` ->
-         * `server/controllers/shipment.controller`
-         */
-        fetch(`${baseURL}/api/addShipment`, {
+        fetch(`${baseURL}/api/shipment`, {
             method: 'post',
-            body: JSON.stringify(shipment),
+            body: JSON.stringify({shipments}),
             headers: new Headers({
                 'Content-Type': 'application/json',
             }),
         }).
-        then(res => res.json()).
-        then(res => dispatch(reducerFormat(res.shipment)));
+        then((res) => res.json()).
+        then((res) => dispatch(reducerFormat(res.shipments)));
     };
 }
+
+
+export function addTemplateRequest(template) {
+    const reducerFormat = (template) => ({
+        type: ADD_TEMPLATE,
+        template
+    });
+
+    return (dispatch) => {
+        /**
+         * AJAX req to `addTemplate` in `server/routes/template.routes` ->
+         * `server/controllers/shipmentTemplate.controller`
+         */
+        fetch(`${baseURL}/api/shipmentTemplate`, {
+            method: 'post',
+            body: JSON.stringify(template),
+            headers: new Headers({
+                'Content-Type': 'application/json',
+            }),
+        }).
+        then(res => res.json()).  // Throws error if no json
+        then(data => dispatch(reducerFormat(data.savedRec)));
+    };
+}
+
 
 /**
  * Set the `state.shipment` to the selected shipment.
@@ -71,39 +100,22 @@ export function addSelectedShipment(shipment) {
     };
 }
 
-//export function addSelectedDept(obj) {
-//    if (!('company' in obj)) throw "'company' parameter missing."
-//    if (!('dept' in obj)) throw "'dept' parameter missing."
-//    
-//    const reducerFormat = (shipments) => ({
-//        type: ADD_SELECTED_DEPT,
-//        obj,
-//        shipments,
-//    });
-//    
-//    const limit = 500;
-//    // "dispatch" is a callback that runs the reducer.
-//    return (dispatch) => {
-//        return fetch(`${baseURL}/api/getShipments?limit=${limit}&company=${obj.company}&dept=${obj.dept}` ).
-//        then((response) => response.json()).
-//        then((response) => dispatch(reducerFormat(response.shipments)));
-//    };
-//}
 
 /**
  * Runs on server side first in ShipmentContainer.
  * @returns {[[Type]]} [[Description]]
  */
-export function fetchShipments(params = {}) {
+export function fetchShipments(params) {
+    if (!params) throw "params not defined";
     const LIMIT = 50;
     const reducerFormat = (shipments) => ({
-        type: ADD_SHIPMENTS,
+        type: LOAD_SHIPMENTS,
         shipments,
         params,
     });
     
     for (let key in params) {
-        if (!params[key]) delete params[key];
+        if (params[key] === undefined) delete params[key];
     }
     
     if (!('year' in params)) params.limit = LIMIT;
@@ -114,84 +126,35 @@ export function fetchShipments(params = {}) {
 
     // "dispatch" is a callback that runs the reducer.
     return (dispatch) => {
-        return fetch(`${baseURL}/api/getShipments` + paramString).
+        return fetch(`${baseURL}/api/shipment` + paramString).
         then((response) => response.json()).
         then((response) => dispatch(reducerFormat(response.shipments)));
     };
 }
 
-export function fetchOptions(shipment = {}) {
-    const reducerFormat = (options) => {
-        const companyList = Array.from(new Set(options.map(each => each.company)));
-        const nameList = Array.from(new Set(options.map(each => each.name)));
-        const pnList = Array.from(new Set(options.map(each => each.pn)));
-        const deptList = Array.from(new Set(options.map(each => each.dept)));
-        const unitList = Array.from(new Set(options.map(each => each.unit)));
 
-        return {
-            type: UPDATE_OPTIONS,
-            options: {
-                companyList,
-                nameList,
-                pnList,
-                deptList,
-                unitList
-            }
-        };
-    };
-
-    const filter = (shipment) => {
-        delete shipment.date;
-        delete shipment.note;
-        delete shipment.refPage;
-        delete shipment.amount;
-
-        for (let key in shipment) {
-            if (!shipment[key]) {
-                delete shipment[key];
-            }
-        }
-
-        return shipment;
-    }
-
-    return (dispatch) => {
-        return fetch(`${baseURL}/api/getOptions`, {
-            method: 'post',
-            body: JSON.stringify(filter(shipment)),
-            headers: new Headers({
-                'Content-Type': 'application/json',
-            }),
-        }).
-        then((response) => response.json()).
-        then((response) => dispatch(reducerFormat(response.options)));
-    };
-}
-
-export function fetchTemplates() {
-    const reducerFormat = (options) => {
+export function fetchShipmentTemplates() {
+    const reducerFormat = (templates) => {
         return {
             type: ADD_TEMPLATES,
-            templates: options
+            templates: templates
         };
     };
 
     return (dispatch) => {
-        return fetch(`${baseURL}/api/getOptions`).
+        return fetch(`${baseURL}/api/shipmentTemplate`).
         then((response) => response.json()).
-        then((response) => dispatch(reducerFormat(response.options)));
+        then((response) => dispatch(reducerFormat(response.templates)));
     };
 }
 
-export function fetchDeptLinks() {    
-    const reducerFormat = (options) => {
+
+export function fetchDepartments() {    
+    const reducerFormat = (records) => {
         const tree = {};
-        options.forEach((each) => {
-            tree[each.company] ? tree[each.company].add(each.dept) : tree[each.company] = new Set([each.dept]);
+        records.forEach((each) => {
+            tree[each.company] ? tree[each.company].push(each.dept) : tree[each.company] = [each.dept];
         });
-        for (let key in tree) {
-            tree[key] = Array.from(tree[key]).sort();
-        }
         
         return {
             type: ADD_DEPT_LINKS,
@@ -200,11 +163,12 @@ export function fetchDeptLinks() {
     };
 
     return (dispatch) => {
-        return fetch(`${baseURL}/api/getOptions`).
+        return fetch(`${baseURL}/api/getDepartments`).
         then((response) => response.json()).
-        then((response) => dispatch(reducerFormat(response.options)));
+        then((response) => dispatch(reducerFormat(response.records)));
     };
 }
+
 
 export function deleteShipmentRequest(shipment) {
     const reducerFormat = (shipment) => ({
@@ -213,7 +177,7 @@ export function deleteShipmentRequest(shipment) {
     });
 
     return (dispatch) => {
-        fetch(`${baseURL}/api/deleteShipment`, {
+        fetch(`${baseURL}/api/shipment`, {
             method: 'delete',
             body: JSON.stringify({
                 _id: shipment._id,
@@ -222,18 +186,27 @@ export function deleteShipmentRequest(shipment) {
                 'Content-Type': 'application/json',
             }),
         }).
+        then(res => {
+            if (res.status === 404) throw res;
+        }).
         then(() => dispatch(reducerFormat(shipment)));
     };
 }
 
+
 export function deleteTemplateRequest(template) {
-    const reducerFormat = (template) => ({
-        type: DELETE_TEMPLATE,
-        template,
-    });
+    const reducerFormat = (template) => {
+        const newTemplate = Object.assign({}, template);
+        delete newTemplate['_id'];
+        return {
+            type: DELETE_TEMPLATE,
+            deleteID: template._id,
+            template: newTemplate,
+        }
+    };
 
     return (dispatch) => {
-        fetch(`${baseURL}/api/deleteOption`, {
+        fetch(`${baseURL}/api/shipmentTemplate`, {
             method: 'delete',
             body: JSON.stringify({
                 _id: template._id,
@@ -242,6 +215,16 @@ export function deleteTemplateRequest(template) {
                 'Content-Type': 'application/json',
             }),
         }).
+        then(res => {
+            if (res.status === 404) throw res;
+        }).
         then(() => dispatch(reducerFormat(template)));
     };
+}
+
+export function setLocation(val) {
+    return (dispatch) => dispatch({
+        type: SET_LOCATION,
+        location: val
+    });
 }
