@@ -7,4 +7,5 @@
 + !! Shipment History data is not getting loaded sometimes
 - Prevent "default" shipment loading with LIMIT from overwriting previous query with co:dept
 - With default set to entire year, might SLOW down when there is a years worth of data.
+- Switching TO charts doesn't show currently selected department data. Must click again.
 

@@ -94,6 +94,7 @@ class DeptContainer extends Component {
                 }
             }
         }
+        
         // Adds headers to `dataArray`
         dataArray.unshift(["Date"].concat(headArray.map(head => head[1])));
         dataArray.unshift([""].concat(headArray.map(head => head[0])));
@@ -103,6 +104,7 @@ class DeptContainer extends Component {
         dataTotals.push([""].concat(headArray.map(head => head[0])));
         dataTotals.push([""].concat(headArray.map(head => head[1])));
         dataTotals.push(["總額"].concat(headArray.map(head => head[2])));
+        
             
         this.dataArray = dataArray;
         this.dataTotals = dataTotals;

@@ -30,7 +30,13 @@ export default function MainTable(props) { return (
         {
             props.data.slice(2).map((row, i) =>
                 <tr key={i}>
-                    <td>{row[0].toLocaleDateString()}</td>
+                    <td>
+                        {
+                        props.data.length < 20 ?
+                        `${row[0].getMonth()+1} 月` : 
+                        `${row[0].getMonth()+1} / ${row[0].getDate()}`
+                        }
+                    </td>
 
                     {row.slice(1).map((col, i) => <td key={i}>{col}</td>)}
                 </tr>
