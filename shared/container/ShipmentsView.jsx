@@ -19,7 +19,7 @@ class ShipmentContainer extends Component {
          * Ensure shipments are loaded into state 
          * when navigating on client-side.
          */ 
-        this.props.dispatch(Actions.fetchShipments());
+        this.props.dispatch(Actions.fetchShipments(this.props.shipmentQuery));
         this.props.dispatch(Actions.fetchShipmentTemplates());
     }
 
