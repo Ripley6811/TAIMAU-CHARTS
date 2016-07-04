@@ -148,7 +148,7 @@ class ShipmentCreator extends Component {
                     onChange={(e) => this.setProduct(e,i)}>
                     {this.filteredTemplates.map((temp, i2) =>
                         <option key={i2} value={i2}>
-                              {temp.dept}{temp.unit} &nbsp; {temp.product} &nbsp; {temp.pn}
+                              {temp.dept}:{temp.unit} &nbsp; {temp.product} &nbsp; {temp.pn}
                         </option>
                     )}
                 </select>

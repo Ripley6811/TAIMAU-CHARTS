@@ -27,7 +27,7 @@ function ButtonStyle(selected) {
 
 const CompanyColumn = (props) =>
 <div className="col-md-6 text-center btn-group btn-group-vertical"
-    style={{padding: '0px'}}>
+    style={{padding: '3px'}}>
   <button className="btn btn-warning form-control" 
       style={ButtonStyle(props.title === props.selectedCompany)}
       type="button" 
@@ -94,9 +94,9 @@ class Sidebar extends Component {
     
     get navButtons() {
         return [
-            {text: "Shipment Table", route: "/shipment_table"},
-            {text: "Shipment History", route: "/shipment_history"},
-            {text: "Shipment Templates", route: "/shipment_templates"},
+            {text: "Charts |  數量圖表", route: "/shipment_table", disabled: true},
+            {text: "Shipments | 出貨紀錄", route: "/shipment_history", disabled: false},
+            {text: "Templates | 記錄模板", route: "/shipment_templates", disabled: false},
         ]
     }
     
@@ -129,12 +129,13 @@ class Sidebar extends Component {
               
               <hr />
               {
-                  this.navButtons.map(({text, route}, i) =>
+                  this.navButtons.map(({text, route, disabled}, i) =>
                     <div className="row" key={i}>
                         <div>
                         <button className="btn btn-warning form-control" type="button"
-                          style={ButtonStyle(route === this.props.location)}
-                          onClick={() => {
+                            style={ButtonStyle(route === this.props.location)}
+                            disabled={disabled}
+                            onClick={() => {
                                     this.setLocation(route);
                                     browserHistory.push(route);
                                 }}>
