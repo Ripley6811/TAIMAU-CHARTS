@@ -3,7 +3,7 @@
  */
 import Config from '../../../server/config';
 /**
- * `fetch` is a replacement for using XMLHttpRequest
+ * `fetch` is a replacement for using XMLHttpRequest and employs ES6 "Promise"
  * https://github.com/matthew-andrews/isomorphic-fetch
  */
 import fetch from 'isomorphic-fetch';
@@ -22,27 +22,14 @@ function encodeQueryParameters(params) {
 
 const baseURL = typeof window === 'undefined' ? process.env.BASE_URL || (`http://localhost:${Config.port}`) : '';
 
-export const DELETE_SHIPMENT = 'DELETE_SHIPMENT';
-export const ADD_SELECTED_SHIPMENT = 'ADD_SELECTED_SHIPMENT';
-export const ADD_SHIPMENTS = 'ADD_SHIPMENTS';
-export const LOAD_SHIPMENTS = 'LOAD_SHIPMENTS';
-export const UPDATE_TEMPLATES = 'UPDATE_TEMPLATES';
-export const ADD_TEMPLATES = 'ADD_TEMPLATES';
-export const ADD_TEMPLATE = 'ADD_TEMPLATE';
-export const DELETE_TEMPLATE = 'DELETE_TEMPLATE';
-export const ADD_DEPT_LINKS = 'ADD_DEPT_LINKS';
-export const ADD_SELECTED_DEPT = 'ADD_SELECTED_DEPT';
-export const SET_LOCATION = 'SET_LOCATION';
 
 /**
  * Used in `ShipmentContainer`.
  * @param   {object}   shipment New shipment data to send.
  * @returns {function} Function to post a new shipment request and accepts a callback.
  */
-export function addShipmentRequest(shipment) {
-    addShipmentsRequest([shipment]);
-}
 
+export const ADD_SHIPMENTS = 'ADD_SHIPMENTS';
 export function addShipmentsRequest(shipments) {
     const reducerFormat = (shipments) => ({
         type: ADD_SHIPMENTS,
@@ -62,8 +49,11 @@ export function addShipmentsRequest(shipments) {
         then((res) => dispatch(reducerFormat(res.shipments)));
     };
 }
+// Routes single shipment to multiple shipment method
+export const addShipmentRequest = (shipment) =>addShipmentsRequest([shipment]);
 
 
+export const ADD_TEMPLATE = 'ADD_TEMPLATE';
 export function addTemplateRequest(template) {
     const reducerFormat = (template) => ({
         type: ADD_TEMPLATE,
@@ -88,6 +78,7 @@ export function addTemplateRequest(template) {
 }
 
 
+export const ADD_SELECTED_SHIPMENT = 'ADD_SELECTED_SHIPMENT';
 /**
  * Set the `state.shipment` to the selected shipment.
  * @param   {object} shipment Shipment data object
@@ -101,9 +92,10 @@ export function addSelectedShipment(shipment) {
 }
 
 
+export const LOAD_SHIPMENTS = 'LOAD_SHIPMENTS';
 /**
  * Runs on server side first in ShipmentContainer.
- * @returns {[[Type]]} [[Description]]
+ * @returns {function} Promise to send AJAX results to reducer.
  */
 export function fetchShipments(params) {
     if (!params) throw "params not defined";
@@ -133,6 +125,7 @@ export function fetchShipments(params) {
 }
 
 
+export const ADD_TEMPLATES = 'ADD_TEMPLATES';
 export function fetchShipmentTemplates() {
     const reducerFormat = (templates) => {
         return {
@@ -149,8 +142,10 @@ export function fetchShipmentTemplates() {
 }
 
 
+export const ADD_DEPT_LINKS = 'ADD_DEPT_LINKS';
 export function fetchDepartments() {    
     const reducerFormat = (records) => {
+        // Rearrange records into a tree
         const tree = {};
         records.forEach((each) => {
             tree[each.company] ? tree[each.company].push(each.dept) : tree[each.company] = [each.dept];
@@ -161,15 +156,16 @@ export function fetchDepartments() {
             tree
         };
     };
-
+    
     return (dispatch) => {
-        return fetch(`${baseURL}/api/getDepartments`).
+        fetch(`${baseURL}/api/getDepartments`).
         then((response) => response.json()).
         then((response) => dispatch(reducerFormat(response.records)));
     };
 }
 
 
+export const DELETE_SHIPMENT = 'DELETE_SHIPMENT';
 export function deleteShipmentRequest(shipment) {
     const reducerFormat = (shipment) => ({
         type: DELETE_SHIPMENT,
@@ -194,6 +190,7 @@ export function deleteShipmentRequest(shipment) {
 }
 
 
+export const DELETE_TEMPLATE = 'DELETE_TEMPLATE';
 export function deleteTemplateRequest(template) {
     const reducerFormat = (template) => {
         const newTemplate = Object.assign({}, template);
@@ -222,6 +219,8 @@ export function deleteTemplateRequest(template) {
     };
 }
 
+
+export const SET_LOCATION = 'SET_LOCATION';
 export function setLocation(val) {
     return (dispatch) => dispatch({
         type: SET_LOCATION,
