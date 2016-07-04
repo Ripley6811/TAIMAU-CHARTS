@@ -118,7 +118,7 @@ export function fetchShipments() {
 
     // "dispatch" is a callback that runs the reducer.
     return (dispatch) => {
-        return fetch(`${baseURL}/api/shipment` + paramString).
+        return fetch(`${baseURL}/api/shipment${paramString}`).
         then((response) => response.json()).
         then((response) => dispatch(reducerFormat(response.shipments)));
     };
