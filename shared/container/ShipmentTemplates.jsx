@@ -42,12 +42,14 @@ class ShipmentTemplates extends React.Component {
         if (confirm('真的要把檔案刪除嗎?\nDo you want to delete this template?')) {
             this.props.dispatch(Actions.deleteTemplateRequest(template));
             this.props.dispatch(Actions.fetchDepartments());
+            this.props.dispatch(Actions.fetchShipmentTemplates());
         }
     }
     
     createTemplate = (template) => {
         this.props.dispatch(Actions.addTemplateRequest(template));
         this.props.dispatch(Actions.fetchDepartments());
+        this.props.dispatch(Actions.fetchShipmentTemplates());
     }
     
     render() {
