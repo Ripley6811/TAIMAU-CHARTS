@@ -42,7 +42,7 @@ export default function MainTable(props) { return (
         </tr>
         <tr>
         {
-            props.totals[2].map((col, i) => <th key={i} style={{backgroundColor: "gold"}}>{col}</th>)
+            props.totals[2].map((col, i) => <th key={i} style={{backgroundColor: "gold", color: "black"}}>{col}</th>)
         }
         </tr>
     </tbody>

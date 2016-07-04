@@ -94,7 +94,7 @@ class Sidebar extends Component {
     
     get navButtons() {
         return [
-            {text: "Charts |  數量圖表", route: "/shipment_table", disabled: true},
+            {text: "Charts |  數量圖表", route: "/", disabled: false},
             {text: "Shipments | 出貨紀錄", route: "/shipment_history", disabled: false},
             {text: "Templates | 記錄模板", route: "/shipment_templates", disabled: false},
         ]
