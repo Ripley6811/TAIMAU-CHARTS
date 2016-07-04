@@ -169,7 +169,7 @@ hr {
 }
 
 .cell-height-min > tbody > tr:nth-child(5n) {
-    background-color: antiquewhite;
+    background-color: #cafec7;
 }
 
 th {
