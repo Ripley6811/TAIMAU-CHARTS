@@ -19,10 +19,8 @@ class ShipmentContainer extends Component {
          * Ensure shipments are loaded into state 
          * when navigating on client-side.
          */ 
-        if (this.props.shipments.length === 0) {
-            this.props.dispatch(Actions.fetchShipments());
-            this.props.dispatch(Actions.fetchShipmentTemplates());
-        }
+        this.props.dispatch(Actions.fetchShipments());
+        this.props.dispatch(Actions.fetchShipmentTemplates());
     }
 
     submitShipments = (newShipmentsArray) => {
