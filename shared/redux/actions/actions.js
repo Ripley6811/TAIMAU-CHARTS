@@ -97,8 +97,8 @@ export const LOAD_SHIPMENTS = 'LOAD_SHIPMENTS';
  * Runs on server side first in ShipmentContainer.
  * @returns {function} Promise to send AJAX results to reducer.
  */
-export function fetchShipments(params) {
-    if (!params) throw "params not defined";
+export function fetchShipments() {
+    const params = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
     const LIMIT = 50;
     const reducerFormat = (shipments) => ({
         type: LOAD_SHIPMENTS,

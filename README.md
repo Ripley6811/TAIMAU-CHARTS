@@ -33,6 +33,7 @@ Generate components, routes, controllers, models using mern generator
 
 ## Server commands
 ```
+sudo tm_charts.sh
 sudo npm run build
 sudo NODE_ENV=production forever start index.js
 sudo forever stop index.js
