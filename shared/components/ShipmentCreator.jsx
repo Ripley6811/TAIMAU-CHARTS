@@ -68,6 +68,13 @@ class ShipmentCreator extends Component {
         });
     }
     
+    clearField = (key) => {
+        const slist = this.state.newShipments;
+        this.setState({
+            newShipments: slist.map(each => Object.assign({}, each, {[key]: ""}))
+        });
+    }
+    
     setReference = () => {
         const refPage = this.refs.refPage.value;
         this.setState({
@@ -122,17 +129,15 @@ class ShipmentCreator extends Component {
         <div>
             <legend>Create New Shipment</legend>
             <div className="form-group row">
+                <div className="col-xs-1 text-right" style={{padding: "0px"}}>
+                    <button className="btn btn-success"
+                        onClick={this.addRow}>
+                        <span className="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
                 <div className="col-xs-3 text-center"
                     style={{fontSize: "30px"}}>
                     {props.shipmentQuery.company}
-                </div>
-                { /** REF PAGE INPUT */ }
-                <label className="col-xs-2 form-control-label text-right"
-                    style={{padding: "5px", margin: "0px"}}>參考頁</label>
-                <div className="col-xs-1">
-                    <input className="form-control"
-                        type="text" ref="refPage" placeholder="#"
-                        onChange={this.setReference} />
                 </div>
             </div>
             {this.state.newShipments.map((each,i) => 
@@ -178,18 +183,34 @@ class ShipmentCreator extends Component {
             </div>        
             )}
             { /** ADD ROW & SUBMIT BUTTONS */ }
-            <div className="row">
-                <div className="col-xs-1 text-right" style={{padding: "0px"}}>
-                    <button className="btn btn-success"
-                        onClick={this.addRow}>
-                        <span className="glyphicon glyphicon-plus"></span>
-                    </button>
+            <div className="row" style={{margin: "8px"}}>
+                { /** REF PAGE INPUT */ }
+                <label className="col-xs-2 form-control-label text-right"
+                    style={{padding: "5px", margin: "0px"}}>參考頁</label>
+                <div className="col-xs-1">
+                    <input className="form-control"
+                        type="text" ref="refPage" placeholder="#"
+                        onChange={this.setReference} />
                 </div>
-                <div className="col-xs-10 text-center">
+                <div className="col-xs-2 text-center">
                     <button className="btn btn-success"
                         onClick={this.submitNewShipments}
                         disabled={this.state.newShipments.length < 1}>
                     提交 / Submit
+                    </button>
+                </div>
+                <div className="col-xs-2 col-xs-push-2 text-center">
+                    <button className="btn btn-warning"
+                        onClick={() => this.clearField("amount")}
+                        disabled={this.state.newShipments.length < 1}>
+                    Clear Amounts
+                    </button>
+                </div>
+                <div className="col-xs-2 col-xs-push-2 text-center">
+                    <button className="btn btn-warning"
+                        onClick={() => this.clearField("note")}
+                        disabled={this.state.newShipments.length < 1}>
+                    Clear Notes
                     </button>
                 </div>
             </div>
