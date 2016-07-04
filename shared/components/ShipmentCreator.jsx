@@ -31,6 +31,7 @@ class ShipmentCreator extends Component {
             selectValue: [],
             newShipments: [],
         });
+        this.refs.refPage.value = "";
     }
     
     addRow = () => {
