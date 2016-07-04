@@ -122,26 +122,34 @@ class ShipmentCreator extends Component {
         <div>
             <legend>Create New Shipment</legend>
             <div className="form-group row">
+                <div className="col-xs-3 text-center"
+                    style={{fontSize: "30px"}}>
+                    {props.shipmentQuery.company}
+                </div>
+                { /** REF PAGE INPUT */ }
                 <label className="col-xs-2 form-control-label text-right"
-                    style={{padding: "0px"}}>參考頁</label>
+                    style={{padding: "5px", margin: "0px"}}>參考頁</label>
                 <div className="col-xs-1">
                     <input className="form-control"
-                        type="text" ref="refPage"
+                        type="text" ref="refPage" placeholder="#"
                         onChange={this.setReference} />
                 </div>
             </div>
             {this.state.newShipments.map((each,i) => 
             <div key={i} className="row">
+                { /** REMOVE BUTTON */ }
                 <div className="col-xs-1 text-right" style={{padding: "0px"}}>
                     <button className="btn btn-danger"
                         onClick={() => this.removeRow(i)}>
                         <span className="glyphicon glyphicon-minus"></span>
                     </button>
                 </div>
+                { /** DATE INPUT */ }
                 <div className="col-xs-3" style={{padding: "0px"}}>
                 <input className="form-control" type="date" value={each.date}
                     onChange={e => this.setProperty(i, "date", e.target.value)}></input>
                 </div>
+                { /** PRODUCT SELECTION LIST */ }
                 <div className="col-xs-4" style={{padding: "0px"}}>
                 <select className="form-control"
                     value={this.state.selectValue[i]}
@@ -153,12 +161,14 @@ class ShipmentCreator extends Component {
                     )}
                 </select>
                 </div>
+                { /** AMOUNT INPUT */ }
                 <div className="col-xs-2" style={{padding: "0px"}}>
                     <input className="form-control" type="number" 
                         placeholder="需求量"
                         value={each.amount}
                         onChange={e => this.setProperty(i, "amount", e.target.value)}></input>
                 </div>
+                { /** NOTE INPUT */ }
                 <div className="col-xs-2" style={{padding: "0px"}}>
                     <input className="form-control" type="text" 
                         placeholder="備註"
@@ -166,7 +176,8 @@ class ShipmentCreator extends Component {
                         onChange={e => this.setProperty(i, "note", e.target.value)}></input>
                 </div>
             </div>        
-            )  /** Followed by remove button */ }
+            )}
+            { /** ADD ROW & SUBMIT BUTTONS */ }
             <div className="row">
                 <div className="col-xs-1 text-right" style={{padding: "0px"}}>
                     <button className="btn btn-success"
