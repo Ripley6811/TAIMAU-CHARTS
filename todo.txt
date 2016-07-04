@@ -4,5 +4,7 @@
 - History viewing will need filtering fields also. Need to refactor.
 + Remove "SelectedDept" (now using "Query")
 + Sidebar company/dept as filter only, no redirects
-- !! Shipment History data is not getting loaded sometimes
++ !! Shipment History data is not getting loaded sometimes
+- Prevent "default" shipment loading with LIMIT from overwriting previous query with co:dept
+- With default set to entire year, might SLOW down when there is a years worth of data.
 

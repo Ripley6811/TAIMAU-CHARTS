@@ -116,7 +116,11 @@ class DeptContainer extends Component {
                   <MainTable 
                       data={this.dataArray} 
                       totals={this.dataTotals} />
-              : <div>Select a department</div>
+              : 
+                <div><br /><br /><br /><br /><br /><h2>
+                    <span className="glyphicon glyphicon-arrow-left"></span>
+                    &nbsp;Select a department
+                </h2></div>
           }
                   
         </div>

@@ -11,7 +11,8 @@ MainTable.defaultProps = {
 }
 
 export default function MainTable(props) { return (
-<table className="table-bordered table-condensed cell-height-min" style={{fontSize: "14px"}}>
+<table className="table-bordered table-condensed cell-height-min" 
+    style={{fontSize: "16px"}}>
 
     <thead>
         <tr>
