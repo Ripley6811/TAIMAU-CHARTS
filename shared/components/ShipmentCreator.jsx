@@ -150,13 +150,13 @@ class ShipmentCreator extends Component {
                     onChange={e => this.setProperty(i, "date", e.target.value)}></input>
                 </div>
                 { /** PRODUCT SELECTION LIST */ }
-                <div className="col-xs-4" style={{padding: "0px"}}>
+                <div className="col-xs-3" style={{padding: "0px"}}>
                 <select className="form-control"
                     value={this.state.selectValue[i]}
                     onChange={(e) => this.setProduct(e,i)}>
                     {this.filteredTemplates.map((temp, i2) =>
                         <option key={i2} value={i2}>
-                              {temp.dept}:{temp.unit} &nbsp; {temp.product} &nbsp; {temp.pn}
+                              {temp.dept}-{temp.unit} &nbsp;&nbsp;&nbsp;&nbsp; {temp.product} &nbsp;&nbsp;&nbsp;&nbsp; {temp.pn}
                         </option>
                     )}
                 </select>
@@ -169,7 +169,7 @@ class ShipmentCreator extends Component {
                         onChange={e => this.setProperty(i, "amount", e.target.value)}></input>
                 </div>
                 { /** NOTE INPUT */ }
-                <div className="col-xs-2" style={{padding: "0px"}}>
+                <div className="col-xs-3" style={{padding: "0px"}}>
                     <input className="form-control" type="text" 
                         placeholder="備註"
                         value={each.note}
