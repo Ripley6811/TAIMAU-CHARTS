@@ -1,6 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 
+import * as Actions from '../../redux/actions/actions';
+
 import MainTable from './MainTable';
 
 class DeptContainer extends Component {  
@@ -18,6 +20,14 @@ class DeptContainer extends Component {
     state = {
         dataArray: [],
         dataTotals: [],
+    }
+    
+    componentDidMount() {
+        /**
+         * Ensure shipments are loaded into state 
+         * when navigating on client-side.
+         */ 
+        this.props.dispatch(Actions.fetchShipments(this.props.shipmentQuery));
     }
     
     getDatesArray(year, month) {
