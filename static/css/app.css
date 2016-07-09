@@ -186,11 +186,6 @@ th {
     background-color: moccasin;
 }
 
-.table-hover>tbody>tr:hover td {
-/*    font-weight: bold;  // DON'T: Shifts the columns on hover */
-    -webkit-transform: scale(1.1);
-}
-
 .table>tbody>tr>td {
     padding: 3px 4px;
 }
