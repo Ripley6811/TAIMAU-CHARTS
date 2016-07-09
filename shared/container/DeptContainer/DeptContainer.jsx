@@ -21,21 +21,7 @@ class DeptContainer extends Component {
     
     state = {
         dataArray: undefined,
-        dataTotals: undefined
-    }
-    
-    componentWillMount() {
-        /**
-         * Ensure shipments are loaded into state 
-         * when navigating on client-side.
-         */ 
-        if (this.props.shipments.length === 0)
-            this.props.dispatch(Actions.fetchShipments(this.props.query));
-    }
-
-    dispatchFetchShipments(query) {
-        const params = query || this.props.query;
-        this.props.dispatch(Actions.fetchShipments(params));
+        dataTotals: undefined,
     }
     
     get datesArray() {
@@ -56,21 +42,7 @@ class DeptContainer extends Component {
         return retArray;
     }
 
-    shouldComponentUpdate(nextProps) {
-        // Skip changes in "query" and wait for next "shipments" change
-        return JSON.stringify(this.props.query) === JSON.stringify(nextProps.query);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        // If "query" changes then load new set of "shipments".
-        if (JSON.stringify(this.props.query) !== JSON.stringify(nextProps.query)) {
-            this.dispatchFetchShipments(nextProps.query);
-            return;
-        }
-        
-    }
-    
-    render() {
+    getDataArrays = () => {
         const props = this.props;
         
         // Build arrays for display (aggregate shipment data).
@@ -131,6 +103,13 @@ class DeptContainer extends Component {
             dataTotals.push([""].concat(headArray.map(head => head[1])));
             dataTotals.push(["總額"].concat(headArray.map(head => head[2])));
         } 
+        
+        return [dataArray, dataTotals];
+    }
+
+    render() {
+        const props = this.props;
+        const [dataArray, dataTotals] = this.getDataArrays();
             
         if (!!props.query.dept) {
             return (

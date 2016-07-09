@@ -107,8 +107,8 @@ export const LOAD_SHIPMENTS = 'LOAD_SHIPMENTS';
  * @returns {function} Promise to send AJAX results to reducer.
  */
 export function fetchShipments() {
-    const params = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-//    const LIMIT = 50;
+    const params = Object.assign({}, arguments[0]);
+    
     const reducerFormat = (shipments) => ({
         type: LOAD_SHIPMENTS,
         shipments
@@ -117,9 +117,7 @@ export function fetchShipments() {
     for (let key in params) {
         if (params[key] === undefined) delete params[key];
     }
-    
-//    if (!params.hasOwnProperty('year')) params.limit = LIMIT;
-    
+        
     const paramString = "?" + encodeQueryParameters(params);
     console.log("fetching shipments with following parameters:");
     console.dir(paramString);

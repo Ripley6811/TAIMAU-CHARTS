@@ -45,7 +45,6 @@ const CompanyColumn = (props) =>
 
 
 class Sidebar extends Component {
-    
     static propTypes = {  // ES7 style
         selectedDept: PropTypes.shape({
             company: PropTypes.string.isRequired,
@@ -72,7 +71,6 @@ class Sidebar extends Component {
                               this.updateSavedQuery);
             }
         }
-//        this.props.dispatch(Actions.fetchDepartments());
     }
 
     setSelectedDept = (obj) => {  // ES7 style bound function
@@ -98,6 +96,7 @@ class Sidebar extends Component {
         // Save most recent query in local storage and in redux store
         window.localStorage.setItem("query", JSON.stringify(this.state));
         this.props.dispatch(Actions.updateSavedQuery(this.state));
+        this.props.dispatch(Actions.fetchShipments(this.state));
     }
 
     get navButtons() {
@@ -178,7 +177,6 @@ class Sidebar extends Component {
 const mapStateToProps = (store) => ({
     selectedDept: store.selectedDept,
     deptLinks: store.deptLinks,
-    location: store.location,
 });
 
 export default connect(mapStateToProps)(Sidebar);

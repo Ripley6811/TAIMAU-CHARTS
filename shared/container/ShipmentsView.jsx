@@ -14,27 +14,7 @@ class ShipmentContainer extends Component {
     static need = [Actions.fetchShipmentTemplates]  // Preload for sub-component
     
     static defaultProps = {
-        templates: [],
         shipments: []
-    }
-
-    componentWillMount() {
-        // Ensure required data is loaded.
-        if (this.props.shipments.length === 0)
-            this.props.dispatch(Actions.fetchShipments(this.props.query));
-    }
-    
-    componentWillReceiveProps(nextProps) {
-        // If "query" changes then load new set of "shipments".
-        if (JSON.stringify(this.props.query) !== JSON.stringify(nextProps.query)) {
-            this.props.dispatch(Actions.fetchShipments(nextProps.query));
-            return;
-        }
-    }
-
-    shouldComponentUpdate(nextProps) {
-        // Skip changes in "query" and wait for next "shipments" change
-        return JSON.stringify(this.props.query) === JSON.stringify(nextProps.query);
     }
 
     submitShipments = (newShipmentsArray) => {
@@ -51,6 +31,8 @@ class ShipmentContainer extends Component {
         const props = this.props;
         let tableHeaders = ["公司", "頁", "進貨日期", "材料名稱", "料號", "需求量", "Dept", "Unit", "備註", "除"];
         let tableKeys = ["company", "refPage", "date", "product", "pn", "amount", "dept", "unit", "note"];
+        
+        // Remove dept and company columns if selected on sidebar and in query.
         if (props.query.dept) {
             tableHeaders = tableHeaders.filter(each => each !== "Dept");
             tableKeys = tableKeys.filter(each => each !== "dept");
@@ -61,7 +43,7 @@ class ShipmentContainer extends Component {
         }
         
         // Remove time from date string.
-        props.shipments.forEach((s, i) => s.date = s.date.substr(0,10));
+        props.shipments.forEach(s => s.date = s.date.substr(0,10));
         
         return (
         <div className="container"
