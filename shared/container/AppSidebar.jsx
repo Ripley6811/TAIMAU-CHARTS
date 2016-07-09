@@ -13,14 +13,14 @@ import SelectYearMonth from '../components/SelectYearMonth';
 
 function ButtonStyle(selected) {
     if (typeof selected !== 'boolean') throw "'selected' parameter must be a boolean value.";
-    
+
     const style = {};
-    
+
     if (selected) {
         style.backgroundColor = "#fff";
         style.color = "#000";
     }
-    
+
     return style;
 }
 
@@ -28,78 +28,95 @@ function ButtonStyle(selected) {
 const CompanyColumn = (props) =>
 <div className="col-md-6 text-center btn-group btn-group-vertical"
     style={{padding: '3px'}}>
-  <button className="btn btn-warning form-control" 
+  <button className="btn btn-warning form-control"
       style={ButtonStyle(props.title === props.selectedCompany)}
-      type="button" 
+      type="button"
       onClick={() => props.onClick({company: props.title})} ><strong>{props.title}</strong></button>
     {
       props.depts.map((each) =>
-          <button className="btn btn-warning form-control" 
-              key={each} 
+          <button className="btn btn-warning form-control"
+              key={each}
               style={ButtonStyle(each === props.selectedDept)}
-              type="button" 
+              type="button"
               onClick={() => props.onClick({company: props.title, dept: each})} >{each}</button>
       )
     }
 </div>
-    
 
-class Sidebar extends Component {    
+
+class Sidebar extends Component {
+    
     static propTypes = {  // ES7 style
         selectedDept: PropTypes.shape({
             company: PropTypes.string.isRequired,
             dept: PropTypes.string.isRequired,
         }),
+        // Specify sidebar width in pixels, e.g. "200px"
         width: PropTypes.string.isRequired,
         dispatch: PropTypes.func.isRequired,
     }
-    
+
     state = {  // Initial state == Query parameters
         company: undefined,
         dept: undefined,
         year: new Date().getFullYear(),
         month: undefined,
     }
-    
+
     componentWillMount() {
-        this.props.dispatch(Actions.fetchDepartments());
+        // Load "query" parameters from local storage on client-side
+        if (typeof window !== 'undefined') {
+            this.location = window.location.pathname;
+            if (!!window.localStorage.query) {
+                this.setState(JSON.parse(window.localStorage.query),
+                              this.updateSavedQuery);
+            }
+        }
+//        this.props.dispatch(Actions.fetchDepartments());
     }
-    
-    setSelectedDept = (obj) => {  // ES7 style
+
+    setSelectedDept = (obj) => {  // ES7 style bound function
         if (!('company' in obj)) throw "'company' parameter is missing."
-        
+
         this.setState({
             company: obj.company,
             dept: obj.dept,
-        }, this.requestNewData);
+        }, this.updateSavedQuery);  // Callback after state change finishes.
     }
-    
+
     setDateRange = (obj) => {
         if (!('year' in obj)) throw "'year' parameter is missing."
         if (!('month' in obj)) throw "'month' parameter is missing."
-        
+
         this.setState({
             year: obj.year,
             month: obj.month,
-        }, this.requestNewData);
+        }, this.updateSavedQuery);
     }
-    
-    setLocation(val) {
-        this.props.dispatch(Actions.setLocation(val));
+
+    updateSavedQuery() {
+        // Save most recent query in local storage and in redux store
+        window.localStorage.setItem("query", JSON.stringify(this.state));
+        this.props.dispatch(Actions.updateSavedQuery(this.state));
     }
-    
-    requestNewData() {
-        this.props.dispatch(Actions.fetchShipments(this.state));
-    }
-    
+
     get navButtons() {
         return [
-            {text: "Charts |  數量圖表", route: "/", disabled: false},
-            {text: "Shipments | 出貨紀錄", route: "/shipment_history", disabled: false},
-            {text: "Templates | 記錄模板", route: "/shipment_templates", disabled: false},
+            {text: "Charts |  數量圖表",
+             route: "/", disabled: false},
+            {text: "Shipments | 出貨紀錄",
+             route: "/shipments", disabled: false},
+            {text: "Templates | 記錄模板",
+             route: "/templates", disabled: false},
         ]
     }
     
+    gotoRoute = (route) => {
+        this.location = route;
+        browserHistory.push(route);
+        this.forceUpdate();  // Force button style update
+    }
+
     render() {
         const props = this.props;
       return (
@@ -115,30 +132,30 @@ class Sidebar extends Component {
               <div className="row">
             {
               Object.keys(props.deptLinks).map((key) =>
-                <CompanyColumn title={key} key={key} 
+                <CompanyColumn title={key} key={key}
                     onClick={this.setSelectedDept}
                     selectedCompany={this.state.company}
-                    selectedDept={this.state.dept} 
+                    selectedDept={this.state.dept}
                     depts={props.deptLinks[key]} />
               )
             }
               </div>
-                  <hr />
-                <SelectYearMonth setDateRange={this.setDateRange} />
-              
-              
+            <hr />
+            <SelectYearMonth
+                year={this.state.year}
+                month={this.state.month}
+                setDateRange={this.setDateRange} />
+
+
               <hr />
               {
                   this.navButtons.map(({text, route, disabled}, i) =>
                     <div className="row" key={i}>
                         <div>
                         <button className="btn btn-warning form-control" type="button"
-                            style={ButtonStyle(route === this.props.location)}
+                            style={ButtonStyle(route === this.location)}
                             disabled={disabled}
-                            onClick={() => {
-                                    this.setLocation(route);
-                                    browserHistory.push(route);
-                                }}>
+                            onClick={() => this.gotoRoute(route)}>
                             {text}
                         </button>
                         </div>

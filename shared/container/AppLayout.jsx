@@ -12,6 +12,9 @@ import Sidebar from './AppSidebar';
 import * as Actions from '../redux/actions/actions';
 
 class AppLayout extends Component {
+    // Server-side data retrieval (for server rendering).
+    static need = [Actions.fetchDepartments]
+    
     static propTypes = {
         children: PropTypes.object.isRequired,
     }

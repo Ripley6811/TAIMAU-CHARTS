@@ -11,16 +11,30 @@ import Table from '../components/Table';
 
 class ShipmentContainer extends Component {
     // Server-side data retrieval (for server rendering).
-    static need = [Actions.fetchShipments, 
-                   Actions.fetchShipmentTemplates]
+    static need = [Actions.fetchShipmentTemplates]  // Preload for sub-component
+    
+    static defaultProps = {
+        templates: [],
+        shipments: []
+    }
 
-    componentDidMount() {
-        /**
-         * Ensure shipments are loaded into state 
-         * when navigating on client-side.
-         */ 
-        this.props.dispatch(Actions.fetchShipments(this.props.shipmentQuery));
-        this.props.dispatch(Actions.fetchShipmentTemplates());
+    componentWillMount() {
+        // Ensure required data is loaded.
+        if (this.props.shipments.length === 0)
+            this.props.dispatch(Actions.fetchShipments(this.props.query));
+    }
+    
+    componentWillReceiveProps(nextProps) {
+        // If "query" changes then load new set of "shipments".
+        if (JSON.stringify(this.props.query) !== JSON.stringify(nextProps.query)) {
+            this.props.dispatch(Actions.fetchShipments(nextProps.query));
+            return;
+        }
+    }
+
+    shouldComponentUpdate(nextProps) {
+        // Skip changes in "query" and wait for next "shipments" change
+        return JSON.stringify(this.props.query) === JSON.stringify(nextProps.query);
     }
 
     submitShipments = (newShipmentsArray) => {
@@ -37,11 +51,11 @@ class ShipmentContainer extends Component {
         const props = this.props;
         let tableHeaders = ["公司", "頁", "進貨日期", "材料名稱", "料號", "需求量", "Dept", "Unit", "備註", "除"];
         let tableKeys = ["company", "refPage", "date", "product", "pn", "amount", "dept", "unit", "note"];
-        if (props.shipmentQuery.dept) {
+        if (props.query.dept) {
             tableHeaders = tableHeaders.filter(each => each !== "Dept");
             tableKeys = tableKeys.filter(each => each !== "dept");
         }
-        if (props.shipmentQuery.company) {
+        if (props.query.company) {
             tableHeaders = tableHeaders.filter(each => each !== "公司");
             tableKeys = tableKeys.filter(each => each !== "company");
         }
@@ -70,7 +84,7 @@ class ShipmentContainer extends Component {
 
 // Retrieve data from store as props
 const mapStateToProps = (store) => ({
-    shipmentQuery: store.shipmentQuery,
+    query: store.query,
     shipment: store.shipment,
     shipments: store.shipments,
 });

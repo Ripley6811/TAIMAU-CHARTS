@@ -15,13 +15,6 @@ import Table from '../components/Table';
 import TemplateCreator from '../components/TemplateCreator';
 
 
-// Retrieves data from store (appends to "props").
-function mapStateToProps(store) {
-    return {
-        templates: store.templates
-    };
-};
-
 class ShipmentTemplates extends React.Component {
     // Server-side data retrieval (for server rendering).
     static need = [Actions.fetchShipmentTemplates]
@@ -38,24 +31,54 @@ class ShipmentTemplates extends React.Component {
         })).isRequired,
     }
     
+    static defaultProps = {
+        templates: []
+    }
+    
+    componentWillMount() {
+        // Ensure required data is loaded.
+        if (this.props.templates.length === 0)
+            this.props.dispatch(Actions.fetchShipmentTemplates());
+    }
+    
     deleteTemplate = (template) => {  // ES7 class function binding
+        // WARNING: Might have "race" problem between dispatches.
         if (confirm('真的要把檔案刪除嗎?\nDo you want to delete this template?')) {
             this.props.dispatch(Actions.deleteTemplateRequest(template));
-            this.props.dispatch(Actions.fetchDepartments());
-            this.props.dispatch(Actions.fetchShipmentTemplates());
+            // Wait then dispatch update for sidebar
+            setTimeout(() => {
+                this.props.dispatch(Actions.fetchDepartments());
+            }, 300);
         }
     }
     
     createTemplate = (template) => {
         this.props.dispatch(Actions.addTemplateRequest(template));
-        this.props.dispatch(Actions.fetchDepartments());
-        this.props.dispatch(Actions.fetchShipmentTemplates());
+        // Wait then dispatch update for sidebar
+        setTimeout(() => {
+            this.props.dispatch(Actions.fetchDepartments());
+        }, 300);
+    }
+    
+    templateFilter = (template) => {
+        const query = this.props.query;
+        if (!!query.dept) {
+            return template.company === query.company &&
+                   template.dept === query.dept;
+        } else if (!!query.company) {
+            return template.company === query.company;
+        }
+        
+        return true;
     }
     
     render() {
         const props = this.props;
         const tableHeaders = ["公司", "Dept", "Unit", "材料名稱", "料號", "除"];
         const tableKeys = ["company", "dept", "unit", "product", "pn"];
+        
+        // Filter templates
+        const filteredTemplates = props.templates.filter(this.templateFilter);
         
         return (
         <div className="container" 
@@ -67,12 +90,20 @@ class ShipmentTemplates extends React.Component {
             <Table 
                 tableHeaders={tableHeaders}
                 tableKeys={tableKeys}
-                tableRows={props.templates}
+                tableRows={filteredTemplates}
                 onDelete={this.deleteTemplate}
                 />
         </div>
         )
     }        
 }
+
+// Retrieves data from store (appends to "props").
+function mapStateToProps(store) {
+    return {
+        templates: store.templates,
+        query: store.query,
+    };
+};
 
 export default connect(mapStateToProps)(ShipmentTemplates);

@@ -5,30 +5,33 @@
  */
 
 import { 
+    UPDATE_QUERY,
     ADD_SHIPMENTS, 
     LOAD_SHIPMENTS, 
     ADD_SELECTED_SHIPMENT, 
     DELETE_SHIPMENT,
     UPDATE_TEMPLATES,
-    ADD_TEMPLATES,
+    LOAD_TEMPLATES,
     ADD_TEMPLATE,
     DELETE_TEMPLATE,
     ADD_DEPT_LINKS,
     ADD_SELECTED_DEPT,
-    SET_LOCATION,
 } from '../actions/actions.js';
 
 
 export default (state, action) => {
   switch (action.type) {
     
+    case UPDATE_QUERY :
+        return Object.assign({}, state, 
+                {query: Object.assign({}, state.query, action.query)});
+    
     case ADD_SHIPMENTS :
         return Object.assign({}, state, 
                 {shipments: [...action.shipments, ...state.shipments]});
 
     case LOAD_SHIPMENTS :
-        return Object.assign({}, state, {shipments: action.shipments, 
-                                         shipmentQuery: action.params});
+        return Object.assign({}, state, {shipments: action.shipments});
 
     case ADD_SELECTED_SHIPMENT :
         return Object.assign({}, state, {currShipment: action.shipment});
@@ -47,7 +50,7 @@ export default (state, action) => {
     case UPDATE_TEMPLATES :
         return Object.assign({}, state, {templates: action.templates});
 
-    case ADD_TEMPLATES :
+    case LOAD_TEMPLATES :
         return Object.assign({}, state, {templates: action.templates});
 
     case ADD_TEMPLATE :
@@ -60,9 +63,6 @@ export default (state, action) => {
     case ADD_SELECTED_DEPT :
         return Object.assign({}, state, 
             {currDept: action.obj, shipments: action.shipments});
-
-    case SET_LOCATION :
-        return Object.assign({}, state, {location: action.location});
 
     default:
       return state; // Nothing changed for unknown actions.

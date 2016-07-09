@@ -1,11 +1,15 @@
 - Rethink the initial fetchShipments algoritm. Add multiple page loading on client side.
 + Add "filter history based on entries"
 + Remove delete button from history viewing. Should be on edit mode only.
-- History viewing will need filtering fields also. Need to refactor.
++ History viewing will need filtering fields also. Need to refactor.
 + Remove "SelectedDept" (now using "Query")
 + Sidebar company/dept as filter only, no redirects
 + !! Shipment History data is not getting loaded sometimes
-- Prevent "default" shipment loading with LIMIT from overwriting previous query with co:dept
++ Prevent "default" shipment loading with LIMIT from overwriting previous query with co:dept
 - With default set to entire year, might SLOW down when there is a years worth of data.
-- Switching TO charts doesn't show currently selected department data. Must click again.
++ Switching TO charts doesn't show currently selected department data. Must click again.
+- Do aggregation in Mongo instead of D3.nest, BUT just sending shipment list allows multiple pages to share data without reloading...
++ Sidebar sets query params and pushes it to store. let other pages react to query param changes.
++ Why fetchDepartments in componentWillMount instead of "need"?? BECAUSE AppSidebar is not called as a route but as a subcomponent of AppLayout.
++ Solve possible "race" problem in TemplatesView delete/create dispatches
 

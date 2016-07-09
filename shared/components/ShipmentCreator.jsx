@@ -7,26 +7,37 @@ class ShipmentCreator extends Component {
         submitShipments: PropTypes.func.isRequired,
     }
     
+    static defaultProps = {
+        templates: [],
+        shipments: []
+    }
+    
     state = {
         selectValue: [],
         newShipments: [],
     }
     
+    componentWillMount() {
+        // Ensure required data is loaded.
+        if (this.props.templates.length === 0)
+            this.props.dispatch(Actions.fetchShipmentTemplates());
+    }
+    
     componentWillReceiveProps(nextProps) {
         // If company selection changes, then delete new shipments list.
         const key = "company";
-        if (nextProps.shipmentQuery[key] !== this.props.shipmentQuery[key]) {
-            this.clearEntries();
+        if (nextProps.query[key] !== this.props.query[key]) {
+            this.removeAllEntries();
         }
     }
     
     get filteredTemplates() {
         return this.props.templates.filter(temp => 
-            temp.company === this.props.shipmentQuery.company
+            temp.company === this.props.query.company
         );
     }
 
-    clearEntries = () => {
+    removeAllEntries = () => {
         this.setState({
             selectValue: [],
             newShipments: [],
@@ -69,11 +80,23 @@ class ShipmentCreator extends Component {
         });
     }
     
+    // Currently not used...
     clearField = (key) => {
         const slist = this.state.newShipments;
         this.setState({
             newShipments: slist.map(each => Object.assign({}, each, {[key]: ""}))
         });
+    }
+    
+    clearAllTextInputs = () => {
+        const slist = this.state.newShipments;
+        // Wait for this "setState" to finish before triggering refPage "setState".
+        this.setState({
+            newShipments: slist.map(each => Object.assign({}, each, {
+                amount: "",
+                note: "",
+            }))
+        }, () => (this.refs.refPage.value = ""));
     }
     
     setReference = () => {
@@ -114,7 +137,7 @@ class ShipmentCreator extends Component {
     render() {
         const props = this.props;
         
-        if (!props.shipmentQuery.company) {
+        if (!props.query.company) {
             return (
             <div>
             <legend>Create New Shipment</legend>
@@ -138,7 +161,7 @@ class ShipmentCreator extends Component {
                 </div>
                 <div className="col-xs-3 text-center"
                     style={{fontSize: "30px"}}>
-                    {props.shipmentQuery.company}
+                    {props.query.company}
                 </div>
             </div>
             {this.state.newShipments.map((each,i) => 
@@ -202,16 +225,9 @@ class ShipmentCreator extends Component {
                 </div>
                 <div className="col-xs-2 col-xs-push-2 text-center">
                     <button className="btn btn-warning"
-                        onClick={() => this.clearField("amount")}
+                        onClick={this.clearAllTextInputs}
                         disabled={this.state.newShipments.length < 1}>
-                    Clear Amounts
-                    </button>
-                </div>
-                <div className="col-xs-2 col-xs-push-2 text-center">
-                    <button className="btn btn-warning"
-                        onClick={() => this.clearField("note")}
-                        disabled={this.state.newShipments.length < 1}>
-                    Clear Notes
+                    Clear All
                     </button>
                 </div>
             </div>
@@ -221,7 +237,7 @@ class ShipmentCreator extends Component {
 }
 
 const mapStateToProps = store => ({
-    shipmentQuery: store.shipmentQuery,
+    query: store.query,
     shipment: store.shipment,
     templates: store.templates,
 });

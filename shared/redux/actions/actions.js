@@ -23,13 +23,22 @@ function encodeQueryParameters(params) {
 const baseURL = typeof window === 'undefined' ? process.env.BASE_URL || (`http://localhost:${Config.port}`) : '';
 
 
+
+export const UPDATE_QUERY = 'UPDATE_QUERY';
+export function updateSavedQuery(query) {
+    return {
+        type: UPDATE_QUERY,
+        query,
+    };
+}
+
+
+export const ADD_SHIPMENTS = 'ADD_SHIPMENTS';
 /**
  * Used in `ShipmentContainer`.
  * @param   {object}   shipment New shipment data to send.
  * @returns {function} Function to post a new shipment request and accepts a callback.
  */
-
-export const ADD_SHIPMENTS = 'ADD_SHIPMENTS';
 export function addShipmentsRequest(shipments) {
     const reducerFormat = (shipments) => ({
         type: ADD_SHIPMENTS,
@@ -99,18 +108,17 @@ export const LOAD_SHIPMENTS = 'LOAD_SHIPMENTS';
  */
 export function fetchShipments() {
     const params = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-    const LIMIT = 50;
+//    const LIMIT = 50;
     const reducerFormat = (shipments) => ({
         type: LOAD_SHIPMENTS,
-        shipments,
-        params,
+        shipments
     });
     
     for (let key in params) {
         if (params[key] === undefined) delete params[key];
     }
     
-    if (!('year' in params)) params.limit = LIMIT;
+//    if (!params.hasOwnProperty('year')) params.limit = LIMIT;
     
     const paramString = "?" + encodeQueryParameters(params);
     console.log("fetching shipments with following parameters:");
@@ -119,25 +127,26 @@ export function fetchShipments() {
     // "dispatch" is a callback that runs the reducer.
     return (dispatch) => {
         return fetch(`${baseURL}/api/shipment${paramString}`).
-        then((response) => response.json()).
-        then((response) => dispatch(reducerFormat(response.shipments)));
+        then((res) => res.json()).
+        then((res) => dispatch(reducerFormat(res.shipments)));
     };
 }
 
 
-export const ADD_TEMPLATES = 'ADD_TEMPLATES';
+export const LOAD_TEMPLATES = 'LOAD_TEMPLATES';
 export function fetchShipmentTemplates() {
     const reducerFormat = (templates) => {
         return {
-            type: ADD_TEMPLATES,
+            type: LOAD_TEMPLATES,
             templates: templates
         };
     };
 
     return (dispatch) => {
+        // If used in "need" list then requires "return" keyword below (?)
         return fetch(`${baseURL}/api/shipmentTemplate`).
-        then((response) => response.json()).
-        then((response) => dispatch(reducerFormat(response.templates)));
+        then((res) => res.json()).
+        then((res) => dispatch(reducerFormat(res.templates)));
     };
 }
 
@@ -158,9 +167,10 @@ export function fetchDepartments() {
     };
     
     return (dispatch) => {
-        fetch(`${baseURL}/api/getDepartments`).
-        then((response) => response.json()).
-        then((response) => dispatch(reducerFormat(response.records)));
+        // If used in "need" list then requires "return" keyword below (?)
+        return fetch(`${baseURL}/api/getDepartments`).
+        then((res) => res.json()).
+        then((res) => dispatch(reducerFormat(res.records)));
     };
 }
 
@@ -217,13 +227,4 @@ export function deleteTemplateRequest(template) {
         }).
         then(() => dispatch(reducerFormat(template)));
     };
-}
-
-
-export const SET_LOCATION = 'SET_LOCATION';
-export function setLocation(val) {
-    return (dispatch) => dispatch({
-        type: SET_LOCATION,
-        location: val
-    });
 }

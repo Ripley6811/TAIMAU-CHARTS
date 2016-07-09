@@ -7,31 +7,41 @@ import MainTable from './MainTable';
 
 class DeptContainer extends Component {  
     static propTypes = {
-        shipmentQuery: PropTypes.shape({
+        query: PropTypes.shape({
                 year: PropTypes.number,
                 month: PropTypes.number,
         }).isRequired,
     };
 
     static defaultProps = {
-        shipmentQuery: {},
+        query: {},
+        templates: [],
+        shipments: []
     }
     
     state = {
-        dataArray: [],
-        dataTotals: [],
+        dataArray: undefined,
+        dataTotals: undefined
     }
     
-    componentDidMount() {
+    componentWillMount() {
         /**
          * Ensure shipments are loaded into state 
          * when navigating on client-side.
          */ 
-        this.props.dispatch(Actions.fetchShipments(this.props.shipmentQuery));
+        if (this.props.shipments.length === 0)
+            this.props.dispatch(Actions.fetchShipments(this.props.query));
+    }
+
+    dispatchFetchShipments(query) {
+        const params = query || this.props.query;
+        this.props.dispatch(Actions.fetchShipments(params));
     }
     
-    getDatesArray(year, month) {
+    get datesArray() {
         const retArray = [];
+        const year = this.props.query.year;
+        const month = this.props.query.month;
 
         if (typeof year === "number" && month === undefined) {
             for (let i=0; i<12; i++) {
@@ -46,97 +56,103 @@ class DeptContainer extends Component {
         return retArray;
     }
 
-    componentWillReceiveProps(nextProps) {  
-        const datesArray = this.getDatesArray(nextProps.shipmentQuery.year, 
-                                              nextProps.shipmentQuery.month);
-        
-//        this.test = d3.nest()
-//            .key(d => d.unit)
-//            .key(d => d.product)
-//            .rollup(v => {return{
-//                unit: v[0].unit,
-//                name: v[0].product,
-//                amount: d3.sum(v, d => d.amount),
-//            }})
-//            .map(nextProps.shipments);
-//        console.dir(this.test);
-        const dateLength = (typeof nextProps.shipmentQuery.month === "number") ?
-              10 : 7;
-        
-        // Calculates the product totals across all dates
-        let prodTotals = d3.nest()
-            .key(d => d.unit)
-            .key(d => d.product)
-            .rollup(v => d3.sum(v, d => d.amount))
-            .map(nextProps.shipments);
+    shouldComponentUpdate(nextProps) {
+        // Skip changes in "query" and wait for next "shipments" change
+        return JSON.stringify(this.props.query) === JSON.stringify(nextProps.query);
+    }
 
-        // Creates a object tree of units->depts
-        let header = d3.nest()
-            .key(d => d.unit)
-            .key(d => d.product)
-            .rollup(v => ({}))
-            .map(nextProps.shipments);
-
-        let headArray = [];
-        for (let unit in header) {
-            for (let prod in header[unit]) {
-                headArray.push([unit, prod, prodTotals[unit][prod]]);
-            }
-        }
-
-        // Adds daily totals to `header`
-        for (let i=0; i<nextProps.shipments.length; i++) {
-            const s = nextProps.shipments[i];
-            const oldAmt = header[s.unit][s.product][s.date.substring(0,dateLength)] || 0;
-            header[s.unit][s.product][s.date.substring(0,dateLength)] = s.amount + oldAmt;
-        }
-
-        // Creates 2D array of dates and data
-        let dataArray = datesArray.map(each => [each]);
-        for (let i=0; i<dataArray.length; i++) {
-            let dateString = dataArray[i][0].toISOString().substring(0,dateLength);
-            for (let headIndex=0; headIndex<headArray.length; headIndex++) {
-                let [unit, prod] = headArray[headIndex];
-                if (header[unit]) {
-                    if (header[unit][prod]) {
-                        dataArray[i].push(header[unit][prod][dateString] || "");
-                    }
-                }
-            }
+    componentWillReceiveProps(nextProps) {
+        // If "query" changes then load new set of "shipments".
+        if (JSON.stringify(this.props.query) !== JSON.stringify(nextProps.query)) {
+            this.dispatchFetchShipments(nextProps.query);
+            return;
         }
         
-        // Adds headers to `dataArray`
-        dataArray.unshift(["Date"].concat(headArray.map(head => head[1])));
-        dataArray.unshift([""].concat(headArray.map(head => head[0])));
-
-        // Creates 2D array of prods and grand totals
-        let dataTotals = [];
-        dataTotals.push([""].concat(headArray.map(head => head[0])));
-        dataTotals.push([""].concat(headArray.map(head => head[1])));
-        dataTotals.push(["總額"].concat(headArray.map(head => head[2])));
-        
-            
-        this.dataArray = dataArray;
-        this.dataTotals = dataTotals;
     }
     
     render() {
-      return (
-        <div className="container">
-          <h2> {this.props.shipmentQuery.dept}</h2>
-          {this.props.shipmentQuery.dept ? 
-                  <MainTable 
-                      data={this.dataArray} 
-                      totals={this.dataTotals} />
-              : 
-                <div><br /><br /><br /><br /><br /><h2>
+        const props = this.props;
+        
+        // Build arrays for display (aggregate shipment data).
+        const dataArray = this.datesArray.map(each => [each]);
+        const dataTotals = [];
+        
+        const dateLength = (typeof props.query.month === "number") ?
+              10 : 7;
+        
+        if (typeof d3 !== "undefined") {  // Ignore D3.js reference error on server-side
+            // Calculates the product totals across all dates
+            let prodTotals = d3.nest()
+                .key(d => d.unit)
+                .key(d => d.product)
+                .rollup(v => d3.sum(v, d => d.amount))
+                .map(props.shipments);
+
+            // Creates a object tree of units->depts
+            let header = d3.nest()
+                .key(d => d.unit)
+                .key(d => d.product)
+                .rollup(v => ({}))
+                .map(props.shipments);
+
+            let headArray = [];
+            for (let unit in header) {
+                for (let prod in header[unit]) {
+                    headArray.push([unit, prod, prodTotals[unit][prod]]);
+                }
+            }
+
+            // Adds daily totals to `header`
+            for (let i=0; i<props.shipments.length; i++) {
+                const s = props.shipments[i];
+                const oldAmt = header[s.unit][s.product][s.date.substring(0,dateLength)] || 0;
+                header[s.unit][s.product][s.date.substring(0,dateLength)] = s.amount + oldAmt;
+            }
+
+            // Creates 2D array of dates and data
+            for (let i=0; i<dataArray.length; i++) {
+                let dateString = dataArray[i][0].toISOString().substring(0,dateLength);
+                for (let headIndex=0; headIndex<headArray.length; headIndex++) {
+                    let [unit, prod] = headArray[headIndex];
+                    if (header[unit]) {
+                        if (header[unit][prod]) {
+                            dataArray[i].push(header[unit][prod][dateString] || "");
+                        }
+                    }
+                }
+            }
+
+            // Adds headers to `dataArray`
+            dataArray.unshift(["日期"].concat(headArray.map(head => head[1])));
+            dataArray.unshift([""].concat(headArray.map(head => head[0])));
+
+            // Creates 2D array of prods and grand totals
+            dataTotals.push([""].concat(headArray.map(head => head[0])));
+            dataTotals.push([""].concat(headArray.map(head => head[1])));
+            dataTotals.push(["總額"].concat(headArray.map(head => head[2])));
+        } 
+            
+        if (!!props.query.dept) {
+            return (
+                <div className="container">
+                    <h2> {props.query.dept}</h2>
+                    <MainTable 
+                        data={dataArray} 
+                        totals={dataTotals} />
+                </div>
+            );
+        }
+        
+        return (
+            <div className="container">              
+                <br /><br /><br /><br /><br />
+                <h2>
                     <span className="glyphicon glyphicon-arrow-left"></span>
-                    &nbsp;Select a department
-                </h2></div>
-          }
-                  
-        </div>
-      );
+                    &nbsp;
+                    Select a department
+                </h2>
+            </div>
+        );
     }
 }
 
@@ -144,7 +160,7 @@ class DeptContainer extends Component {
 // Retrieve data from store as props
 const mapStateToProps = (store) => ({
       shipments: store.shipments,
-      shipmentQuery: store.shipmentQuery,
+      query: store.query,
 });
 
 export default connect(mapStateToProps)(DeptContainer);

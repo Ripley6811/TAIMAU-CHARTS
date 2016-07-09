@@ -19,8 +19,8 @@ export default class SelectYearMonth extends Component {
     }
     
     state = {
-        year: new Date().getFullYear(),
-        month: undefined,
+        year: this.props.year || new Date().getFullYear(),
+        month: this.props.month || undefined,
     }
     
     submitDateChange() {

@@ -113,7 +113,7 @@ app.use((req, res, next) => {
         currTemplate: undefined,
         shipments: [],
         currShipment: undefined,
-        shipmentQuery: {},
+        query: {},
     };
 
     const store = configureStore(initialState);
