@@ -12,4 +12,5 @@
 + Sidebar sets query params and pushes it to store. let other pages react to query param changes.
 + Why fetchDepartments in componentWillMount instead of "need"?? BECAUSE AppSidebar is not called as a route but as a subcomponent of AppLayout.
 + Solve possible "race" problem in TemplatesView delete/create dispatches
+- Add Shipment subcomponent for product totals for three intervals of a month
 

@@ -5,12 +5,12 @@ import React, { PropTypes, Component } from 'react';
  * They appear after conversion from JSX to JavaScript.
  */
 
-MainTable.defaultProps = {
+AggregatedTable.defaultProps = {
     data: [[],[]],
     totals: [[],[],[]],
 }
 
-export default function MainTable(props) { return (
+export default function AggregatedTable(props) { return (
 <table className="table-bordered table-condensed cell-height-min" 
     style={{fontSize: "16px"}}>
 

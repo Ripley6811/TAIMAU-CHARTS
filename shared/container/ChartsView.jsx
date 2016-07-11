@@ -1,11 +1,12 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 
-import * as Actions from '../../redux/actions/actions';
+import * as Actions from '../redux/actions/actions';
 
-import MainTable from './MainTable';
+import AggregatedTable from '../components/AggregatedTable';
+import Pie from '../components/Pie';
 
-class DeptContainer extends Component {  
+class ChartsView extends Component {
     static propTypes = {
         query: PropTypes.shape({
                 year: PropTypes.number,
@@ -18,12 +19,12 @@ class DeptContainer extends Component {
         templates: [],
         shipments: []
     }
-    
+
     state = {
         dataArray: undefined,
         dataTotals: undefined,
     }
-    
+
     get datesArray() {
         const retArray = [];
         const year = this.props.query.year;
@@ -44,14 +45,14 @@ class DeptContainer extends Component {
 
     getDataArrays = () => {
         const props = this.props;
-        
+
         // Build arrays for display (aggregate shipment data).
         const dataArray = this.datesArray.map(each => [each]);
         const dataTotals = [];
-        
+
         const dateLength = (typeof props.query.month === "number") ?
               10 : 7;
-        
+
         if (typeof d3 !== "undefined") {  // Ignore D3.js reference error on server-side
             // Calculates the product totals across all dates
             let prodTotals = d3.nest()
@@ -102,28 +103,34 @@ class DeptContainer extends Component {
             dataTotals.push([""].concat(headArray.map(head => head[0])));
             dataTotals.push([""].concat(headArray.map(head => head[1])));
             dataTotals.push(["總額"].concat(headArray.map(head => head[2])));
-        } 
-        
+        }
+
         return [dataArray, dataTotals];
     }
 
     render() {
         const props = this.props;
         const [dataArray, dataTotals] = this.getDataArrays();
-            
+
         if (!!props.query.dept) {
             return (
                 <div className="container">
-                    <h2> {props.query.dept}</h2>
-                    <MainTable 
-                        data={dataArray} 
-                        totals={dataTotals} />
+                    <div style={{float: "left"}}>
+                        <h2> {props.query.dept}</h2>
+                        <AggregatedTable
+                            data={dataArray}
+                            totals={dataTotals} />
+                    </div>
+                    <div style={{float: "right", margin: "0px 20px", border: "2px dotted pink"}}>
+                        <h2>Pie Chart <small>Per Day Usage</small></h2>
+                        <Pie id="pie" data={dataTotals}></Pie>
+                    </div>
                 </div>
             );
         }
-        
+
         return (
-            <div className="container">              
+            <div className="container">
                 <br /><br /><br /><br /><br />
                 <h2>
                     <span className="glyphicon glyphicon-arrow-left"></span>
@@ -142,4 +149,4 @@ const mapStateToProps = (store) => ({
       query: store.query,
 });
 
-export default connect(mapStateToProps)(DeptContainer);
+export default connect(mapStateToProps)(ChartsView);
