@@ -122,7 +122,7 @@ class ChartsView extends Component {
                             data={dataArray}
                             totals={dataTotals} />
                     </div>
-                    <div className="text-center" style={{float: "right", margin: "0px 20px", border: "2px dotted pink"}}>
+                    <div className="text-center" style={{float: "right"}}>
                         <h2>#kg / {this.isFullYear ? "月" : "周"}</h2>
                         <Pie id="pie" 
                             data={dataTotals} 
