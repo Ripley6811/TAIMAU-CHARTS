@@ -20,11 +20,6 @@ class ChartsView extends Component {
         shipments: []
     }
 
-    state = {
-        dataArray: undefined,
-        dataTotals: undefined,
-    }
-
     get datesArray() {
         const retArray = [];
         const year = this.props.query.year;
@@ -41,6 +36,12 @@ class ChartsView extends Component {
         }
 
         return retArray;
+    }
+
+    get isFullYear() {
+        const hasYear = typeof this.props.query.year === "number";
+        const hasMonth = typeof this.props.query.month === "number";
+        return hasYear && !hasMonth;
     }
 
     getDataArrays = () => {
@@ -121,9 +122,11 @@ class ChartsView extends Component {
                             data={dataArray}
                             totals={dataTotals} />
                     </div>
-                    <div style={{float: "right", margin: "0px 20px", border: "2px dotted pink"}}>
-                        <h2>Pie Chart <small>Per Day Usage</small></h2>
-                        <Pie id="pie" data={dataTotals}></Pie>
+                    <div className="text-center" style={{float: "right", margin: "0px 20px", border: "2px dotted pink"}}>
+                        <h2>#kg / {this.isFullYear ? "月" : "周"}</h2>
+                        <Pie id="pie" 
+                            data={dataTotals} 
+                            fullYear={this.isFullYear}></Pie>
                     </div>
                 </div>
             );

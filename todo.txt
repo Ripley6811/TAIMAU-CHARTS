@@ -13,4 +13,5 @@
 + Why fetchDepartments in componentWillMount instead of "need"?? BECAUSE AppSidebar is not called as a route but as a subcomponent of AppLayout.
 + Solve possible "race" problem in TemplatesView delete/create dispatches
 - Add Shipment subcomponent for product totals for three intervals of a month
+- Why is  "componentDidUpdate" firing twice when changing dept?
 

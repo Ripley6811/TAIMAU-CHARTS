@@ -2,19 +2,29 @@ import React, { PropTypes, Component } from 'react';
 
 
 class Pie extends Component {
-    data() {
-        const d = this.props.data;
-        const newDataArray = [];
+    static propTypes = {
+        fullYear: PropTypes.bool.isRequired,
+    }
+    
+    /**
+     * Reformats the incoming data to use in pie chart.
+     * @returns {Array} Array of data for pie chart
+     */
+    getData() {
+        const d = this.props.data,
+              newDataArray = [],
+              MIN_ARRAY_SIZE = 6;
         for (let i=1; i< d[1].length; i++) {
             newDataArray.push({
                 label: d[1][i],
                 value: d[2][i]
             })
         }
-        if (newDataArray.length === 0) {
-            return [];
-        }
-        for (let i=newDataArray.length; i<6; i++) {
+        
+        newDataArray.sort((a,b) => a.value < b.value ? 1 : -1);
+        
+        // Add extra blanks for smooth transition.
+        for (let i=newDataArray.length; i<MIN_ARRAY_SIZE; i++) {
             newDataArray.push({
                 label: "",
                 value: 0
@@ -37,25 +47,29 @@ class Pie extends Component {
         
         // declare an arc generator function
         this.arc = d3.svg.arc()
-            .innerRadius(radius/2)
+            .innerRadius(radius/1.5)
             .outerRadius(radius);
         
         this.pie = d3.layout.pie()
             .value(d => d.value)
             .sort(null);
         
+        this.forceUpdate();
     }
     
     shouldComponentUpdate(nextProps, nextState) {
-        const keys = Object.keys(Object.assign({}, this.props.data, nextProps.data))
-        return !keys.every(key => this.props.data[key] === nextProps.data[key]);
+        const a1 = this.props.data[2];
+        const a2 = nextProps.data[2];
+        return !a1.every((each, i) => each === a2[i])
     }
 
     componentDidUpdate(prevProps, prevState) {  // D3 update
         const self = this;
-        console.log("D3 UPDATING");
-        var color = d3.scale.category20b().range().slice(4);
-        var data = self.data();
+        const CAT20B_FIRST_GREEN = 4;
+        const color = d3.scale.category20b().range().slice(CAT20B_FIRST_GREEN);
+        const data = self.getData();
+        var legendRectSize = 18;
+        var legendSpacing = 4;
 
         // select paths, use arc generator to draw
         var path = self.svg.selectAll("path")
@@ -78,29 +92,62 @@ class Pie extends Component {
                 };
             });
         
+        
+        var legend = self.svg.selectAll('.legend')
+            .data(data.filter(d => d.value > 0));
+        
+        legend.enter()
+            .append('g')
+            .attr('class', 'legend')
+            .attr('transform', function(d, i) {
+                var height = legendRectSize + legendSpacing;
+                var offset =  70;
+                var horz = -3.5 * legendRectSize;
+                var vert = i * height - offset;
+                return 'translate(' + horz + ',' + vert + ')';
+            })
+            .each(function(d, i) {
+                d3.select(this).append('rect')
+                    .attr('width', legendRectSize)
+                    .attr('height', legendRectSize)
+                    .style('fill', color[i])
+                    .style('stroke', color[i]);
+            
+                d3.select(this).append('text')
+                    .attr('class', `pieLabel`)
+                    .attr('x', legendRectSize + legendSpacing)
+                    .attr('y', legendRectSize - legendSpacing)
+                    .text(d.label);
+            });
+        
+        legend.exit().remove();
+        
+        legend.each(function(d) { 
+            const MONTHS_PER_YEAR = 12;
+            const AVE_WEEKS_PER_MONTH = 52 / 12;
+            let text;
+            if (self.props.fullYear) {
+                text = `${Math.round(d.value / MONTHS_PER_YEAR)} kg ${d.label}`;
+            } else {
+                text = `${Math.round(d.value / AVE_WEEKS_PER_MONTH)} kg ${d.label}`;
+            }
+            d3.select(this).select('text').text(text);
+        });
+            
+//            .text(function(d) { console.log(this, d); d3.select(this).text(d.label)});
+//            .data(data.filter(d => d.value > 0))
+//            .each(function(d) { 
+//                d3.select(this).text(d.label); 
+//            });
+        
     }
 
     componentWillUnmount() {  // D3 destroy
 
     }
-    
-    arcTween = (a) => {
-//        const self = this;
-//        var i = d3.interpolate(self._current, a);
-//        self._current = i(0);
-//        return function(t) {
-//            return self.arc(i(t));
-//        };
-    }
 
     render() {
-        const props = this.props;
-
-        return (
-            <div id="chart">
-
-            </div>
-        );
+        return <div id="chart"></div>;
     }
 }
 

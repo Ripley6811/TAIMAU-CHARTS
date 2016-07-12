@@ -189,3 +189,7 @@ th {
 .table>tbody>tr>td {
     padding: 3px 4px;
 }
+
+.pieLabel {
+    font-size: 15px;
+}
