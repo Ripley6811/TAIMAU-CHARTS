@@ -18,6 +18,9 @@ router.route('/shipment')
     .post(ShipmentController.addShipments)
     .delete(ShipmentController.deleteShipment);
 
+router.route('/shipmentsPDF')
+    .get(ShipmentController.shipmentsPDF);
+
 /**
  * SHIPMENT TEMPLATES collection api
  */

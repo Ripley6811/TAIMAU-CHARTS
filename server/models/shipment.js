@@ -31,8 +31,8 @@ const shipmentSchema = new Schema({
         required: true
     },
     refPage: {
-        type: 'String',
-        default: ''
+        type: 'Number',
+        required: true
     },
     note: {
         type: 'String',

@@ -10,6 +10,7 @@ import { browserHistory } from 'react-router'
 import * as Actions from '../redux/actions/actions';
 
 import SelectYearMonth from '../components/SelectYearMonth';
+import PDFMaker from '../components/PDFMaker';
 
 function ButtonStyle(selected) {
     if (typeof selected !== 'boolean') throw "'selected' parameter must be a boolean value.";
@@ -127,7 +128,22 @@ class Sidebar extends Component {
             <h2>
               Chart Viewer
             </h2>
-                  <hr />
+            <hr />
+              {
+                  this.navButtons.map(({text, route, disabled}, i) =>
+                    <div className="row" key={i}>
+                        <div>
+                        <button className="btn btn-warning form-control" type="button"
+                            style={ButtonStyle(route === this.location)}
+                            disabled={disabled}
+                            onClick={() => this.gotoRoute(route)}>
+                            {text}
+                        </button>
+                        </div>
+                    </div>
+                    )
+              }
+            <hr />
               <div className="row">
             {
               Object.keys(props.deptLinks).map((key) =>
@@ -146,21 +162,10 @@ class Sidebar extends Component {
                 setDateRange={this.setDateRange} />
 
 
-              <hr />
-              {
-                  this.navButtons.map(({text, route, disabled}, i) =>
-                    <div className="row" key={i}>
-                        <div>
-                        <button className="btn btn-warning form-control" type="button"
-                            style={ButtonStyle(route === this.location)}
-                            disabled={disabled}
-                            onClick={() => this.gotoRoute(route)}>
-                            {text}
-                        </button>
-                        </div>
-                    </div>
-                    )
-              }
+            <hr />
+            <PDFMaker
+                year={this.state.year}
+                month={this.state.month} />
           </div>
 
 

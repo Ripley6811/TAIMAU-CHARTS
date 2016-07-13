@@ -32,6 +32,13 @@ export function updateSavedQuery(query) {
     };
 }
 
+export function requestPDF(startDate, endDate, callback) {
+    const URL = `${baseURL}/api/shipmentsPDF?start=${startDate}&end=${endDate}`;
+    return fetch(URL).
+        then(res => res.json()).
+        then(jsonData => callback(jsonData));
+}
+
 
 export const ADD_SHIPMENTS = 'ADD_SHIPMENTS';
 /**

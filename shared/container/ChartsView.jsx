@@ -134,7 +134,7 @@ class ChartsView extends Component {
 
         return (
             <div className="container">
-                <br /><br /><br /><br /><br />
+                <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
                 <h2>
                     <span className="glyphicon glyphicon-arrow-left"></span>
                     &nbsp;

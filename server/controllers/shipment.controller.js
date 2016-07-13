@@ -30,6 +30,36 @@ export default {
                 });
             });
     },
+    
+    shipmentsPDF: function (req, res) {
+        if (!("start" in req.query && "end" in req.query)) {
+            res.status(400).send({error: "'start' and 'end' dates are required."});
+        }
+        const start = new Date(req.query.start),
+              end = new Date(req.query.end);
+        if (isNaN(start.getDate()) || isNaN(end.getDate())) {
+            res.status(400).send({error: "Malformed dates. Check format is YYYY/MM/DD."});
+        }
+        
+        const query = {
+            date: {
+                "$gte": start,
+                "$lte": end
+            }
+        }
+        
+        // TODO: Could embed a secondary query to aggregate product totals.
+        Shipment.find(query, {_id: 0, __v: 0, dateAdded: 0})
+            .sort({company: 1, refPage: 1, date: 1})
+            .exec((err, shipments) => {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+                res.json({
+                    shipments
+                });
+            });
+    },
 
     /**
      * Server side code.

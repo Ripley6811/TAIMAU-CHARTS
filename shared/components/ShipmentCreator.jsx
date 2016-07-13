@@ -6,23 +6,23 @@ class ShipmentCreator extends Component {
     static propTypes = {
         submitShipments: PropTypes.func.isRequired,
     }
-    
+
     static defaultProps = {
         templates: [],
         shipments: []
     }
-    
+
     state = {
         selectValue: [],
         newShipments: [],
     }
-    
+
     componentWillMount() {
         // Ensure required data is loaded.
         if (this.props.templates.length === 0)
             this.props.dispatch(Actions.fetchShipmentTemplates());
     }
-    
+
     componentWillReceiveProps(nextProps) {
         // If company selection changes, then delete new shipments list.
         const key = "company";
@@ -30,9 +30,9 @@ class ShipmentCreator extends Component {
             this.removeAllEntries();
         }
     }
-    
+
     get filteredTemplates() {
-        return this.props.templates.filter(temp => 
+        return this.props.templates.filter(temp =>
             temp.company === this.props.query.company
         );
     }
@@ -44,7 +44,7 @@ class ShipmentCreator extends Component {
         });
         if (this.refs.refPage) this.refs.refPage.value = "";
     }
-    
+
     addRow = () => {
         const firstTemplate = this.filteredTemplates[0];
         this.setState({
@@ -65,11 +65,11 @@ class ShipmentCreator extends Component {
         this.setState({
             selectValue: [...this.state.selectValue.slice(0,i),
                           ...this.state.selectValue.slice(i+1)],
-            newShipments: [...this.state.newShipments.slice(0,i), 
+            newShipments: [...this.state.newShipments.slice(0,i),
                            ...this.state.newShipments.slice(i+1)]
         });
     }
-    
+
     setProperty = (i, key, value) => {
         this.setState({
             newShipments: [...this.state.newShipments.slice(0,i),
@@ -79,7 +79,7 @@ class ShipmentCreator extends Component {
                            ...this.state.newShipments.slice(i+1)]
         });
     }
-    
+
     // Currently not used...
     clearField = (key) => {
         const slist = this.state.newShipments;
@@ -87,7 +87,7 @@ class ShipmentCreator extends Component {
             newShipments: slist.map(each => Object.assign({}, each, {[key]: ""}))
         });
     }
-    
+
     clearAllTextInputs = () => {
         const slist = this.state.newShipments;
         // Wait for this "setState" to finish before triggering refPage "setState".
@@ -98,16 +98,16 @@ class ShipmentCreator extends Component {
             }))
         }, () => (this.refs.refPage.value = ""));
     }
-    
+
     setReference = () => {
         const refPage = this.refs.refPage.value;
         this.setState({
-            newShipments: this.state.newShipments.map(each => 
+            newShipments: this.state.newShipments.map(each =>
                               Object.assign({}, each, {refPage})
                           )
         });
     }
-    
+
     /**
      * @param {object} event Select list event
      * @param {number} i     New shipments list index
@@ -129,14 +129,18 @@ class ShipmentCreator extends Component {
                            ...this.state.newShipments.slice(i+1)]
         });
     }
-    
+
     submitNewShipments = () => {
-        this.props.submitShipments(this.state.newShipments);
+        if (this.refs.refPage.value) {
+            this.props.submitShipments(this.state.newShipments);
+        } else {
+            alert("Reference Page is required.\n輸入參考頁.");
+        }
     }
-    
+
     render() {
         const props = this.props;
-        
+
         if (!props.query.company) {
             return (
             <div>
@@ -148,7 +152,7 @@ class ShipmentCreator extends Component {
             </div>
             )
         }
-        
+
         return (
         <div>
             <legend>Create New Shipment</legend>
@@ -163,8 +167,14 @@ class ShipmentCreator extends Component {
                     style={{fontSize: "30px"}}>
                     {props.query.company}
                 </div>
+                <div className="col-xs-3 text-center"
+                    >
+                    <h5>
+                    (用<strong>紀錄模板</strong>輸入新的選擇)
+                        </h5>
+                </div>
             </div>
-            {this.state.newShipments.map((each,i) => 
+            {this.state.newShipments.map((each,i) =>
             <div key={i} className="row">
                 { /** REMOVE BUTTON */ }
                 <div className="col-xs-1 text-right" style={{padding: "0px"}}>
@@ -192,19 +202,19 @@ class ShipmentCreator extends Component {
                 </div>
                 { /** AMOUNT INPUT */ }
                 <div className="col-xs-2" style={{padding: "0px"}}>
-                    <input className="form-control" type="number" 
+                    <input className="form-control" type="number"
                         placeholder="需求量"
                         value={each.amount}
                         onChange={e => this.setProperty(i, "amount", e.target.value)}></input>
                 </div>
                 { /** NOTE INPUT */ }
                 <div className="col-xs-3" style={{padding: "0px"}}>
-                    <input className="form-control" type="text" 
+                    <input className="form-control" type="text"
                         placeholder="備註"
                         value={each.note}
                         onChange={e => this.setProperty(i, "note", e.target.value)}></input>
                 </div>
-            </div>        
+            </div>
             )}
             { /** ADD ROW & SUBMIT BUTTONS */ }
             <div className="row" style={{margin: "8px"}}>
@@ -213,7 +223,7 @@ class ShipmentCreator extends Component {
                     style={{padding: "5px", margin: "0px"}}>參考頁</label>
                 <div className="col-xs-1">
                     <input className="form-control"
-                        type="text" ref="refPage" placeholder="#"
+                        type="number" ref="refPage" placeholder="#"
                         onChange={this.setReference} />
                 </div>
                 <div className="col-xs-2 text-center">

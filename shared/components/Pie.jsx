@@ -69,8 +69,8 @@ class Pie extends Component {
 
     componentDidUpdate(prevProps, prevState) {  // D3 update
         const self = this;
-        const CAT20B_FIRST_GREEN = 4;
-        const color = d3.scale.category20b().range().slice(CAT20B_FIRST_GREEN);
+        const CAT20B_GREEN_START = 4;
+        const color = d3.scale.category20b().range().slice(CAT20B_GREEN_START);
         const data = self.getData();
         var legendRectSize = 18;
         var legendSpacing = 4;
