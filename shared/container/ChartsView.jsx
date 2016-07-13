@@ -123,7 +123,7 @@ class ChartsView extends Component {
                             totals={dataTotals} />
                     </div>
                     <div className="text-center" style={{float: "right"}}>
-                        <h2>#kg / {this.isFullYear ? "月" : "周"}</h2>
+                        <h2>Ave. # kg / {this.isFullYear ? "月" : "周"}</h2>
                         <Pie id="pie" 
                             data={dataTotals} 
                             fullYear={this.isFullYear}></Pie>

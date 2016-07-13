@@ -61,7 +61,10 @@ class Pie extends Component {
         const a1 = this.props.data[2];
         const a2 = nextProps.data[2];
         const yearMonthChanged = this.props.fullYear !== nextProps.fullYear;
-        return !a1.every((each, i) => each === a2[i]) || yearMonthChanged;
+        
+        return a1.length !== a2.length ||
+            !a1.every((each, i) => each === a2[i]) || 
+            yearMonthChanged;
     }
 
     componentDidUpdate(prevProps, prevState) {  // D3 update
