@@ -29,8 +29,8 @@ class ShipmentContainer extends Component {
 
     render() {
         const props = this.props;
-        let tableHeaders = ["公司", "頁", "進貨日期", "材料名稱", "料號", "需求量", "Dept", "Unit", "備註", "除"];
-        let tableKeys = ["company", "refPage", "date", "product", "pn", "amount", "dept", "unit", "note"];
+        let tableHeaders = ["公司", "頁", "進貨日期", "材料名稱", "需求量", "Dept", "Unit", "備註", "除"];
+        let tableKeys = ["company", "refPage", "date", "product", "amount", "dept", "unit", "note"];
         
         // Remove dept and company columns if selected on sidebar and in query.
         if (props.query.dept) {

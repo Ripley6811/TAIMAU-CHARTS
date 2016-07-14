@@ -75,7 +75,7 @@ class PDFMaker extends Component {
                         className="btn btn-warning form-control">
                         <span className="glyphicon glyphicon-download-alt"></span>
                         &nbsp;
-                        {p.yearStr} / {p.start}月 ~ {p.end}月 廢水
+                        {p.yearStr} / {p.start} ~ {p.end}月 廢水
                     </button>
                 )}
             </div>;
