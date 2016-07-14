@@ -65,7 +65,7 @@ export default function(data) {
         doc.setLineWidth(THICK_LINE);
         doc.line(20, y+1, 190, y+1);
         doc.setLineWidth(THIN_LINE);
-        y += 2;
+        y += 5;
 
         return y;
     }
@@ -166,7 +166,6 @@ export default function(data) {
     posY += 6;
     doc.setLineWidth(THIN_LINE);
     posY = printTableHeader(posY);
-    posY += 3;
     for (let i=0; i<SHIPMENTS.length; i++) {
         shipment = SHIPMENTS[i];
 
