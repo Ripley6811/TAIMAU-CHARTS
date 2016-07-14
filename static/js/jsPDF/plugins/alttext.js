@@ -18,6 +18,8 @@ function nonASCIItext(x, y, ch_string, fontsize) {
     // Test if there is non-ASCII characters in string
     var hasNonASCII = false,
         defaultFontSize = 10;
+    // Cast numbers to string
+    ch_string = "" + ch_string;
     for (var i=0; i<ch_string.length; i++) {
         if (ch_string.charCodeAt(i) > 128) {
             hasNonASCII = true;
