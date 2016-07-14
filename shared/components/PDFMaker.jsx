@@ -9,9 +9,11 @@ import { connect } from 'react-redux';
 import * as Actions from '../redux/actions/actions';
 
 import createTriMonthlyPDF from './CreateTriMonthlyPDF';
+import createHalfYearPDF from './createHalfYearPDF';
 
 class PDFMaker extends Component {
     static propTypes = {
+        company: PropTypes.string,
         year: PropTypes.number.isRequired,
         month: PropTypes.number,  // Check for month elsewhere
         dispatch: PropTypes.func.isRequired,
@@ -20,7 +22,7 @@ class PDFMaker extends Component {
     get periods() {
         const year = this.props.year,
               month = this.props.month,
-              ymStr = `${year-1911}/${month+1}`,
+              ymStr = `${year-1911} / ${month+1}`,
               lastDay = new Date(year, month+1, 0).getDate();
         return [
             {ymStr: ymStr, year: year, month: month, start: 1, end: 13},
@@ -28,34 +30,63 @@ class PDFMaker extends Component {
             {ymStr: ymStr, year: year, month: month, start: 24, end: lastDay}
         ];
     }
-
-    requestPDF = (i) => {
-        const p = this.periods[i];
-        
-        Actions.requestPDF(
-            `${p.year}/${p.month+1}/${p.start}`,
-            `${p.year}/${p.month+1}/${p.end}`,
-            createTriMonthlyPDF
-        );
+    
+    get halfyears() {
+        const year = this.props.year,
+              yearStr = `${year-1911}`;
+        return [
+            {yearStr: yearStr, year: year, start: 1, end: 6},
+            {yearStr: yearStr, year: year, start: 7, end: 12}
+        ];
     }
 
-//    createPDF(data) {
-//        console.log("CREATE PDF");
-//        console.dir(data);
-//        data.shipments.forEach(each => console.log(each));
-//    }
+    requestPDF = (i) => {
+        if (this.props.month) {
+            const p = this.periods[i];
+
+            Actions.requestPDF(
+                this.props.company,
+                `${p.year}/${p.month+1}/${p.start}`,
+                `${p.year}/${p.month+1}/${p.end}`,
+                createTriMonthlyPDF
+            );
+        } else {
+            const p = this.halfyears[i];
+            Actions.requestPDF(
+                this.props.company,
+                `${p.year}/${p.start}/1`,
+                `${p.year}/${p.end}/31`,
+                createHalfYearPDF
+            );
+        }
+    }
 
     render() {
         // Month is required for PDF creation
-        if (typeof this.props.month !== "number") {
+        if (typeof this.props.company !== "string") {
             return <div></div>
         }
+        if (typeof this.props.month !== "number") {
+            return <div className="text-center">
+                <h5>{this.props.company} PDF</h5>
+                {this.halfyears.map((p, i) => 
+                    <button key={i} onClick={() => this.requestPDF(i)}
+                        className="btn btn-warning form-control">
+                        <span className="glyphicon glyphicon-download-alt"></span>
+                        &nbsp;
+                        {p.yearStr} / {p.start}月 ~ {p.end}月
+                    </button>
+                )}
+            </div>;
+        }
         return <div className="text-center">
-            <h5>PDF <span className="glyphicon glyphicon-download-alt"></span></h5>
+            <h5>{this.props.company} PDF</h5>
             {this.periods.map((p, i) => 
                 <button key={i} onClick={() => this.requestPDF(i)}
                     className="btn btn-warning form-control">
-                    {p.ymStr}/{p.start} ~ {p.ymStr}/{p.end}
+                    <span className="glyphicon glyphicon-download-alt"></span>
+                    &nbsp;
+                    {p.ymStr} / {p.start} ~ {p.end}
                 </button>
             )}
         </div>;

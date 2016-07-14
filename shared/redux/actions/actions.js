@@ -32,8 +32,9 @@ export function updateSavedQuery(query) {
     };
 }
 
-export function requestPDF(startDate, endDate, callback) {
-    const URL = `${baseURL}/api/shipmentsPDF?start=${startDate}&end=${endDate}`;
+
+export function requestPDF(company, startDate, endDate, callback) {
+    const URL = `${baseURL}/api/shipmentsPDF?company=${company}&start=${startDate}&end=${endDate}`;
     return fetch(URL).
         then(res => res.json()).
         then(jsonData => callback(jsonData));

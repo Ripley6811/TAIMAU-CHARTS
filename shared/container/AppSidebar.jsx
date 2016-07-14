@@ -161,6 +161,7 @@ class Sidebar extends Component {
 
             <hr />
             <PDFMaker
+                company={this.state.company}
                 year={this.state.year}
                 month={this.state.month} />
           </div>

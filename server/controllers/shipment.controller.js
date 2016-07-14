@@ -32,16 +32,21 @@ export default {
     },
     
     shipmentsPDF: function (req, res) {
-        if (!("start" in req.query && "end" in req.query)) {
+        if (!("company" in req.query && "start" in req.query && "end" in req.query)) {
             res.status(400).send({error: "'start' and 'end' dates are required."});
         }
-        const start = new Date(req.query.start),
+        const company = req.query.company,
+              start = new Date(req.query.start),
               end = new Date(req.query.end);
+        if (!company) {
+            res.status(400).send({error: "Error in company name."});
+        }
         if (isNaN(start.getDate()) || isNaN(end.getDate())) {
             res.status(400).send({error: "Malformed dates. Check format is YYYY/MM/DD."});
         }
         
         const query = {
+            company: company,
             date: {
                 "$gte": start,
                 "$lte": end
@@ -56,6 +61,9 @@ export default {
                     return res.status(500).send(err);
                 }
                 res.json({
+                    company,
+                    start,
+                    end,
                     shipments
                 });
             });
