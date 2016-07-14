@@ -37,7 +37,7 @@ export default {
         }
         const company = req.query.company,
               start = new Date(req.query.start),
-              end = new Date(req.query.end);
+              end = new Date(req.query.end + " 23:59");
         if (!company) {
             res.status(400).send({error: "Error in company name."});
         }
