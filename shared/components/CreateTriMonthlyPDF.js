@@ -12,7 +12,7 @@ export default function(data) {
     /**
      * Display a light grey grid for designing layout
      */
-    if (0) {
+    if (false) {
         doc.setDrawColor(200);
         doc.setTextColor(200,200,200);
         for (var i=0; i<50; i++) {
@@ -27,6 +27,7 @@ export default function(data) {
 
 //    for (let company in )
     let posY;
+    let pageNo = 0;
     const MARGIN = 20;
     const FONT_SIZE = 11;
     const headers = [
@@ -39,9 +40,12 @@ export default function(data) {
     [0, 10,  25,      40,       45,    25]
     .reduce((a,b,i) => xPositions[i] = a+b, MARGIN);
     
-    function printHeader() {
+    /**
+     * Formatted page header
+     */
+    function printHeader(company) {
         posY = 20;
-        doc.altText(75, posY, "台茂槽車進貨需求確認單", FONT_SIZE+2);
+        doc.altText(78, posY, "台茂槽車進貨需求確認單", FONT_SIZE+2);
         posY += 8;
         xPositions.forEach((x,i) => doc.altText(x, posY, headers[i], FONT_SIZE));
 
@@ -49,6 +53,9 @@ export default function(data) {
         doc.line(20, posY+1, 190, posY+1);
         doc.setLineWidth(0.1);
         posY += 2;
+        pageNo++;
+        doc.altText(104, 290, pageNo, FONT_SIZE);
+        doc.altText(15, 15, company, 16);
     }
     
     let refPage = undefined;
@@ -57,19 +64,19 @@ export default function(data) {
     for (let i=0; i<data.shipments.length; i++) {
         shipment = data.shipments[i];
         
+        // NEW PAGE when new company name
         if (shipment.company !== company) {
             if (company !== undefined) {
                 doc.addPage();
             }
             company = shipment.company;
-            printHeader();
-            doc.altText(15, 15, company, 16);
+            printHeader(company);
         }
         
+        // NEW PAGE when reaching end. Leave space for summary
         if (posY > 250) {
             doc.addPage();
-            printHeader();
-            doc.altText(15, 15, company, 16);
+            printHeader(company);
         }
         
         posY+= 5;
@@ -80,9 +87,9 @@ export default function(data) {
         }
         const date = new Date(shipment.date);
         doc.altText(xPositions[1], posY, `${date.getMonth()+1} / ${date.getDate()}`, FONT_SIZE);
-        doc.altText(xPositions[2], posY, ""+shipment[keys[2]], FONT_SIZE);
-        doc.altText(xPositions[3], posY, ""+shipment[keys[3]], FONT_SIZE);
-        doc.altText(xPositions[4], posY, ""+shipment[keys[4]], FONT_SIZE);
+        doc.altText(xPositions[2], posY, shipment[keys[2]], FONT_SIZE);
+        doc.altText(xPositions[3], posY, shipment[keys[3]], FONT_SIZE);
+        doc.altText(xPositions[4], posY, shipment[keys[4]], FONT_SIZE);
         doc.altText(xPositions[5], posY, `${shipment.dept} ${shipment.unit}`, FONT_SIZE);
 //        keys.forEach((key, index) => doc.altText(xPositions[index], posY, ""+data.shipments[i][key], FONT_SIZE));
     }
