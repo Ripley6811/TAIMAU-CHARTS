@@ -33,8 +33,18 @@ export function updateSavedQuery(query) {
 }
 
 
-export function requestPDF(company, startDate, endDate, callback) {
-    const URL = `${baseURL}/api/shipmentsPDF?company=${company}&start=${startDate}&end=${endDate}`;
+export function requestTriMonthlyPDF(company, startDate, endDate, callback) {
+    const URL = `${baseURL}/api/shipmentsPDF?` +
+          `company=${company}&start=${startDate}&end=${endDate}`;
+    return fetch(URL).
+        then(res => res.json()).
+        then(jsonData => callback(jsonData));
+}
+
+
+export function requestWasteWaterPDF(company, startDate, endDate, callback) {
+    const URL = `${baseURL}/api/shipmentsPDF?` +
+          `company=${company}&start=${startDate}&end=${endDate}&unit=廢水`;
     return fetch(URL).
         then(res => res.json()).
         then(jsonData => callback(jsonData));

@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import * as Actions from '../redux/actions/actions';
 
 import createTriMonthlyPDF from './CreateTriMonthlyPDF';
-import createHalfYearPDF from './createHalfYearPDF';
+import createWasteWaterPDF from './CreateWasteWaterPDF';
 
 class PDFMaker extends Component {
     static propTypes = {
@@ -18,7 +18,7 @@ class PDFMaker extends Component {
         month: PropTypes.number,  // Check for month elsewhere
         dispatch: PropTypes.func.isRequired,
     }
-    
+
     get periods() {
         const year = this.props.year,
               month = this.props.month,
@@ -30,7 +30,7 @@ class PDFMaker extends Component {
             {ymStr: ymStr, year: year, month: month, start: 24, end: lastDay}
         ];
     }
-    
+
     get halfyears() {
         const year = this.props.year,
               yearStr = `${year-1911}`;
@@ -44,7 +44,7 @@ class PDFMaker extends Component {
         if (this.props.month) {
             const p = this.periods[i];
 
-            Actions.requestPDF(
+            Actions.requestTriMonthlyPDF(
                 this.props.company,
                 `${p.year}/${p.month+1}/${p.start}`,
                 `${p.year}/${p.month+1}/${p.end}`,
@@ -52,11 +52,12 @@ class PDFMaker extends Component {
             );
         } else {
             const p = this.halfyears[i];
-            Actions.requestPDF(
+            const lastDay = new Date(p.year, p.end, 0).getDate();
+            Actions.requestWasteWaterPDF(
                 this.props.company,
                 `${p.year}/${p.start}/1`,
-                `${p.year}/${p.end}/31`,
-                createHalfYearPDF
+                `${p.year}/${p.end}/${lastDay}`,
+                createWasteWaterPDF
             );
         }
     }
@@ -69,19 +70,19 @@ class PDFMaker extends Component {
         if (typeof this.props.month !== "number") {
             return <div className="text-center">
                 <h5>{this.props.company} PDF</h5>
-                {this.halfyears.map((p, i) => 
+                {this.halfyears.map((p, i) =>
                     <button key={i} onClick={() => this.requestPDF(i)}
                         className="btn btn-warning form-control">
                         <span className="glyphicon glyphicon-download-alt"></span>
                         &nbsp;
-                        {p.yearStr} / {p.start}月 ~ {p.end}月
+                        {p.yearStr} / {p.start}月 ~ {p.end}月 廢水
                     </button>
                 )}
             </div>;
         }
         return <div className="text-center">
             <h5>{this.props.company} PDF</h5>
-            {this.periods.map((p, i) => 
+            {this.periods.map((p, i) =>
                 <button key={i} onClick={() => this.requestPDF(i)}
                     className="btn btn-warning form-control">
                     <span className="glyphicon glyphicon-download-alt"></span>

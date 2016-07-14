@@ -32,6 +32,7 @@ export default {
     },
     
     shipmentsPDF: function (req, res) {
+        const WASTE_WATER = "廢水";
         if (!("company" in req.query && "start" in req.query && "end" in req.query)) {
             res.status(400).send({error: "'start' and 'end' dates are required."});
         }
@@ -51,11 +52,17 @@ export default {
                 "$gte": start,
                 "$lte": end
             }
+        };
+        if ("unit" in req.query && req.query.unit === WASTE_WATER) {
+            query.unit = req.query.unit;
         }
         
+        const monthReportSort = { refPage: 1, date: 1 };
+        const wasteWaterSort = { date: 1 };
+        
         // TODO: Could embed a secondary query to aggregate product totals.
-        Shipment.find(query, {_id: 0, __v: 0, dateAdded: 0})
-            .sort({company: 1, refPage: 1, date: 1})
+        Shipment.find(query, {_id: 0, __v: 0, dateAdded: 0, note: 0})
+            .sort(query.unit ? wasteWaterSort : monthReportSort)
             .exec((err, shipments) => {
                 if (err) {
                     return res.status(500).send(err);
