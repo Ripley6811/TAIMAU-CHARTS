@@ -67,13 +67,13 @@ body {
 	display: block;
 }
 
-.header {
+.sidebar {
 /*	background-color: rgb(243, 112, 34);  Logo orange */
 	background-color: rgb(243, 155, 34);
 	border-bottom: 1px solid #ccc;
 }
 
-.header .header-content {
+.sidebar .sidebar-content {
 	width: 100%;
 	max-width: 980px;
 	margin: auto;
@@ -156,6 +156,11 @@ body {
 
 .btn-warning {
     color: #000;
+}
+
+.sidebar .btn {
+    height: 30px;
+    padding: 1px 4px;
 }
 
 hr {

@@ -120,14 +120,11 @@ class Sidebar extends Component {
     render() {
         const props = this.props;
       return (
-        <div className="header" style={{width: props.width, position: 'fixed', height: '100%'}} >
-          <div className="header-content" style={{padding: '10px', margin: '0 auto -100px', height: '100%'}}>
+        <div className="sidebar" style={{width: props.width, position: 'fixed', height: '100%'}} >
+          <div className="sidebar-content" style={{padding: '10px', margin: '0 auto -100px', height: '100%'}}>
               <div className="text-center">
                 <img src="../img/logo.png" style={{borderRadius: '22px 50px 7px 18px'}} />
             </div>
-            <h2>
-              Chart Viewer
-            </h2>
             <hr />
               {
                   this.navButtons.map(({text, route, disabled}, i) =>
