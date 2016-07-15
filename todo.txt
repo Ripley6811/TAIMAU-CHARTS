@@ -1,4 +1,4 @@
-- Rethink the initial fetchShipments algoritm. Add multiple page loading on client side.
+- Rethink the initial fetchShipments algorithm. Add multiple page loading on client side.
 + Add "filter history based on entries"
 + Remove delete button from history viewing. Should be on edit mode only.
 + History viewing will need filtering fields also. Need to refactor.
@@ -13,7 +13,8 @@
 + Why fetchDepartments in componentWillMount instead of "need"?? BECAUSE AppSidebar is not called as a route but as a subcomponent of AppLayout.
 + Solve possible "race" problem in TemplatesView delete/create dispatches
 - Add Shipment subcomponent for product totals for three intervals of a month
-- Why is  "componentDidUpdate" firing twice when changing dept?
+- Why is  "componentDidUpdate" firing twice when changing dept? Probably parent updating for query and shipments.
 - Bar chart on Charts page. One that shows amount change over the year
-- Do we need to see PN in general?
++ Do we need to see PN in general? No
+- Add toggles to Chart graph
 

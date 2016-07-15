@@ -5,6 +5,7 @@ import * as Actions from '../redux/actions/actions';
 
 import AggregatedTable from '../components/AggregatedTable';
 import Pie from '../components/Pie';
+import YearGraph from '../components/YearGraph';
 
 class ChartsView extends Component {
     static propTypes = {
@@ -116,17 +117,30 @@ class ChartsView extends Component {
         if (!!props.query.dept) {
             return (
                 <div className="container">
-                    <div style={{float: "left"}}>
-                        <h2> {props.query.dept}</h2>
-                        <AggregatedTable
-                            data={dataArray}
-                            totals={dataTotals} />
+                    <div className="row">
+                        <div style={{float: "left"}}>
+                            <h2> {props.query.dept}</h2>
+                            <AggregatedTable
+                                data={dataArray}
+                                totals={dataTotals} />
+                        </div>
+                        <div className="text-center" style={{float: "right"}}>
+                            <h2>Ave. # kg / {this.isFullYear ? "月" : "周"}</h2>
+                            <Pie id="pie"
+                                data={dataTotals}
+                                fullYear={this.isFullYear}
+                                ></Pie>
+                        </div>
                     </div>
-                    <div className="text-center" style={{float: "right"}}>
-                        <h2>Ave. # kg / {this.isFullYear ? "月" : "周"}</h2>
-                        <Pie id="pie" 
-                            data={dataTotals} 
-                            fullYear={this.isFullYear}></Pie>
+                        <br />
+                    <div className="row">
+                        {this.isFullYear ? <div>
+                        <h2>Monthly Trend</h2>
+                        <YearGraph
+                            data={dataArray}
+                            ></YearGraph>
+                            </div>
+                        : <div></div> }
                     </div>
                 </div>
             );

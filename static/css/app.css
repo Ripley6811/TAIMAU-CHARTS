@@ -198,3 +198,24 @@ th {
 .pieLabel {
     font-size: 15px;
 }
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+#yearchart {
+  font: 12px sans-serif;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}

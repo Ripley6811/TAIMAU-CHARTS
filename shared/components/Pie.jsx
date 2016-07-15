@@ -72,11 +72,11 @@ class Pie extends Component {
         const CAT20B_GREEN_START = 4;
         const color = d3.scale.category20b().range().slice(CAT20B_GREEN_START);
         const data = self.getData();
-        var legendRectSize = 18;
-        var legendSpacing = 4;
+        const LEGEND_RECT_SPACING = 18;
+        const LEGEND_SPACING = 4;
 
         // select paths, use arc generator to draw
-        var path = self.svg.selectAll("path")
+        const path = self.svg.selectAll("path")
             .data(self.pie(data));
         
         path.enter()
@@ -89,7 +89,7 @@ class Pie extends Component {
         
         path.transition().duration(700)
             .attrTween("d", function(d) {
-                var interpolate = d3.interpolate(this._current, d);
+                const interpolate = d3.interpolate(this._current, d);
                 this._current = interpolate(0);
                 return function(t) {
                     return self.arc(interpolate(t));
@@ -97,30 +97,30 @@ class Pie extends Component {
             });
         
         
-        var legend = self.svg.selectAll('.legend')
+        const legend = self.svg.selectAll('.legend')
             .data(data.filter(d => d.value > 0));
         
         legend.enter()
             .append('g')
             .attr('class', 'legend')
             .attr('transform', function(d, i) {
-                var height = legendRectSize + legendSpacing;
-                var offset =  70;
-                var horz = -3.5 * legendRectSize;
-                var vert = i * height - offset;
+                const height = LEGEND_RECT_SPACING + LEGEND_SPACING;
+                const offset =  70;
+                const horz = -3.5 * LEGEND_RECT_SPACING;
+                const vert = i * height - offset;
                 return 'translate(' + horz + ',' + vert + ')';
             })
             .each(function(d, i) {
                 d3.select(this).append('rect')
-                    .attr('width', legendRectSize)
-                    .attr('height', legendRectSize)
+                    .attr('width', LEGEND_RECT_SPACING)
+                    .attr('height', LEGEND_RECT_SPACING)
                     .style('fill', color[i])
                     .style('stroke', color[i]);
             
                 d3.select(this).append('text')
                     .attr('class', `pieLabel`)
-                    .attr('x', legendRectSize + legendSpacing)
-                    .attr('y', legendRectSize - legendSpacing)
+                    .attr('x', LEGEND_RECT_SPACING + LEGEND_SPACING)
+                    .attr('y', LEGEND_RECT_SPACING - LEGEND_SPACING)
                     .text(d.label);
             });
         
