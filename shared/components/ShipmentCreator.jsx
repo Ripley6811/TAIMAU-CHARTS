@@ -13,7 +13,6 @@ class ShipmentCreator extends Component {
     }
 
     state = {
-        selectValue: [],
         newShipments: [],
     }
 
@@ -37,9 +36,27 @@ class ShipmentCreator extends Component {
         );
     }
 
+    /**
+     * Merges possible dept-unit combinations as string to put in set
+     * then splits strings to return an array of objects.
+     */
+    get deptOptions() {
+        const newSet = [...new Set(this.filteredTemplates.map(temp => `${temp.dept}|${temp.unit}`))];
+        return newSet.map(each => ({dept: each.split("|")[0], unit: each.split("|")[1]}));
+    }
+
+    /**
+     * 
+     * @param   {string} dept Department name
+     * @param   {string} unit Unit name
+     * @returns {Array}  Array of templates matching dept and unit.
+     */
+    getProdOptions(dept, unit) {
+        return this.filteredTemplates.filter(each => each.dept === dept && each.unit === unit);
+    }
+
     removeAllEntries = () => {
         this.setState({
-            selectValue: [],
             newShipments: [],
         });
         if (this.refs.refPage) this.refs.refPage.value = "";
@@ -48,7 +65,6 @@ class ShipmentCreator extends Component {
     addRow = () => {
         const firstTemplate = this.filteredTemplates[0];
         this.setState({
-            selectValue: [...this.state.selectValue, 0],
             newShipments: [...this.state.newShipments,
                            {
                                company: firstTemplate.company,
@@ -63,8 +79,6 @@ class ShipmentCreator extends Component {
 
     removeRow = (i) => {
         this.setState({
-            selectValue: [...this.state.selectValue.slice(0,i),
-                          ...this.state.selectValue.slice(i+1)],
             newShipments: [...this.state.newShipments.slice(0,i),
                            ...this.state.newShipments.slice(i+1)]
         });
@@ -112,29 +126,50 @@ class ShipmentCreator extends Component {
      * @param {object} event Select list event
      * @param {number} i     New shipments list index
      */
-    setProduct = (event, i) => {
-        const templateIndex = event.target.value,
-              selectedTemplate = this.filteredTemplates[templateIndex];
+    setDeptUnit = (event, i) => {
+        const deptOptionsIndex = event.target.value,
+              selectedDeptUnit = this.deptOptions[deptOptionsIndex];
+        let templates = this.getProdOptions(selectedDeptUnit.dept, selectedDeptUnit.unit);
         this.setState({
-            selectValue: [...this.state.selectValue.slice(0,i),
-                          templateIndex,
-                          ...this.state.selectValue.slice(i+1)],
             newShipments: [...this.state.newShipments.slice(0,i),
                            Object.assign({}, this.state.newShipments[i], {
-                               dept: selectedTemplate.dept,
-                               unit: selectedTemplate.unit,
-                               product: selectedTemplate.product,
-                               pn: selectedTemplate.pn,
+                               dept: selectedDeptUnit.dept,
+                               unit: selectedDeptUnit.unit,
+                               product: templates[0].product,
+                               pn: templates[0].pn,
+                           }),
+                           ...this.state.newShipments.slice(i+1)]
+        });
+    }
+
+    /**
+     * @param {object} event Select list event
+     * @param {number} i     New shipments list index
+     */
+    setProduct = (event, i) => {
+        const templateIndex = event.target.value;
+        let shipment = this.state.newShipments[i];
+        let template = this.getProdOptions(shipment.dept, shipment.unit)[templateIndex];
+        
+        this.setState({
+            newShipments: [...this.state.newShipments.slice(0,i),
+                           Object.assign({}, this.state.newShipments[i], {
+                               product: template.product,
+                               pn: template.pn,
                            }),
                            ...this.state.newShipments.slice(i+1)]
         });
     }
 
     submitNewShipments = () => {
-        if (this.refs.refPage.value) {
+        const datesAreGood = this.state.newShipments.every(each => !!each.date);
+        const amountsAreGood = this.state.newShipments.every(each => !!each.amount);
+        const refPageEntered = this.refs.refPage.value ? true : false;
+        if (datesAreGood && amountsAreGood && refPageEntered) {
             this.props.submitShipments(this.state.newShipments);
+            this.clearAllTextInputs();
         } else {
-            alert("Reference Page is required.\n輸入參考頁.");
+            alert("All fields except 'note' are required.");
         }
     }
 
@@ -188,14 +223,24 @@ class ShipmentCreator extends Component {
                 <input className="form-control" type="date" value={each.date}
                     onChange={e => this.setProperty(i, "date", e.target.value)}></input>
                 </div>
-                { /** PRODUCT SELECTION LIST */ }
-                <div className="col-xs-3" style={{padding: "0px"}}>
+                { /** DEPT-UNIT SELECTION LIST */ }
+                <div className="col-xs-2" style={{padding: "0px"}}>
                 <select className="form-control"
-                    value={this.state.selectValue[i]}
-                    onChange={(e) => this.setProduct(e,i)}>
-                    {this.filteredTemplates.map((temp, i2) =>
+                    onChange={e => this.setDeptUnit(e,i)}>
+                    {this.deptOptions.map((temp, i2) =>
                         <option key={i2} value={i2}>
-                              {temp.dept}-{temp.unit} &nbsp;&nbsp;&nbsp;&nbsp; {temp.product} &nbsp;&nbsp;&nbsp;&nbsp; {temp.pn}
+                            {temp.dept} {temp.unit}
+                        </option>
+                    )}
+                </select>
+                </div>
+                { /** PRODUCT SELECTION LIST */ }
+                <div className="col-xs-2" style={{padding: "0px"}}>
+                <select className="form-control"
+                    onChange={e => this.setProduct(e,i)}>
+                    {this.getProdOptions(each.dept, each.unit).map((temp, i2) =>
+                        <option key={i2} value={i2}>
+                            {temp.product} &nbsp;&nbsp;&nbsp;&nbsp; {temp.pn}
                         </option>
                     )}
                 </select>
@@ -208,7 +253,7 @@ class ShipmentCreator extends Component {
                         onChange={e => this.setProperty(i, "amount", e.target.value)}></input>
                 </div>
                 { /** NOTE INPUT */ }
-                <div className="col-xs-3" style={{padding: "0px"}}>
+                <div className="col-xs-2" style={{padding: "0px"}}>
                     <input className="form-control" type="text"
                         placeholder="備註"
                         value={each.note}

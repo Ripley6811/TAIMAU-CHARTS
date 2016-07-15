@@ -132,7 +132,7 @@ class ChartsView extends Component {
                                 ></Pie>
                         </div>
                     </div>
-                        <br />
+                    <br />
                     <div className="row">
                         {this.isFullYear ? <div>
                         <h2>Monthly Trend</h2>
