@@ -205,8 +205,8 @@ class ShipmentCreator extends Component {
                 <div className="col-xs-3 text-center"
                     >
                     <h5>
-                    (用<strong>紀錄模板</strong>輸入新的選擇)
-                        </h5>
+                        (用<strong>紀錄模板</strong>輸入新的選擇)
+                    </h5>
                 </div>
             </div>
             {this.state.newShipments.map((each,i) =>

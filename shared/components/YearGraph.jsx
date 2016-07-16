@@ -5,14 +5,18 @@
 import React, { PropTypes, Component } from 'react';
 
 export default class YearGraph extends Component {
-    get DIV_ID() { return "yearchart" }
+    get DIV_ID() {
+        if (this.RID) return this.RID;
+        this.RID = Math.random().toString(36).replace(/[^a-z]+/g, '');
+        return this.RID;
+    }
 
     static propTypes = {
         yearTotals: PropTypes.array,
     }
 
     /**
-     * Reformats the incoming data to use in pie chart.
+     * Reformats the incoming data for use in pie chart.
      * @returns {Array} Array of data for pie chart
      */
     getData() {
@@ -39,8 +43,8 @@ export default class YearGraph extends Component {
         const self = this;
 
         const MARGIN = {TOP: 20, LEFT: 60, RIGHT: 40, BOTTOM: 30},
-              WIDTH = 800 - MARGIN.LEFT - MARGIN.RIGHT;
-        self.HEIGHT = 500 - MARGIN.TOP - MARGIN.BOTTOM;
+              WIDTH = 760 - MARGIN.LEFT - MARGIN.RIGHT;
+        self.HEIGHT = 420 - MARGIN.TOP - MARGIN.BOTTOM;
 
         self.x = d3.time.scale().range([0, WIDTH]);
         self.y = d3.scale.linear().range([self.HEIGHT, 0]);
@@ -52,7 +56,7 @@ export default class YearGraph extends Component {
             .x(d => self.x(d.date))
             .y(d => self.y(d.total));
         console.log("`translate(${MARGIN.LEFT}, ${MARGIN.TOP})`", `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`);
-        self.svg = d3.select('#yearchart')
+        self.svg = d3.select(`#${this.DIV_ID}`)
             .append("svg")
             .attr("width", WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
             .attr("height", self.HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
@@ -62,7 +66,7 @@ export default class YearGraph extends Component {
 
         self.svg.append("g")
             .attr("class", "x axis")
-            .attr("transform", `translate(0,${self.HEIGHT})`)
+            .attr("transform", `translate(0,${self.HEIGHT})`)  
             .call(self.xAxis);  // Follows setting "x.domain"
 
 
@@ -79,24 +83,29 @@ export default class YearGraph extends Component {
         self.forceUpdate();
     }
 
-//    shouldComponentUpdate(nextProps, nextState) {
-//        const a1 = this.props.data[2];
-//        const a2 = nextProps.data[2];
-//        const yearMonthChanged = this.props.fullYear !== nextProps.fullYear;
-//
-//        return a1.length !== a2.length ||
-//            !a1.every((each, i) => each === a2[i]);
-//    }
+    shouldComponentUpdate(nextProps, nextState) {
+        const a1 = this.props.data[2];
+        const a2 = nextProps.data[2];
+
+        return a1.length !== a2.length ||
+            !a1.every((each, i) => each === a2[i]);
+    }
 
     componentDidUpdate(prevProps, prevState) {  // D3 update
+        console.log("UPDATING TREND");
         const self = this,
-              data = self.getData();
+              data = self.getData(),
+              COLOR_OPACITY = 0.6,
+              TRANSITION_DURATION = 700,
+              LINE_WIDTH = 3,
+              LEGEND_RECT_SPACING = 18,
+              LEGEND_SPACING = 4;
 
-        // Associate colors to product names but not date.
-        const color = d3.scale.category10();
-        color.domain(d3.keys(data[0]).filter(key => key !== "date"));
+        // Associate catColors to product names but not date.
+        const catColors = d3.scale.category10();
+        catColors.domain(d3.keys(data[0]).filter(key => key !== "date"));
 
-        const products = color.domain().map(product => (
+        const products = catColors.domain().map(product => (
             {
                 product: product,
                 values: data.map(d => ({date: d.date, total: +d[product]}))
@@ -112,10 +121,10 @@ export default class YearGraph extends Component {
         ]);
 
         self.svg.selectAll("g.x.axis")
-            .transition().duration(700)
+            .transition().duration(TRANSITION_DURATION)
             .call(self.xAxis);  // Follows setting "x.domain"
         self.svg.selectAll("g.y.axis")
-            .transition().duration(700)
+            .transition().duration(TRANSITION_DURATION)
             .call(self.yAxis);  // Follows setting "x.domain"
 
 
@@ -128,8 +137,10 @@ export default class YearGraph extends Component {
             .append("path")
             .attr("class", "line")
             .attr("d", d => self.line(d.values))
-            .style("stroke", d => color(d.product))
-            .style("stroke-width", 3);
+            .style("stroke", d => catColors(d.product))
+            .style("stroke-width", LINE_WIDTH)
+            .style("stroke-opacity", COLOR_OPACITY)
+            .style("fill", "none");
 
         prod.exit().remove();
 
@@ -138,12 +149,10 @@ export default class YearGraph extends Component {
                     .transition().duration(700)
                     .attr("d", self.line(d.values));
             });
-        
+
         var legend = self.svg.selectAll('.legend')
             .data(products);
-        
-        const LEGEND_RECT_SPACING = 18;
-        const LEGEND_SPACING = 4;
+
         legend.enter()
             .append('g')
             .attr('class', 'legend')
@@ -158,30 +167,22 @@ export default class YearGraph extends Component {
                 d3.select(this).append('rect')
                     .attr('width', LEGEND_RECT_SPACING)
                     .attr('height', LEGEND_RECT_SPACING)
-                    .style('fill', d => color(d.product))
-                    .style('stroke', d => color(d.product));
-            
+                    .style('fill', d => catColors(d.product))
+                    .style('stroke', d => catColors(d.product))
+                    .style("fill-opacity", COLOR_OPACITY);
+
                 d3.select(this).append('text')
                     .attr('class', `pieLabel`)
                     .attr('x', LEGEND_RECT_SPACING + LEGEND_SPACING)
                     .attr('y', LEGEND_RECT_SPACING - LEGEND_SPACING)
                     .text(d.product);
             });
-        
+
         legend.exit().remove();
-        
-        legend.each(function(d) { 
-            const MONTHS_PER_YEAR = 12;
-            const AVE_WEEKS_PER_MONTH = 52 / 12;
+
+        legend.each(function(d) {
             d3.select(this).select('text').text(d.product);
         });
-
-//        prod.append("text")
-//            .datum(d => ({product: d.product, value: d.values[d.values.length - 1]}))
-//            .attr("transform", d => `translate(${self.x(d.value.date)},${self.y(d.value.total)})`)
-//            .attr("x", 3)
-//            .attr("dy", ".35em")
-//            .text(d => d.product);
     }
 
     componentWillUnmount() {  // D3 destroy
@@ -189,6 +190,6 @@ export default class YearGraph extends Component {
     }
 
     render() {
-        return <div id={this.DIV_ID}></div>;
+        return <div id={this.DIV_ID} style={{fontSize: "12px"}}></div>;
     }
 }
