@@ -9,7 +9,7 @@ import Config from '../../../server/config';
 import fetch from 'isomorphic-fetch';
 
 /**
- * 
+ *
  * @param   {object} params Simple one-level (non-nested) object.
  * @returns {string} Query parameter string to add after "?".
  */
@@ -126,19 +126,17 @@ export const LOAD_SHIPMENTS = 'LOAD_SHIPMENTS';
  */
 export function fetchShipments() {
     const params = Object.assign({}, arguments[0]);
-    
+
     const reducerFormat = (shipments) => ({
         type: LOAD_SHIPMENTS,
         shipments
     });
-    
+
     for (let key in params) {
         if (params[key] === undefined) delete params[key];
     }
-        
+
     const paramString = "?" + encodeQueryParameters(params);
-    console.log("fetching shipments with following parameters:");
-    console.dir(paramString);
 
     // "dispatch" is a callback that runs the reducer.
     return (dispatch) => {
@@ -168,20 +166,20 @@ export function fetchShipmentTemplates() {
 
 
 export const ADD_DEPT_LINKS = 'ADD_DEPT_LINKS';
-export function fetchDepartments() {    
+export function fetchDepartments() {
     const reducerFormat = (records) => {
         // Rearrange records into a tree
         const tree = {};
         records.forEach((each) => {
             tree[each.company] ? tree[each.company].push(each.dept) : tree[each.company] = [each.dept];
         });
-        
+
         return {
             type: ADD_DEPT_LINKS,
             tree
         };
     };
-    
+
     return (dispatch) => {
         // If used in "need" list then requires "return" keyword below (?)
         return fetch(`${baseURL}/api/getDepartments`).

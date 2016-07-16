@@ -99,7 +99,7 @@ class ChartsView extends Component {
 
             // Adds headers to `dataArray`
             dataArray.unshift(["日期"].concat(headArray.map(head => head[1])));
-            dataArray.unshift([""].concat(headArray.map(head => head[0])));
+            dataArray.unshift([this.props.query.dept].concat(headArray.map(head => head[0])));
 
             // Creates 2D array of prods and grand totals
             dataTotals.push([""].concat(headArray.map(head => head[0])));
@@ -119,7 +119,6 @@ class ChartsView extends Component {
                 <div className="container">
                     <div className="row">
                         <div style={{float: "left"}}>
-                            <h2> {props.query.dept}</h2>
                             <AggregatedTable
                                 data={dataArray}
                                 totals={dataTotals} />
@@ -132,8 +131,8 @@ class ChartsView extends Component {
                                 ></Pie>
                         </div>
                     </div>
-                    <br />
-                    <div className="row">
+                    
+                    <div className="row text-center">
                         {this.isFullYear ? <div>
                         <h2>Monthly Trend</h2>
                         <YearGraph

@@ -1,15 +1,23 @@
 /**
  * @overview D3 Multiline graph based on "https://bl.ocks.org/mbostock/3884955"
  */
-
 import React, { PropTypes, Component } from 'react';
 
+const COLOR_OPACITY = 0.6,
+      TRANSITION_DURATION = 700,
+      LINE_WIDTH = 4,
+      LEGEND_RECT_SPACING = 18,
+      LEGEND_SPACING = 4;
+
+const GRAPH_MARGIN = {TOP: 20, LEFT: 60, RIGHT: 40, BOTTOM: 30},
+      WIDTH = 760 - GRAPH_MARGIN.LEFT - GRAPH_MARGIN.RIGHT,
+      HEIGHT = 420 - GRAPH_MARGIN.TOP - GRAPH_MARGIN.BOTTOM;
+
+const STYLE = {fontSize: "12px"};
+
+
 export default class YearGraph extends Component {
-    get DIV_ID() {
-        if (this.RID) return this.RID;
-        this.RID = Math.random().toString(36).replace(/[^a-z]+/g, '');
-        return this.RID;
-    }
+    get DIV_ID() { return "year-chart"; }
 
     static propTypes = {
         yearTotals: PropTypes.array,
@@ -33,21 +41,16 @@ export default class YearGraph extends Component {
             keys.forEach((key, j) => newEntry[key] = d[i][j]);
             newDataArray.push(newEntry);
         }
-        console.dir(newDataArray);
 
         return newDataArray;
     }
 
     componentDidMount() {  // D3 create
-        console.log("MOUNTING");
         const self = this;
 
-        const MARGIN = {TOP: 20, LEFT: 60, RIGHT: 40, BOTTOM: 30},
-              WIDTH = 760 - MARGIN.LEFT - MARGIN.RIGHT;
-        self.HEIGHT = 420 - MARGIN.TOP - MARGIN.BOTTOM;
 
         self.x = d3.time.scale().range([0, WIDTH]);
-        self.y = d3.scale.linear().range([self.HEIGHT, 0]);
+        self.y = d3.scale.linear().range([HEIGHT, 0]);
         self.xAxis = d3.svg.axis().scale(self.x).orient("bottom");
         self.yAxis = d3.svg.axis().scale(self.y).orient("left");
         self.line = d3.svg.line()
@@ -55,27 +58,24 @@ export default class YearGraph extends Component {
 //            .interpolate("step-after")
             .x(d => self.x(d.date))
             .y(d => self.y(d.total));
-        console.log("`translate(${MARGIN.LEFT}, ${MARGIN.TOP})`", `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`);
+        
         self.svg = d3.select(`#${this.DIV_ID}`)
             .append("svg")
-            .attr("width", WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
-            .attr("height", self.HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
+            .attr("width", WIDTH + GRAPH_MARGIN.LEFT + GRAPH_MARGIN.RIGHT)
+            .attr("height", HEIGHT + GRAPH_MARGIN.TOP + GRAPH_MARGIN.BOTTOM)
             .append("g")
-            .attr("transform", `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`);
-
+            .attr("transform", `translate(${GRAPH_MARGIN.LEFT}, ${GRAPH_MARGIN.TOP})`);
 
         self.svg.append("g")
             .attr("class", "x axis")
-            .attr("transform", `translate(0,${self.HEIGHT})`)  
+            .attr("transform", `translate(0,${HEIGHT})`)  
             .call(self.xAxis);  // Follows setting "x.domain"
-
 
         self.svg.append("g")
             .attr("class", "y axis")
             .call(self.yAxis)  // Follows setting "y.domain"
             .append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 6)
+            .attr("x", 22)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
             .text("KG");
@@ -88,18 +88,12 @@ export default class YearGraph extends Component {
         const a2 = nextProps.data[2];
 
         return a1.length !== a2.length ||
-            !a1.every((each, i) => each === a2[i]);
+               !a1.every((each, i) => each === a2[i]);
     }
 
     componentDidUpdate(prevProps, prevState) {  // D3 update
-        console.log("UPDATING TREND");
         const self = this,
-              data = self.getData(),
-              COLOR_OPACITY = 0.6,
-              TRANSITION_DURATION = 700,
-              LINE_WIDTH = 3,
-              LEGEND_RECT_SPACING = 18,
-              LEGEND_SPACING = 4;
+              data = self.getData();
 
         // Associate catColors to product names but not date.
         const catColors = d3.scale.category10();
@@ -155,13 +149,13 @@ export default class YearGraph extends Component {
 
         legend.enter()
             .append('g')
-            .attr('class', 'legend')
+            .attr('class', `legend`)
             .attr('transform', function(d, i) {
-                var height = LEGEND_RECT_SPACING + LEGEND_SPACING;
-                var offset =  -20;
+                var HEIGHT = LEGEND_RECT_SPACING + LEGEND_SPACING;
+                var OFFSET =  -20;
                 var horz = 2 * LEGEND_RECT_SPACING;
-                var vert = i * height - offset;
-                return 'translate(' + horz + ',' + vert + ')';
+                var vert = i * HEIGHT - OFFSET;
+                return `translate( ${horz} , ${vert} )`;
             })
             .each(function(d, i) {
                 d3.select(this).append('rect')
@@ -169,7 +163,7 @@ export default class YearGraph extends Component {
                     .attr('height', LEGEND_RECT_SPACING)
                     .style('fill', d => catColors(d.product))
                     .style('stroke', d => catColors(d.product))
-                    .style("fill-opacity", COLOR_OPACITY);
+                    .style('fill-opacity', COLOR_OPACITY);
 
                 d3.select(this).append('text')
                     .attr('class', `pieLabel`)
@@ -190,6 +184,6 @@ export default class YearGraph extends Component {
     }
 
     render() {
-        return <div id={this.DIV_ID} style={{fontSize: "12px"}}></div>;
+        return <div id={this.DIV_ID} style={STYLE}></div>;
     }
 }
