@@ -34,6 +34,7 @@ export default function(data) {
         keywords: 'jsPDF',
         creator: 'PDF Automation by Jay W Johnson'
     });
+    doc.setDrawColor(180);  // Gray lines
 
     // Add method for printing Chinese characters.
     doc.altText = nonASCIItext;
@@ -145,7 +146,7 @@ export default function(data) {
     for (let i=0; i<pnData.length; i++) {
         posY+= 5;
         doc.altText(LEFT_MARGIN, posY, pnData[i].product, DEFAULT_FONT_SIZE);
-        doc.altText(LEFT_MARGIN+30, posY, pnData[i].pn, DEFAULT_FONT_SIZE);
+        doc.altText(LEFT_MARGIN+30, posY, pnData[i].pn, DEFAULT_FONT_SIZE-2);
         let allUnitsTotal = 0;
         let ui;
         for (ui=0; ui<unitNames.length; ui++) {
@@ -177,17 +178,19 @@ export default function(data) {
         }
 
         if (shipment.refPage !== refPage) {
-            doc.altText(TABLE_X_POS[0], posY, shipment.refPage, DEFAULT_FONT_SIZE);
+            doc.altText(TABLE_X_POS[0], posY, shipment.refPage, DEFAULT_FONT_SIZE-1);
             refPage = shipment.refPage;
             doc.line(20, posY+1-5, 190, posY+1-5);
         }
         const date = new Date(shipment.date);
-        doc.altText(TABLE_X_POS[1], posY, `${date.getMonth()+1} / ${date.getDate()}`, DEFAULT_FONT_SIZE);
-        doc.altText(TABLE_X_POS[2], posY, shipment[TABLE_KEYS[2]], DEFAULT_FONT_SIZE);
-        doc.altText(TABLE_X_POS[3], posY, shipment[TABLE_KEYS[3]], DEFAULT_FONT_SIZE);
-        doc.altText(TABLE_X_POS[4], posY, shipment[TABLE_KEYS[4]], DEFAULT_FONT_SIZE);
-        doc.altText(TABLE_X_POS[5], posY, `${shipment.dept} ${shipment.unit}`, DEFAULT_FONT_SIZE);
-        posY+= 6;
+        doc.altText(TABLE_X_POS[1], posY, `${date.getMonth()+1} / ${date.getDate()}`, DEFAULT_FONT_SIZE-1);
+        doc.altText(TABLE_X_POS[2], posY, shipment[TABLE_KEYS[2]], DEFAULT_FONT_SIZE-1);
+        doc.setTextColor(100);
+        doc.altText(TABLE_X_POS[3], posY, shipment[TABLE_KEYS[3]], DEFAULT_FONT_SIZE-2);
+        doc.setTextColor(0);
+        doc.altText(TABLE_X_POS[4], posY, shipment[TABLE_KEYS[4]], DEFAULT_FONT_SIZE-1);
+        doc.altText(TABLE_X_POS[5], posY, `${shipment.dept} ${shipment.unit}`, DEFAULT_FONT_SIZE-1);
+        posY+= 5;
     }
 
 
