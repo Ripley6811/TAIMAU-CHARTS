@@ -18,16 +18,25 @@ class PDFMaker extends Component {
         month: PropTypes.number,  // Check for month elsewhere
         dispatch: PropTypes.func.isRequired,
     }
+    
+    get stateStorageKey() { return "pdfperiodends"; }
+    
+    state = {
+        period0end: 13,
+        period1end: 23
+    }
 
     get periods() {
-        const year = this.props.year,
-              month = this.props.month,
+        const year = +this.props.year,
+              month = +this.props.month,
               ymStr = `${year-1911} / ${month+1}`,
-              lastDay = new Date(year, month+1, 0).getDate();
+              lastDay = new Date(year, month+1, 0).getDate(),
+              p0end = +this.state.period0end,
+              p1end = +this.state.period1end;
         return [
-            {ymStr: ymStr, year: year, month: month, start: 1, end: 13},
-            {ymStr: ymStr, year: year, month: month, start: 14, end: 23},
-            {ymStr: ymStr, year: year, month: month, start: 24, end: lastDay}
+            {ymStr: ymStr, year: year, month: month, start: 1, end: p0end},
+            {ymStr: ymStr, year: year, month: month, start: p0end+1, end: p1end},
+            {ymStr: ymStr, year: year, month: month, start: p1end+1, end: lastDay}
         ];
     }
 
@@ -61,6 +70,28 @@ class PDFMaker extends Component {
             );
         }
     }
+    
+    changePeriodDate = (i, e) => {
+        console.dir(e.target.value);
+        function updateWindowStorage() {
+            window.localStorage.setItem(
+                this.stateStorageKey, 
+                JSON.stringify(this.state)
+            );
+        }
+        this.setState({
+            ["period" + i + "end"]: e.target.value,
+        }, updateWindowStorage);
+    }
+
+    componentWillMount() {
+        // Load "query" parameters from local storage on client-side
+        if (typeof window !== 'undefined') {
+            if (!!window.localStorage[this.stateStorageKey]) {
+                this.setState(JSON.parse(window.localStorage[this.stateStorageKey]));
+            }
+        }
+    }
 
     render() {
         // Month is required for PDF creation
@@ -82,14 +113,38 @@ class PDFMaker extends Component {
         }
         return <div className="text-center">
             <h5>{this.props.company} PDF</h5>
-            {this.periods.map((p, i) =>
+            {this.periods.slice(0,2).map((p, i) =>
+                <div className="row input-group"
+                     style={{width: "100%"}}>
                 <button key={i} onClick={() => this.requestPDF(i)}
-                    className="btn btn-warning form-control">
+                     style={{width: "70%", textAlign: "right"}}
+                    className="btn btn-warning">
+                    <span className="glyphicon glyphicon-download-alt"></span>
+                    &nbsp;
+                    {p.ymStr} / {p.start} ~ 
+                                  
+                </button>
+                <input type="number" 
+                    style={{width: "30%", textAlign: "left", 
+                            padding: "6px", backgroundColor: "burlywood"}}
+                    className="input-group-addon"
+                    min="1" max="31"
+                    onChange={e => this.changePeriodDate(i,e)}
+                    value={this.state["period" + i + "end"]} />
+                </div>
+            )}
+            {((p, i) => 
+                <div className="row">
+                <button key={i} onClick={() => this.requestPDF(i)}
+                    style={{width: "100%"}}
+                    className="btn btn-warning">
                     <span className="glyphicon glyphicon-download-alt"></span>
                     &nbsp;
                     {p.ymStr} / {p.start} ~ {p.end}
                 </button>
-            )}
+                </div>
+            )(this.periods[2], 2)}
+            
         </div>;
     }
 }
