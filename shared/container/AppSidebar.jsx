@@ -56,6 +56,8 @@ class Sidebar extends Component {
         dispatch: PropTypes.func.isRequired,
     }
 
+    get stateStorageKey() { return "query"; }
+    
     state = {  // Initial state == Query parameters
         company: undefined,
         dept: undefined,
@@ -67,9 +69,11 @@ class Sidebar extends Component {
         // Load "query" parameters from local storage on client-side
         if (typeof window !== 'undefined') {
             this.location = window.location.pathname;
-            if (!!window.localStorage.query) {
-                this.setState(JSON.parse(window.localStorage.query),
-                              this.updateSavedQuery);
+            if (!!window.localStorage[this.stateStorageKey]) {
+                this.setState(
+                    JSON.parse(window.localStorage[this.stateStorageKey]),
+                    this.updateSavedQuery
+                );
             }
         }
     }
@@ -95,7 +99,7 @@ class Sidebar extends Component {
 
     updateSavedQuery() {
         // Save most recent query in local storage and in redux store
-        window.localStorage.setItem("query", JSON.stringify(this.state));
+        window.localStorage.setItem([this.stateStorageKey], JSON.stringify(this.state));
         this.props.dispatch(Actions.updateSavedQuery(this.state));
         this.props.dispatch(Actions.fetchShipments(this.state));
     }
