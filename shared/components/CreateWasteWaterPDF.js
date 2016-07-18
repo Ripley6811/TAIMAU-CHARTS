@@ -1,3 +1,8 @@
+/**
+ * @overview Generates a pdf in a new window. Waste water report is a 
+ * half-year report.
+ */
+
 export default function(data) {
     const doc = new jsPDF(),
           SHIPMENTS = data.shipments,
@@ -6,15 +11,15 @@ export default function(data) {
           END_DATE = new Date(data.end),
           LEFT_MARGIN = 20,
           DEFAULT_FONT_SIZE = 11,
-          TABLE_HEADERS = ["進貨日期","材料名稱","料號","需求量 (kg)","需求單位"],
-          TABLE_KEYS = ["date","product","pn","amount","dept"],
+          TABLE_HEADERS = ["進貨日期","材料名稱","需求量 (kg)","需求單位"],
+          TABLE_KEYS = ["date","product","amount","dept"],
           TABLE_X_POS = [],
           THIN_LINE = 0.1,
           THICK_LINE = 0.6,
           TABLE_START_Y = 30;
 
     // Create TABLE_X_POS positions based on desired spacing.
-    [0, 30, 40, 45, 25].reduce((a,b,i) => TABLE_X_POS[i] = a+b, LEFT_MARGIN);
+    [0, 30, 40, 30].reduce((a,b,i) => TABLE_X_POS[i] = a+b, LEFT_MARGIN);
     if (TABLE_X_POS.length !== TABLE_HEADERS.length) {
         throw "Table positions and table headers do not match in length";
     }
@@ -37,6 +42,7 @@ export default function(data) {
         keywords: 'jsPDF',
         creator: 'PDF Automation by Jay W Johnson'
     });
+    doc.setDrawColor(180);
 
     // Add method for printing Chinese characters.
     doc.altText = nonASCIItext;
@@ -130,7 +136,6 @@ export default function(data) {
     doc.altText(LEFT_MARGIN, posY, "WASTE WATER SUMMARY", DEFAULT_FONT_SIZE+3);
     posY += 6;
     doc.altText(LEFT_MARGIN, posY, "材料名稱", DEFAULT_FONT_SIZE);
-    doc.altText(LEFT_MARGIN+30, posY, "料號", DEFAULT_FONT_SIZE);
     let ui;
     for (ui=0; ui<unitNames.length; ui++) {
         doc.altText(LEFT_MARGIN+70+UNIT_AMT_SPACING*ui, posY, unitNames[ui] + " (kg)", DEFAULT_FONT_SIZE);
@@ -147,7 +152,6 @@ export default function(data) {
     for (let i=0; i<pnData.length; i++) {
         posY+= 5;
         doc.altText(LEFT_MARGIN, posY, pnData[i].product, DEFAULT_FONT_SIZE);
-        doc.altText(LEFT_MARGIN+30, posY, pnData[i].pn, DEFAULT_FONT_SIZE);
         let allUnitsTotal = 0;
         let ui;
         for (ui=0; ui<unitNames.length; ui++) {
@@ -182,8 +186,7 @@ export default function(data) {
         doc.altText(TABLE_X_POS[0], posY, `${date.getMonth()+1} / ${date.getDate()}`, DEFAULT_FONT_SIZE);
         doc.altText(TABLE_X_POS[1], posY, shipment[TABLE_KEYS[1]], DEFAULT_FONT_SIZE);
         doc.altText(TABLE_X_POS[2], posY, shipment[TABLE_KEYS[2]], DEFAULT_FONT_SIZE);
-        doc.altText(TABLE_X_POS[3], posY, shipment[TABLE_KEYS[3]], DEFAULT_FONT_SIZE);
-        doc.altText(TABLE_X_POS[4], posY, `${shipment.dept} ${shipment.unit}`, DEFAULT_FONT_SIZE);
+        doc.altText(TABLE_X_POS[3], posY, `${shipment.dept} ${shipment.unit}`, DEFAULT_FONT_SIZE);
         posY+= 6;
     }
 
