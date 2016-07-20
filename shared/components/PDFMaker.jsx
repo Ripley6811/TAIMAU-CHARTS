@@ -72,7 +72,6 @@ class PDFMaker extends Component {
     }
     
     changePeriodDate = (i, e) => {
-        console.dir(e.target.value);
         function updateWindowStorage() {
             window.localStorage.setItem(
                 this.stateStorageKey, 
@@ -102,7 +101,8 @@ class PDFMaker extends Component {
             return <div className="text-center">
                 <h5>{this.props.company} PDF</h5>
                 {this.halfyears.map((p, i) =>
-                    <button key={i} onClick={() => this.requestPDF(i)}
+                    <button key={`${this.props.month}${i}`} 
+                        onClick={() => this.requestPDF(i)}
                         className="btn btn-warning form-control">
                         <span className="glyphicon glyphicon-download-alt"></span>
                         &nbsp;
@@ -115,33 +115,34 @@ class PDFMaker extends Component {
             <h5>{this.props.company} PDF</h5>
             {this.periods.slice(0,2).map((p, i) =>
                 <div className="row input-group"
+                     key={`${p.toString()}${i}`}
                      style={{width: "100%"}}>
-                <button key={i} onClick={() => this.requestPDF(i)}
-                     style={{width: "70%", textAlign: "right"}}
-                    className="btn btn-warning">
-                    <span className="glyphicon glyphicon-download-alt"></span>
-                    &nbsp;
-                    {p.ymStr} / {p.start} ~ 
-                                  
-                </button>
-                <input type="number" 
-                    style={{width: "30%", textAlign: "left", 
-                            padding: "6px", backgroundColor: "burlywood"}}
-                    className="input-group-addon"
-                    min="1" max="31"
-                    onChange={e => this.changePeriodDate(i,e)}
-                    value={this.state["period" + i + "end"]} />
+                    <button onClick={() => this.requestPDF(i)}
+                         style={{width: "70%", textAlign: "right"}}
+                        className="btn btn-warning">
+                        <span className="glyphicon glyphicon-download-alt"></span>
+                        &nbsp;
+                        {p.ymStr} / {p.start} ~ 
+
+                    </button>
+                    <input type="number" 
+                        style={{width: "30%", textAlign: "left", 
+                                padding: "6px", backgroundColor: "burlywood"}}
+                        className="input-group-addon"
+                        min="1" max="31"
+                        onChange={e => this.changePeriodDate(i,e)}
+                        value={this.state["period" + i + "end"]} />
                 </div>
             )}
             {((p, i) => 
-                <div className="row">
-                <button key={i} onClick={() => this.requestPDF(i)}
-                    style={{width: "100%"}}
-                    className="btn btn-warning">
-                    <span className="glyphicon glyphicon-download-alt"></span>
-                    &nbsp;
-                    {p.ymStr} / {p.start} ~ {p.end}
-                </button>
+                <div className="row" key={`${p.ymStr}${i}`}>
+                    <button onClick={() => this.requestPDF(i)}
+                        style={{width: "100%"}}
+                        className="btn btn-warning">
+                        <span className="glyphicon glyphicon-download-alt"></span>
+                        &nbsp;
+                        {p.ymStr} / {p.start} ~ {p.end}
+                    </button>
                 </div>
             )(this.periods[2], 2)}
             

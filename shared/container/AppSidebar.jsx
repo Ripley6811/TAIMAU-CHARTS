@@ -132,7 +132,7 @@ class Sidebar extends Component {
             <hr />
               {
                   this.navButtons.map(({text, route, disabled}, i) =>
-                    <div className="row" key={i}>
+                    <div className="row" key={i+route}>
                         <div>
                         <button className="btn btn-warning form-control" type="button"
                             style={ButtonStyle(route === this.location)}

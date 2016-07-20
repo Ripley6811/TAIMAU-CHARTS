@@ -8,11 +8,13 @@ import React from 'react';
  * @param   {object} props Passdown properties
  * @returns {object} React DOM element
  */
-function TableRow(props) {
+export default function TableRow(props) {
     return (
-        <tr onClick={props.rowClick}>
-          {props.keys.map((key, i) => <td key={i}>{props.data[key]}</td>)}
-          {props.children}
+        <tr>
+            {props.keys.map((key, i) => 
+                <td key={`tablecol${i}`}>{props.data[key]}</td>
+            )}
+            {props.children}
         </tr>
     );
 }
@@ -20,8 +22,4 @@ function TableRow(props) {
 TableRow.propTypes = {
     data: React.PropTypes.object.isRequired,
     keys: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-    // Optional
-    rowClick: React.PropTypes.func,
 }
-
-export default TableRow

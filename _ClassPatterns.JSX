@@ -51,12 +51,7 @@ class MyComponent extends Component {
         this.state = {count: props.initialCount};
     }
     
-    /**
-     * Bind method to "this" in the constructor.
-     */
-    method(obj) {
-        
-    }
+    static need = [Action.request]  // MERN.io server-side preloading of data.
 
     /** ES7 allows adding props and state properties here.
      * Requires "babel-preset-stage-0"
@@ -74,6 +69,13 @@ class MyComponent extends Component {
     
     state = {  // ES7 only!
         // InitialState here or within constructor
+    }
+    
+    /**
+     * Bind method to "this" in the constructor.
+     */
+    method(obj) {
+        
     }
     
     methodES7 = (obj) => {  // ES7 only! Binds "this" to MyComponent instance

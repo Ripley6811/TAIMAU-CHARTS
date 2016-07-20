@@ -5,6 +5,9 @@ import * as Actions from '../redux/actions/actions';
 class ShipmentCreator extends Component {
     static propTypes = {
         submitShipments: PropTypes.func.isRequired,
+        templates: PropTypes.array,
+        query: PropTypes.object,
+        dispatch: PropTypes.func,
     }
 
     static defaultProps = {
@@ -202,26 +205,25 @@ class ShipmentCreator extends Component {
                     style={{fontSize: "30px"}}>
                     {props.query.company}
                 </div>
-                <div className="col-xs-3 text-center"
-                    >
+                <div className="col-xs-3 text-center">
                     <h5>
                         (用<strong>紀錄模板</strong>輸入新的選擇)
                     </h5>
                 </div>
             </div>
             {this.state.newShipments.map((each,i) =>
-            <div key={i} className="row">
+            <div key={`${each}${i}`} className="row">
                 { /** REMOVE BUTTON */ }
                 <div className="col-xs-1 text-right" style={{padding: "0px"}}>
                     <button className="btn btn-danger"
-                        onClick={() => this.removeRow(i)}>
+                            onClick={() => this.removeRow(i)}>
                         <span className="glyphicon glyphicon-minus"></span>
                     </button>
                 </div>
                 { /** DATE INPUT */ }
                 <div className="col-xs-3" style={{padding: "0px"}}>
-                <input className="form-control" type="date" value={each.date}
-                    onChange={e => this.setProperty(i, "date", e.target.value)}></input>
+                    <input className="form-control" type="date" value={each.date}
+                        onChange={e => this.setProperty(i, "date", e.target.value)} />
                 </div>
                 { /** DEPT-UNIT SELECTION LIST */ }
                 <div className="col-xs-2" style={{padding: "0px"}}>
@@ -239,8 +241,8 @@ class ShipmentCreator extends Component {
                 <select className="form-control"
                     onChange={e => this.setProduct(e,i)}>
                     {this.getProdOptions(each.dept, each.unit).map((temp, i2) =>
-                        <option key={i2} value={i2}>
-                            {temp.product} &nbsp;&nbsp;&nbsp;&nbsp; {temp.pn}
+                        <option key={`${temp.pn}${i2}`} value={i2}>
+                            {temp.product} &nbsp;&nbsp; {temp.pn}
                         </option>
                     )}
                 </select>

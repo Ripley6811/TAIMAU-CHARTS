@@ -136,14 +136,7 @@ class Pie extends Component {
                 text = `${Math.round(d.value / AVE_WEEKS_PER_MONTH)} kg ${d.label}`;
             }
             d3.select(this).select('text').text(text);
-        });
-            
-//            .text(function(d) { console.log(this, d); d3.select(this).text(d.label)});
-//            .data(data.filter(d => d.value > 0))
-//            .each(function(d) { 
-//                d3.select(this).text(d.label); 
-//            });
-        
+        });        
     }
 
     componentWillUnmount() {  // D3 destroy

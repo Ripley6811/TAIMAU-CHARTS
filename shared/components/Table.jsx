@@ -10,7 +10,7 @@ function Table(props) {
         <TableHead headers={props.tableHeaders} />
         <tbody>
         {props.tableRows.map((row, i) => (
-        <TableRow data={row} keys={props.tableKeys} key={i} >
+        <TableRow data={row} keys={props.tableKeys} key={`tablerow${i}`} >
              {/**Delete button added as a child of TableRow.*/}
              <td className="danger text-center cell-button" 
                  onClick={() => props.onDelete(row)}>

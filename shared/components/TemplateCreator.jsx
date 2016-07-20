@@ -40,7 +40,7 @@ class TemplateCreator extends React.Component {
 
             <div className="row">
                 {this.keys.map((key, i) =>
-                    <div className="form-group col-sm-2 col-sm-push-1" key={i}>
+                    <div className="form-group col-sm-2 col-sm-push-1" key={`template${i}`}>
                         <label className="form-label"
                             style={{height: "19px"}} >
                             {this.labels[i]}

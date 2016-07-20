@@ -39,22 +39,6 @@ export default function(data) {
     // Add method for printing Chinese characters.
     doc.altText = nonASCIItext;
 
-    // DEBUG: This displays a light grey grid for designing layout
-    if (false) {
-        doc.setDrawColor(200);
-        doc.setTextColor(200,200,200);
-        for (var i=0; i<50; i++) {
-            doc.rect(0,i*10,300,10);
-            doc.text(0,i*10, (i*10).toString());
-            doc.rect(i*10,0,10,300);
-            doc.text(i*10,5, (i*10).toString());
-        }
-        doc.setDrawColor(0);
-        doc.setTextColor(0,0,0);
-    }
-
-
-
     /**
      * Writes the table header to document at indicated position.
      * @param   {number} y Desired print position for next line.

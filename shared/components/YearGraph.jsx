@@ -31,9 +31,11 @@ export default class YearGraph extends Component {
         const d = this.props.data,
               keys = ['date'],
               newDataArray = [];
+        this.showArray = [];
         // Create 1st row of date followed by product names.
         for (let i=1; i<d[0].length; i++) {
             keys.push(`${d[0][i]} - ${d[1][i]}`);
+            this.showArray[i-1] = true;
         }
 
         for (let i=2; i<d.length; i++) {
@@ -48,7 +50,6 @@ export default class YearGraph extends Component {
     componentDidMount() {  // D3 create
         const self = this;
 
-
         self.x = d3.time.scale().range([0, WIDTH]);
         self.y = d3.scale.linear().range([HEIGHT, 0]);
         self.xAxis = d3.svg.axis().scale(self.x).orient("bottom");
@@ -58,7 +59,7 @@ export default class YearGraph extends Component {
 //            .interpolate("step-after")
             .x(d => self.x(d.date))
             .y(d => self.y(d.total));
-        
+
         self.svg = d3.select(`#${this.DIV_ID}`)
             .append("svg")
             .attr("width", WIDTH + GRAPH_MARGIN.LEFT + GRAPH_MARGIN.RIGHT)
@@ -68,7 +69,7 @@ export default class YearGraph extends Component {
 
         self.svg.append("g")
             .attr("class", "x axis")
-            .attr("transform", `translate(0,${HEIGHT})`)  
+            .attr("transform", `translate(0,${HEIGHT})`)
             .call(self.xAxis);  // Follows setting "x.domain"
 
         self.svg.append("g")
@@ -102,7 +103,9 @@ export default class YearGraph extends Component {
         const products = catColors.domain().map(product => (
             {
                 product: product,
-                values: data.map(d => ({date: d.date, total: +d[product]}))
+                show: true,
+                values: data.map(d => ({date: d.date,
+                                        total: +d[product]}))
             }
         ));
 
@@ -163,7 +166,11 @@ export default class YearGraph extends Component {
                     .attr('height', LEGEND_RECT_SPACING)
                     .style('fill', d => catColors(d.product))
                     .style('stroke', d => catColors(d.product))
-                    .style('fill-opacity', COLOR_OPACITY);
+                    .style('fill-opacity', COLOR_OPACITY)
+                    .on('click', d => {
+                        self.showArray[i] = !self.showArray[i];
+                        self.updateChart();
+                    });
 
                 d3.select(this).append('text')
                     .attr('class', `pieLabel`)
@@ -177,6 +184,23 @@ export default class YearGraph extends Component {
         legend.each(function(d) {
             d3.select(this).select('text').text(d.product);
         });
+        
+        this.updateChart();
+    }
+
+    updateChart = () => {
+        const self = this;
+        
+        const prod = this.svg.selectAll(".prod")
+            .each(function(d, i) {
+                d.show = !d.show;
+                d3.select(this).select(".line").style('stroke-opacity', d => self.showArray[i] ? COLOR_OPACITY : 0);
+            });
+
+        const legend = this.svg.selectAll('rect')
+            .each(function(d, i) {
+                d3.select(this).style('fill-opacity', d => self.showArray[i] ? COLOR_OPACITY : 0);
+            });
     }
 
     componentWillUnmount() {  // D3 destroy
