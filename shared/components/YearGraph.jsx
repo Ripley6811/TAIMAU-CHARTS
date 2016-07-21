@@ -21,11 +21,12 @@ export default class YearGraph extends Component {
 
     static propTypes = {
         yearTotals: PropTypes.array,
+        data: PropTypes.array,
     }
 
     /**
      * Reformats the incoming data for use in pie chart.
-     * @returns {Array} Array of data for pie chart
+     * @returns {Array} Array of data for pie chart.
      */
     getData() {
         const d = this.props.data,
@@ -60,7 +61,7 @@ export default class YearGraph extends Component {
             .x(d => self.x(d.date))
             .y(d => self.y(d.total));
 
-        self.svg = d3.select(`#${this.DIV_ID}`)
+        self.svg = d3.select(`#${self.DIV_ID}`)
             .append("svg")
             .attr("width", WIDTH + GRAPH_MARGIN.LEFT + GRAPH_MARGIN.RIGHT)
             .attr("height", HEIGHT + GRAPH_MARGIN.TOP + GRAPH_MARGIN.BOTTOM)
@@ -185,19 +186,19 @@ export default class YearGraph extends Component {
             d3.select(this).select('text').text(d.product);
         });
         
-        this.updateChart();
+        self.updateChart();
     }
 
     updateChart = () => {
         const self = this;
         
-        const prod = this.svg.selectAll(".prod")
+        const prod = self.svg.selectAll(".prod")
             .each(function(d, i) {
                 d.show = !d.show;
                 d3.select(this).select(".line").style('stroke-opacity', d => self.showArray[i] ? COLOR_OPACITY : 0);
             });
 
-        const legend = this.svg.selectAll('rect')
+        const legend = self.svg.selectAll('rect')
             .each(function(d, i) {
                 d3.select(this).style('fill-opacity', d => self.showArray[i] ? COLOR_OPACITY : 0);
             });

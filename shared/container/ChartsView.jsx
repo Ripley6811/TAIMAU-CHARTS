@@ -13,18 +13,18 @@ class ChartsView extends Component {
                 year: PropTypes.number,
                 month: PropTypes.number,
         }).isRequired,
+        shipments: PropTypes.array,
     };
 
     static defaultProps = {
         query: {},
-        templates: [],
-        shipments: []
+        shipments: [],
     }
 
     get datesArray() {
-        const retArray = [];
-        const year = this.props.query.year;
-        const month = this.props.query.month;
+        const retArray = [],
+              year = this.props.query.year,
+              month = this.props.query.month;
 
         if (typeof year === "number" && month === undefined) {
             for (let i=0; i<12; i++) {
@@ -52,8 +52,7 @@ class ChartsView extends Component {
         const dataArray = this.datesArray.map(each => [each]);
         const dataTotals = [];
 
-        const dateLength = (typeof props.query.month === "number") ?
-              10 : 7;
+        const dateLength = (typeof props.query.month === "number") ? 10 : 7;
 
         if (typeof d3 !== "undefined") {  // Ignore D3.js reference error on server-side
             // Calculates the product totals across all dates
@@ -147,7 +146,8 @@ class ChartsView extends Component {
 
         return (
             <div className="container">
-                <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+                <br /><br /><br /><br /><br /><br /><br />
+                <br /><br /><br /><br /><br /><br /><br />
                 <h2>
                     <span className="glyphicon glyphicon-arrow-left"></span>
                     &nbsp;
