@@ -25,6 +25,9 @@ export default function(data) {
         return;
     }
 
+    let productOrder = JSON.parse(window.localStorage.getItem("productOrder")) || [];
+    productOrder = productOrder.map(each => each.pn);
+
     // Document settings
     doc.setFont('Times', 'Roman');
     doc.setProperties({
@@ -127,8 +130,35 @@ export default function(data) {
 
     // Print product summary table rows
     doc.setLineWidth(THIN_LINE);
+    const dataPNs = pnData.map(each => each.pn);
+
+    for (let poi in productOrder) {
+        const pn = productOrder[poi];
+        
+        if (!pn) {
+            posY += 5;
+        } else if (dataPNs.indexOf(pn) >= 0) {
+            posY += 5;
+            let i = dataPNs.indexOf(pn);
+            doc.altText(LEFT_MARGIN, posY, pnData[i].product, DEFAULT_FONT_SIZE);
+            doc.altText(LEFT_MARGIN+30, posY, pnData[i].pn, DEFAULT_FONT_SIZE-2);
+            let allUnitsTotal = 0;
+            let ui;
+            for (ui=0; ui<unitNames.length; ui++) {
+                const UNIT = unitNames[ui];
+                doc.altText(LEFT_MARGIN+70+UNIT_AMT_SPACING*ui, posY, pnData[i][UNIT] || "", DEFAULT_FONT_SIZE);
+                allUnitsTotal += pnData[i][UNIT] || 0;
+            }
+            // Show totals if more then one unit is shown.
+            if (unitNames.length > 1) {
+                doc.altText(LEFT_MARGIN+70+UNIT_AMT_SPACING*ui, posY, `${allUnitsTotal}`, DEFAULT_FONT_SIZE);
+            }
+        }
+    }
     for (let i=0; i<pnData.length; i++) {
-        posY+= 5;
+        if (productOrder.indexOf(pnData[i].pn) >= 0) { continue; }
+
+        posY += 5;
         doc.altText(LEFT_MARGIN, posY, pnData[i].product, DEFAULT_FONT_SIZE);
         doc.altText(LEFT_MARGIN+30, posY, pnData[i].pn, DEFAULT_FONT_SIZE-2);
         let allUnitsTotal = 0;
@@ -176,12 +206,6 @@ export default function(data) {
         doc.altText(TABLE_X_POS[5], posY, `${shipment.dept} ${shipment.unit}`, DEFAULT_FONT_SIZE-1);
         posY+= 5;
     }
-
-
-
-
-
-
 
 
 

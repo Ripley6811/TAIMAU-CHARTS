@@ -64,9 +64,10 @@ const renderFullPage = (html, initialState) => {
         ${head.script.toString()}
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/1.0.2/bootstrap-native.min.js"></script>
         <link rel="stylesheet" href=${cssPath} />
-        <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'/>
-        <link rel="shortcut icon" href="http://res.cloudinary.com/hashnode/image/upload/v1455629445/static_imgs/mern/mern-favicon-circle-fill.png" type="image/png" />
+        <link rel="stylesheet" href='/font-awesome-4.6.3/css/font-awesome.min.css' />
+        <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'/>  
       <script src="/js/d3.min.js"></script>
       <script src="/js/jsPDF/jspdf.min.js"></script>
       <script src="/js/jsPDF/plugins/plugins.min.js"></script>

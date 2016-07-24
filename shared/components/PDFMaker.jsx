@@ -4,12 +4,13 @@
  */
 
 import React, { PropTypes, Component } from 'react';
+// Redux connect and actions
 import { connect } from 'react-redux';
-
 import * as Actions from '../redux/actions/actions';
-
+// Components
 import createTriMonthlyPDF from './CreateTriMonthlyPDF';
 import createWasteWaterPDF from './CreateWasteWaterPDF';
+
 
 class PDFMaker extends Component {
     static propTypes = {
@@ -18,9 +19,9 @@ class PDFMaker extends Component {
         month: PropTypes.number,  // Check for month elsewhere
         dispatch: PropTypes.func.isRequired,
     }
-    
+
     get stateStorageKey() { return "pdfperiodends"; }
-    
+
     state = {
         period0end: 13,
         period1end: 23
@@ -70,11 +71,11 @@ class PDFMaker extends Component {
             );
         }
     }
-    
+
     changePeriodDate = (i, e) => {
         function updateWindowStorage() {
             window.localStorage.setItem(
-                this.stateStorageKey, 
+                this.stateStorageKey,
                 JSON.stringify(this.state)
             );
         }
@@ -101,7 +102,7 @@ class PDFMaker extends Component {
             return <div className="text-center">
                 <h5>{this.props.company} PDF</h5>
                 {this.halfyears.map((p, i) =>
-                    <button key={`${this.props.month}${i}`} 
+                    <button key={`${this.props.month}${i}`}
                         onClick={() => this.requestPDF(i)}
                         className="btn btn-warning form-control">
                         <span className="glyphicon glyphicon-download-alt"></span>
@@ -122,11 +123,11 @@ class PDFMaker extends Component {
                         className="btn btn-warning">
                         <span className="glyphicon glyphicon-download-alt"></span>
                         &nbsp;
-                        {p.ymStr} / {p.start} ~ 
+                        {p.ymStr} / {p.start} ~
 
                     </button>
-                    <input type="number" 
-                        style={{width: "30%", textAlign: "left", 
+                    <input type="number"
+                        style={{width: "30%", textAlign: "left",
                                 padding: "6px", backgroundColor: "burlywood"}}
                         className="input-group-addon"
                         min="1" max="31"
@@ -134,7 +135,7 @@ class PDFMaker extends Component {
                         value={this.state["period" + i + "end"]} />
                 </div>
             )}
-            {((p, i) => 
+            {((p, i) =>
                 <div className="row" key={`${p.ymStr}${i}`}>
                     <button onClick={() => this.requestPDF(i)}
                         style={{width: "100%"}}
@@ -145,7 +146,8 @@ class PDFMaker extends Component {
                     </button>
                 </div>
             )(this.periods[2], 2)}
-            
+
+
         </div>;
     }
 }

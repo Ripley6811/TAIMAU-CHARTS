@@ -57,7 +57,7 @@ class Sidebar extends Component {
     }
 
     get stateStorageKey() { return "query"; }
-    
+
     state = {  // Initial state == Query parameters
         company: undefined,
         dept: undefined,
@@ -114,7 +114,7 @@ class Sidebar extends Component {
              route: "/templates", disabled: false},
         ]
     }
-    
+
     gotoRoute = (route) => {
         this.location = route;
         browserHistory.push(route);
@@ -124,10 +124,21 @@ class Sidebar extends Component {
     render() {
         const props = this.props;
       return (
-        <div className="sidebar" style={{width: props.width, position: 'fixed', height: '100%'}} >
-          <div className="sidebar-content" style={{padding: '10px', margin: '0 auto -100px', height: '100%'}}>
+        <div className="sidebar"
+            style={{width: props.width, position: 'fixed', height: '100%'}} >
+          <div className="sidebar-content"
+              style={{padding: '10px', margin: '0 auto -100px', height: '100%'}}>
               <div className="text-center">
-                <img src="../img/logo.png" style={{borderRadius: '22px 50px 7px 18px'}} />
+                <img src="../img/logo.png"
+                    style={{position: "relative", borderRadius: '22px 50px 7px 18px', zIndex: "2"}} />
+                <button style={{backgroundColor: "inherit",
+                                borderStyle: "inherit",
+                                position: "absolute",
+                                right: "20px",
+                                zIndex: "1"}}
+                    onClick={() => this.gotoRoute('/settings')}>
+                    <i className="fa fa-cog fa-2x fa-flip-horizontal slow-spin" aria-hidden="true" />
+                  </button>
             </div>
             <hr />
               {

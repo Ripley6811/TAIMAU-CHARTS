@@ -108,4 +108,28 @@ export default {
             });
         });
     },
+
+    getProducts: function (req, res) {
+        Template.aggregate({
+                $group: {
+                    "_id": {
+                        product: "$product",
+                        pn: "$pn"
+                    }
+                }
+            })
+            .sort({
+                "_id.pn": 1,
+            })
+            .exec((err, recs) => {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+                console.log("Showing recs object after aggregation.")
+                console.dir(recs);
+                res.json({
+                    records: recs.map(rec => rec._id)
+                });
+            });
+    }
 }

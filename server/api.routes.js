@@ -32,5 +32,7 @@ router.route('/shipmentTemplate')
 router.route('/getDepartments')
     .get(ShipmentTemplateController.getDepartments);
 
+router.route('/product')
+    .get(ShipmentTemplateController.getProducts)
 
 export default router;

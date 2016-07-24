@@ -15,10 +15,10 @@ import Table from '../components/Table';
 import TemplateCreator from '../components/TemplateCreator';
 
 
-class ShipmentTemplates extends React.Component {
+class TemplatesView extends React.Component {
     // Server-side data retrieval (for server rendering).
     static need = [Actions.fetchShipmentTemplates]
-    
+
     // Validates props
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
@@ -30,17 +30,17 @@ class ShipmentTemplates extends React.Component {
             pn: PropTypes.string.isRequired,
         })).isRequired,
     }
-    
+
     static defaultProps = {
         templates: []
     }
-    
+
     componentWillMount() {
         // Ensure required data is loaded.
         if (this.props.templates.length === 0)
             this.props.dispatch(Actions.fetchShipmentTemplates());
     }
-    
+
     deleteTemplate = (template) => {  // ES7 class function binding
         // WARNING: Might have "race" problem between dispatches.
         if (confirm('真的要把檔案刪除嗎?\nDo you want to delete this template?')) {
@@ -51,7 +51,7 @@ class ShipmentTemplates extends React.Component {
             }, 300);
         }
     }
-    
+
     createTemplate = (template) => {
         this.props.dispatch(Actions.addTemplateRequest(template));
         // Wait then dispatch update for sidebar
@@ -59,7 +59,7 @@ class ShipmentTemplates extends React.Component {
             this.props.dispatch(Actions.fetchDepartments());
         }, 300);
     }
-    
+
     templateFilter = (template) => {
         const query = this.props.query;
         if (!!query.dept) {
@@ -68,26 +68,26 @@ class ShipmentTemplates extends React.Component {
         } else if (!!query.company) {
             return template.company === query.company;
         }
-        
+
         return true;
     }
-    
+
     render() {
         const props = this.props;
         const tableHeaders = ["公司", "Dept", "Unit", "材料名稱", "料號", "除"];
         const tableKeys = ["company", "dept", "unit", "product", "pn"];
-        
+
         // Filter templates
         const filteredTemplates = props.templates.filter(this.templateFilter);
-        
+
         return (
-        <div className="container" 
+        <div className="container"
              style={{maxWidth: '900px', margin: 'auto'}}>
-            <TemplateCreator 
+            <TemplateCreator
                 createTemplate={this.createTemplate}
                 />
             <legend>Shipment Templates</legend>
-            <Table 
+            <Table
                 tableHeaders={tableHeaders}
                 tableKeys={tableKeys}
                 tableRows={filteredTemplates}
@@ -95,7 +95,7 @@ class ShipmentTemplates extends React.Component {
                 />
         </div>
         )
-    }        
+    }
 }
 
 // Retrieves data from store (appends to "props").
@@ -106,4 +106,4 @@ function mapStateToProps(store) {
     };
 };
 
-export default connect(mapStateToProps)(ShipmentTemplates);
+export default connect(mapStateToProps)(TemplatesView);

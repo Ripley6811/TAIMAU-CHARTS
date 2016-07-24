@@ -51,6 +51,14 @@ export function requestWasteWaterPDF(company, startDate, endDate, callback) {
 }
 
 
+export function getAllProducts(callback) {
+    const URL = `${baseURL}/api/product`;
+    return fetch(URL).
+        then(res => res.json()).
+        then(data => callback(data.records));
+}
+
+
 export const ADD_SHIPMENTS = 'ADD_SHIPMENTS';
 /**
  * Used in `ShipmentContainer`.

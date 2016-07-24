@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
+// Redux
 import { connect } from 'react-redux';
 import * as Actions from '../redux/actions/actions';
+
 
 class ShipmentCreator extends Component {
     static propTypes = {

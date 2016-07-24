@@ -9,7 +9,7 @@ import Table from '../components/Table';
 
 
 
-class ShipmentContainer extends Component {
+class ShipmentsView extends Component {
     // Server-side data retrieval (for server rendering).
     static need = [Actions.fetchShipmentTemplates]  // Preload for sub-component
     
@@ -75,4 +75,4 @@ const mapStateToProps = (store) => ({
  * Redux's `connect` method injects `dispatch` method into class.
  * `mapStateToProps` makes store objects accessible as props.
  */
-export default connect(mapStateToProps)(ShipmentContainer);
+export default connect(mapStateToProps)(ShipmentsView);
