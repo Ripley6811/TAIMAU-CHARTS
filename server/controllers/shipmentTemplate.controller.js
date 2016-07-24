@@ -125,11 +125,7 @@ export default {
                 if (err) {
                     return res.status(500).send(err);
                 }
-                console.log("Showing recs object after aggregation.")
-                console.dir(recs);
-                res.json({
-                    records: recs.map(rec => rec._id)
-                });
+                res.json(recs.map(rec => rec._id));
             });
     }
 }

@@ -55,7 +55,7 @@ export function getAllProducts(callback) {
     const URL = `${baseURL}/api/product`;
     return fetch(URL).
         then(res => res.json()).
-        then(data => callback(data.records));
+        then(records => callback(records));
 }
 
 
