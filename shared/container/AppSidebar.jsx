@@ -12,35 +12,36 @@ import * as Actions from '../redux/actions/actions';
 import SelectYearMonth from '../components/SelectYearMonth';
 import PDFMaker from '../components/PDFMaker';
 
-function ButtonStyle(selected) {
-    if (typeof selected !== 'boolean') throw "'selected' parameter must be a boolean value.";
 
-    const style = {};
+const HIGHLIGHTED_BTN = {
+    backgroundColor: "#fff",
+    color: "#000",
+};
 
-    if (selected) {
-        style.backgroundColor = "#fff";
-        style.color = "#000";
-    }
 
-    return style;
-}
+const BTN_CLASSES = "btn btn-warning form-control";
 
 
 const CompanyColumn = (props) =>
 <div className="col-md-6 text-center btn-group btn-group-vertical"
     style={{padding: '3px'}}>
-  <button className="btn btn-warning form-control"
-      style={ButtonStyle(props.title === props.selectedCompany)}
+  <button className={BTN_CLASSES}
+      style={props.title === props.selectedCompany ? HIGHLIGHTED_BTN : {}}
       type="button"
-      onClick={() => props.onClick({company: props.title})} ><strong>{props.title}</strong></button>
+      onClick={() => props.onClick({company: props.title})} >
+      <strong>{props.title}</strong>
+  </button>
     {
-      props.depts.map((each) =>
-          <button className="btn btn-warning form-control"
-              key={each}
-              style={ButtonStyle(each === props.selectedDept)}
-              type="button"
-              onClick={() => props.onClick({company: props.title, dept: each})} >{each}</button>
-      )
+      props.depts.map(each => React.createElement(
+        "button", {
+            className: BTN_CLASSES,
+            key: each,
+            style: each === props.selectedDept ? HIGHLIGHTED_BTN : {},
+            type: "button",
+            onClick: () => props.onClick({ company: props.title, dept: each }) 
+        },
+        each
+      ))
     }
 </div>
 
@@ -123,7 +124,7 @@ class Sidebar extends Component {
 
     render() {
         const props = this.props;
-      return (
+        return (
         <div className="sidebar"
             style={{width: props.width, position: 'fixed', height: '100%'}} >
           <div className="sidebar-content"
@@ -145,8 +146,8 @@ class Sidebar extends Component {
                   this.navButtons.map(({text, route, disabled}, i) =>
                     <div className="row" key={i+route}>
                         <div>
-                        <button className="btn btn-warning form-control" type="button"
-                            style={ButtonStyle(route === this.location)}
+                        <button className={BTN_CLASSES} type="button"
+                            style={route === this.location ? HIGHLIGHTED_BTN : {}}
                             disabled={disabled}
                             onClick={() => this.gotoRoute(route)}>
                             {text}
@@ -178,7 +179,8 @@ class Sidebar extends Component {
             <PDFMaker
                 company={this.state.company}
                 year={this.state.year}
-                month={this.state.month} />
+                month={this.state.month}
+                BTN_CLASSES={BTN_CLASSES} />
           </div>
 
 

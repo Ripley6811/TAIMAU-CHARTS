@@ -12,15 +12,24 @@ import createTriMonthlyPDF from './CreateTriMonthlyPDF';
 import createWasteWaterPDF from './CreateWasteWaterPDF';
 
 
+const INPUT_STYLE = {
+    width: "30%", 
+    textAlign: "left",
+    padding: "6px", 
+    backgroundColor: "burlywood",
+};
+
+const FA_DOWNLOAD = <i className="fa fa-download" aria-hidden="true" />;
+const PERIOD_STORAGE_KEY = "pdfperiodends";
+
 class PDFMaker extends Component {
     static propTypes = {
         company: PropTypes.string,
         year: PropTypes.number.isRequired,
         month: PropTypes.number,  // Check for month elsewhere
+        BTN_CLASSES: PropTypes.string.isRequired,
         dispatch: PropTypes.func.isRequired,
     }
-
-    get stateStorageKey() { return "pdfperiodends"; }
 
     state = {
         period0end: 13,
@@ -73,39 +82,41 @@ class PDFMaker extends Component {
     }
 
     changePeriodDate = (i, e) => {
-        function updateWindowStorage() {
-            window.localStorage.setItem(
-                this.stateStorageKey,
+        function updateLocalStorage() {
+            localStorage.setItem(
+                PERIOD_STORAGE_KEY,
                 JSON.stringify(this.state)
             );
         }
         this.setState({
-            ["period" + i + "end"]: e.target.value,
-        }, updateWindowStorage);
+            [`period${i}end`]: e.target.value,
+        }, updateLocalStorage);
     }
 
     componentWillMount() {
         // Load "query" parameters from local storage on client-side
         if (typeof window !== 'undefined') {
-            if (!!window.localStorage[this.stateStorageKey]) {
-                this.setState(JSON.parse(window.localStorage[this.stateStorageKey]));
+            if (!!localStorage[PERIOD_STORAGE_KEY]) {
+                this.setState(JSON.parse(localStorage[PERIOD_STORAGE_KEY]));
             }
         }
     }
 
     render() {
+        const props = this.props;
+        
         // Month is required for PDF creation
-        if (typeof this.props.company !== "string") {
+        if (typeof props.company !== "string") {
             return <div></div>
         }
-        if (typeof this.props.month !== "number") {
+        if (typeof props.month !== "number") {
             return <div className="text-center">
-                <h5>{this.props.company} PDF</h5>
+                <h5>{props.company} PDF</h5>
                 {this.halfyears.map((p, i) =>
-                    <button key={`${this.props.month}${i}`}
+                    <button key={`${props.month}${i}`}
                         onClick={() => this.requestPDF(i)}
-                        className="btn btn-warning form-control">
-                        <i className="fa fa-download" aria-hidden="true" />
+                        className={props.BTN_CLASSES}>
+                        {FA_DOWNLOAD}
                         &nbsp;
                         {p.yearStr} / {p.start} ~ {p.end}月 廢水
                     </button>
@@ -113,22 +124,18 @@ class PDFMaker extends Component {
             </div>;
         }
         return <div className="text-center">
-            <h5>{this.props.company} PDF</h5>
+            <h5>{props.company} PDF</h5>
             {this.periods.slice(0,2).map((p, i) =>
                 <div className="row input-group"
                      key={`${p.toString()}${i}`}
                      style={{width: "100%"}}>
                     <button onClick={() => this.requestPDF(i)}
-                         style={{width: "70%", textAlign: "right"}}
-                        className="btn btn-warning">
-                        <i className="fa fa-download" aria-hidden="true" />
-                        &nbsp;
-                        {p.ymStr} / {p.start} ~
-
+                            style={{width: "70%", textAlign: "right"}}
+                            className={props.BTN_CLASSES}>
+                        {FA_DOWNLOAD} &nbsp; {p.ymStr} / {p.start} ~
                     </button>
                     <input type="number"
-                        style={{width: "30%", textAlign: "left",
-                                padding: "6px", backgroundColor: "burlywood"}}
+                        style={INPUT_STYLE}
                         className="input-group-addon"
                         min="1" max="31"
                         onChange={e => this.changePeriodDate(i,e)}
@@ -138,11 +145,8 @@ class PDFMaker extends Component {
             {((p, i) =>
                 <div className="row" key={`${p.ymStr}${i}`}>
                     <button onClick={() => this.requestPDF(i)}
-                        style={{width: "100%"}}
-                        className="btn btn-warning">
-                        <i className="fa fa-download" aria-hidden="true" />
-                        &nbsp;
-                        {p.ymStr} / {p.start} ~ {p.end}
+                            className={props.BTN_CLASSES}>
+                        {FA_DOWNLOAD} &nbsp; {p.ymStr} / {p.start} ~ {p.end}
                     </button>
                 </div>
             )(this.periods[2], 2)}
