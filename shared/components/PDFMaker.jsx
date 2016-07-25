@@ -105,7 +105,7 @@ class PDFMaker extends Component {
                     <button key={`${this.props.month}${i}`}
                         onClick={() => this.requestPDF(i)}
                         className="btn btn-warning form-control">
-                        <span className="glyphicon glyphicon-download-alt"></span>
+                        <i className="fa fa-download" aria-hidden="true" />
                         &nbsp;
                         {p.yearStr} / {p.start} ~ {p.end}月 廢水
                     </button>
@@ -121,7 +121,7 @@ class PDFMaker extends Component {
                     <button onClick={() => this.requestPDF(i)}
                          style={{width: "70%", textAlign: "right"}}
                         className="btn btn-warning">
-                        <span className="glyphicon glyphicon-download-alt"></span>
+                        <i className="fa fa-download" aria-hidden="true" />
                         &nbsp;
                         {p.ymStr} / {p.start} ~
 
@@ -140,7 +140,7 @@ class PDFMaker extends Component {
                     <button onClick={() => this.requestPDF(i)}
                         style={{width: "100%"}}
                         className="btn btn-warning">
-                        <span className="glyphicon glyphicon-download-alt"></span>
+                        <i className="fa fa-download" aria-hidden="true" />
                         &nbsp;
                         {p.ymStr} / {p.start} ~ {p.end}
                     </button>

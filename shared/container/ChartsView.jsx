@@ -149,7 +149,7 @@ class ChartsView extends Component {
                 <br /><br /><br /><br /><br />
                 <br /><br /><br /><br /><br />
                 <h2>
-                    <span className="glyphicon glyphicon-arrow-left"></span>
+                    <i className="fa fa-chevron-left" aria-hidden="true" />
                     &nbsp;
                     Select a department
                 </h2>
