@@ -158,12 +158,12 @@ class Sidebar extends Component {
             <hr />
               <div className="row">
             {
-              Object.keys(props.deptLinks).map((key) =>
-                <CompanyColumn title={key} key={key}
+              props.deptLinks.map((rec) =>
+                <CompanyColumn title={rec.company} key={rec.company}
                     onClick={this.setSelectedDept}
                     selectedCompany={this.state.company}
                     selectedDept={this.state.dept}
-                    depts={props.deptLinks[key]} />
+                    depts={rec.departments} />
               )
             }
               </div>

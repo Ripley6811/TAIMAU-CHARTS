@@ -58,7 +58,7 @@ export default (state, action) => {
                 {templates: [action.template, ...state.templates]});
 
     case ADD_DEPT_LINKS :
-        return Object.assign({}, state, {deptLinks: action.tree});
+        return Object.assign({}, state, {deptLinks: action.records});
 
     case ADD_SELECTED_DEPT :
         return Object.assign({}, state, 

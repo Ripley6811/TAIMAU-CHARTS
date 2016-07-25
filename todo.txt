@@ -16,9 +16,9 @@
 - Why is  "componentDidUpdate" firing twice when changing dept? Probably parent updating for query and shipments.
 + Bar chart on Charts page. One that shows amount change over the year
 + Do we need to see PN in general? No
-- Add toggles to Chart graph
++ Add toggles to Chart graph
 - Waste water report shipments in two columns and smaller font is okay
-- Add report editing modal. Product listing order.
++ Add report editing modal. Product listing order.
 - Edit UNIT data to include sub-unit
 + Allow monthly report daterange editing (in sidebar?)
 - Password(less)

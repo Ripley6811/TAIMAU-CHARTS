@@ -23,27 +23,41 @@ export default {
             });
     },
 
+    /**
+     * Returns a list of companies and their respective depts sorted.
+     */
     getDepartments: function (req, res) {
-        Template.aggregate({
-                $group: {
-                    "_id": {
+        Template.aggregate([
+                { $group: {
+                    _id: {
                         company: "$company",
                         dept: "$dept"
                     }
-                }
-            })
-            .sort({
-                "_id.company": 1,
-                "_id.dept": 1
-            })
+                } },
+                { $sort: {
+                    "_id.dept": 1,
+                } },
+                { $group: {
+                    _id: {
+                        company: "$_id.company",
+                    },
+                    departments: {$push: "$_id.dept"}
+                } },
+                { $project: {
+                    _id: 0,
+                    company: "$_id.company",
+                    departments: 1
+                } },
+                { $sort: {
+                    company: 1,
+                } },
+            ])
             .exec((err, recs) => {
                 if (err) {
                     return res.status(500).send(err);
                 }
 
-                res.json({
-                    records: recs.map(rec => rec._id)
-                });
+                res.json(recs);
             });
     },
 
@@ -109,23 +123,32 @@ export default {
         });
     },
 
+    /**
+     * Returns an array of unique product-pn pairs.
+     */
     getProducts: function (req, res) {
-        Template.aggregate({
-                $group: {
-                    "_id": {
+        Template.aggregate([
+                { $group: {
+                    _id: {
                         product: "$product",
                         pn: "$pn"
                     }
-                }
-            })
-            .sort({
-                "_id.pn": 1,
-            })
+                } },
+                { $project: {
+                    _id: 0,
+                    product: "$_id.product",
+                    pn: "$_id.pn",
+                } },
+                { $sort: {
+                    pn: 1
+                } },
+            ])
             .exec((err, recs) => {
                 if (err) {
                     return res.status(500).send(err);
                 }
-                res.json(recs.map(rec => rec._id));
+
+                res.json(recs);
             });
     }
 }

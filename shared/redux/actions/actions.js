@@ -176,15 +176,9 @@ export function fetchShipmentTemplates() {
 export const ADD_DEPT_LINKS = 'ADD_DEPT_LINKS';
 export function fetchDepartments() {
     const reducerFormat = (records) => {
-        // Rearrange records into a tree
-        const tree = {};
-        records.forEach((each) => {
-            tree[each.company] ? tree[each.company].push(each.dept) : tree[each.company] = [each.dept];
-        });
-
         return {
             type: ADD_DEPT_LINKS,
-            tree
+            records
         };
     };
 
@@ -192,7 +186,7 @@ export function fetchDepartments() {
         // If used in "need" list then requires "return" keyword below (?)
         return fetch(`${baseURL}/api/getDepartments`).
         then((res) => res.json()).
-        then((res) => dispatch(reducerFormat(res.records)));
+        then((recs) => dispatch(reducerFormat(recs)));
     };
 }
 
