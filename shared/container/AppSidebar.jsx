@@ -1,71 +1,67 @@
 /**
- * @overview The Sidebar contains buttons to set the query parameters for
+ * @overview The Sidebar contains buttons to set the query parameters for all
  * pages and links to pages.
  */
 
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router'
-
-import * as Actions from '../redux/actions/actions';
-
+// Actions
+import { updateSavedQuery, fetchShipments } from '../redux/actions/actions';
+// Components
+import CompanyColumn from '../components/CompanyColumn';
 import SelectYearMonth from '../components/SelectYearMonth';
 import PDFMaker from '../components/PDFMaker';
 
 
-const HIGHLIGHTED_BTN = {
-    backgroundColor: "#fff",
-    color: "#000",
-};
+const BTN_CLASS_STRING = "btn btn-warning form-control",
+      HIGHLIGHTED_BTN = {backgroundColor: "white", /* text */ color: "black"},
+      LOCALSTORAGE_KEY_FOR_STATE = "query",
+      PAGE_NAV_BTNS = [ 
+          {text: "ChartView | 數量圖表", route: "/"},
+          {text: "Shipments | 出貨紀錄", route: "/shipments"},
+          {text: "Templates | 記錄模板", route: "/templates"},
+      ];
 
 
-const BTN_CLASSES = "btn btn-warning form-control";
-const LOCALSTORAGE_KEY_FOR_STATE = "query";
-
-
-const CompanyColumn = (props) =>
-<div className="col-md-6 text-center btn-group btn-group-vertical"
-    style={{padding: '3px'}}>
-  <button className={BTN_CLASSES}
-      style={props.title === props.selectedCompany ? HIGHLIGHTED_BTN : {}}
-      type="button"
-      onClick={() => props.onClick({company: props.title})} >
-      <strong>{props.title}</strong>
-  </button>
-    {
-      props.depts.map(each => React.createElement(
-        "button", {
-            className: BTN_CLASSES,
-            key: each,
-            style: each === props.selectedDept ? HIGHLIGHTED_BTN : {},
-            type: "button",
-            onClick: () => props.onClick({ company: props.title, dept: each }) 
-        },
-        each
-      ))
-    }
-</div>
-
-
-class Sidebar extends Component {
+export default connect(
+    ({deptLinks}) => ({deptLinks}),  // Pull items from store
+    { updateSavedQuery, fetchShipments }  // Bind actions with dispatch
+)(class Sidebar extends Component {
+    /**
+     * Validates incoming props.
+     */
     static propTypes = {  // ES7 style
-        selectedDept: PropTypes.shape({
-            company: PropTypes.string.isRequired,
-            dept: PropTypes.string.isRequired,
-        }),
-        // Specify sidebar width in pixels, e.g. "200px"
+        // Props from parent
         width: PropTypes.string.isRequired,
-        dispatch: PropTypes.func.isRequired,
+        // Props from store
+        deptLinks: PropTypes.arrayOf(
+            PropTypes.shape({
+                company: PropTypes.string,
+                departments: PropTypes.array,
+            })
+        ).isRequired,
+        // Dispatch actions
+        updateSavedQuery: PropTypes.func.isRequired,
+        fetchShipments: PropTypes.func.isRequired,
     }
 
-    state = {  // Initial state == Query parameters
+    /**
+     * Initial state = global "query" parameters.
+     * These query parameters are set in the sidebar and used throughout the program.
+     */
+    state = {  
         company: undefined,
         dept: undefined,
         year: new Date().getFullYear(),
         month: undefined,
     }
 
-    componentWillMount() {
+    /**
+     * "Will Mount" necessary to set state properly before rendering. "Did Mount" fails this.
+     */
+    componentWillMount = () => {
+        console.dir(this.props);
         // Load "query" parameters from local storage on client-side
         if (typeof window !== 'undefined') {
             this.location = location.pathname;
@@ -97,22 +93,16 @@ class Sidebar extends Component {
         }, this.updateSavedQuery);
     }
 
-    updateSavedQuery() {
+    updateSavedQuery = () => {
         // Save most recent query in local storage and in redux store
         localStorage.setItem([LOCALSTORAGE_KEY_FOR_STATE], JSON.stringify(this.state));
-        this.props.dispatch(Actions.updateSavedQuery(this.state));
-        this.props.dispatch(Actions.fetchShipments(this.state));
-    }
-
-    get navButtons() {
-        return [
-            {text: "Charts |  數量圖表",
-             route: "/", disabled: false},
-            {text: "Shipments | 出貨紀錄",
-             route: "/shipments", disabled: false},
-            {text: "Templates | 記錄模板",
-             route: "/templates", disabled: false},
-        ]
+        localStorage.setItem("selectedCompany", this.state.company);
+        localStorage.setItem("selectedDepartment", this.state.dept);
+        localStorage.setItem("selectedYear", this.state.year);
+        localStorage.setItem("selectedMonth", this.state.month);
+        this.props.updateSavedQuery(this.state);
+        this.props.fetchShipments(this.state);
+        this.forceUpdate();
     }
 
     gotoRoute = (route) => {
@@ -122,10 +112,11 @@ class Sidebar extends Component {
     }
 
     render() {
-        const props = this.props;
+        const { width, deptLinks } = this.props;
+        
         return (
         <div className="sidebar"
-            style={{width: props.width, position: 'fixed', height: '100%'}} >
+            style={{width: width, position: 'fixed', height: '100%'}} >
           <div className="sidebar-content"
               style={{padding: '10px', margin: '0 auto -100px', height: '100%'}}>
               <div className="text-center">
@@ -142,12 +133,11 @@ class Sidebar extends Component {
             </div>
             <hr />
               {
-                  this.navButtons.map(({text, route, disabled}, i) =>
+                  PAGE_NAV_BTNS.map(({text, route}, i) =>
                     <div className="row" key={i+route}>
                         <div>
-                        <button className={BTN_CLASSES} type="button"
+                        <button className={BTN_CLASS_STRING} type="button"
                             style={route === this.location ? HIGHLIGHTED_BTN : {}}
-                            disabled={disabled}
                             onClick={() => this.gotoRoute(route)}>
                             {text}
                         </button>
@@ -158,12 +148,15 @@ class Sidebar extends Component {
             <hr />
               <div className="row">
             {
-              props.deptLinks.map(rec =>
-                <CompanyColumn title={rec.company} key={rec.company}
+              deptLinks.map(rec =>
+                <CompanyColumn key={rec.company}
+                    company={rec.company} 
                     onClick={this.setSelectedDept}
-                    selectedCompany={this.state.company}
-                    selectedDept={this.state.dept}
-                    depts={rec.departments} />
+                    selectedCompany={this.state.company || ""}
+                    selectedDept={this.state.dept || ""}
+                    depts={rec.departments}
+                    BTN_CLASS_STRING={BTN_CLASS_STRING}
+                    HIGHLIGHTED_BTN={HIGHLIGHTED_BTN} />
               )
             }
               </div>
@@ -172,16 +165,15 @@ class Sidebar extends Component {
                 year={this.state.year}
                 month={this.state.month}
                 setDateRange={this.setDateRange}
-                BTN_CLASSES={BTN_CLASSES}
+                BTN_CLASS_STRING={BTN_CLASS_STRING}
                 HIGHLIGHTED_BTN={HIGHLIGHTED_BTN} />
-
 
             <hr />
             <PDFMaker
                 company={this.state.company}
                 year={this.state.year}
                 month={this.state.month}
-                BTN_CLASSES={BTN_CLASSES} />
+                BTN_CLASS_STRING={BTN_CLASS_STRING} />
           </div>
 
 
@@ -192,12 +184,4 @@ class Sidebar extends Component {
         </div>
       );
     }
-}
-
-// Retrieve data from store as props
-const mapStateToProps = (store) => ({
-    selectedDept: store.selectedDept,
-    deptLinks: store.deptLinks,
 });
-
-export default connect(mapStateToProps)(Sidebar);
