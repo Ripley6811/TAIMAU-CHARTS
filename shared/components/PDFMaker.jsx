@@ -20,7 +20,10 @@ const INPUT_STYLE = {
 };
 
 const FA_DOWNLOAD = <i className="fa fa-download" aria-hidden="true" />;
-const PERIOD_STORAGE_KEY = "pdfperiodends";
+const LOCALSTORAGE_KEY_FOR_STATE = "pdfperiodends";
+const SELECTED_NO_COMPANY = Symbol();
+const SELECTED_WHOLE_YEAR = Symbol();
+const SELECTED_ONE_MONTH = Symbol();
 
 class PDFMaker extends Component {
     static propTypes = {
@@ -83,10 +86,7 @@ class PDFMaker extends Component {
 
     changePeriodDate = (i, e) => {
         function updateLocalStorage() {
-            localStorage.setItem(
-                PERIOD_STORAGE_KEY,
-                JSON.stringify(this.state)
-            );
+            localStorage.setItem(LOCALSTORAGE_KEY_FOR_STATE, JSON.stringify(this.state));
         }
         this.setState({
             [`period${i}end`]: e.target.value,
@@ -105,54 +105,63 @@ class PDFMaker extends Component {
     render() {
         const props = this.props;
         
-        // Month is required for PDF creation
-        if (typeof props.company !== "string") {
-            return <div></div>
+        let displayType;
+        if (!!props.company && typeof props.month !== "number") {
+            displayType = SELECTED_WHOLE_YEAR;
+        } else if (!!props.company && typeof props.month === "number") {
+            displayType = SELECTED_ONE_MONTH;
         }
-        if (typeof props.month !== "number") {
-            return <div className="text-center">
-                <h5>{props.company} PDF</h5>
-                {this.halfyears.map((p, i) =>
-                    <button key={`${props.month}${i}`}
-                        onClick={() => this.requestPDF(i)}
-                        className={props.BTN_CLASSES}>
-                        {FA_DOWNLOAD}
-                        &nbsp;
-                        {p.yearStr} / {p.start} ~ {p.end}月 廢水
-                    </button>
-                )}
-            </div>;
+        
+        switch(displayType) {
+            case SELECTED_WHOLE_YEAR:
+                return <div className="text-center">
+                    <h5>{props.company} PDF</h5>
+                    {this.halfyears.map((p, i) =>
+                        <button key={`${props.month}${i}`}
+                            onClick={() => this.requestPDF(i)}
+                            className={props.BTN_CLASSES}>
+                            {FA_DOWNLOAD}
+                            &nbsp;
+                            {p.yearStr} / {p.start} ~ {p.end}月 廢水
+                        </button>
+                    )}
+                </div>;
+                
+            case SELECTED_ONE_MONTH:
+                return <div className="text-center">
+                    <h5>{props.company} PDF</h5>
+                    {this.periods.slice(0,2).map((p, i) =>
+                        <div className="row input-group"
+                             key={`${p.toString()}${i}`}
+                             style={{width: "100%"}}>
+                            <button onClick={() => this.requestPDF(i)}
+                                    style={{width: "70%", textAlign: "right"}}
+                                    className={props.BTN_CLASSES}>
+                                {FA_DOWNLOAD} &nbsp; {p.ymStr} / {p.start} ~
+                            </button>
+                            <input type="number"
+                                style={INPUT_STYLE}
+                                className="input-group-addon"
+                                min="1" max="31"
+                                onChange={e => this.changePeriodDate(i,e)}
+                                value={this.state["period" + i + "end"]} />
+                        </div>
+                    )}
+                    {((p, i) =>
+                        <div className="row" key={`${p.ymStr}${i}`}>
+                            <button onClick={() => this.requestPDF(i)}
+                                    className={props.BTN_CLASSES}
+                                    style={/** Keep button above footer text **/
+                                            {position: "relative", zIndex: "2"}}>
+                                {FA_DOWNLOAD} &nbsp; {p.ymStr} / {p.start} ~ {p.end}
+                            </button>
+                        </div>
+                    )(this.periods[2], 2)}
+                </div>;
+                
+            default:
+                return <div></div>;
         }
-        return <div className="text-center">
-            <h5>{props.company} PDF</h5>
-            {this.periods.slice(0,2).map((p, i) =>
-                <div className="row input-group"
-                     key={`${p.toString()}${i}`}
-                     style={{width: "100%"}}>
-                    <button onClick={() => this.requestPDF(i)}
-                            style={{width: "70%", textAlign: "right"}}
-                            className={props.BTN_CLASSES}>
-                        {FA_DOWNLOAD} &nbsp; {p.ymStr} / {p.start} ~
-                    </button>
-                    <input type="number"
-                        style={INPUT_STYLE}
-                        className="input-group-addon"
-                        min="1" max="31"
-                        onChange={e => this.changePeriodDate(i,e)}
-                        value={this.state["period" + i + "end"]} />
-                </div>
-            )}
-            {((p, i) =>
-                <div className="row" key={`${p.ymStr}${i}`}>
-                    <button onClick={() => this.requestPDF(i)}
-                            className={props.BTN_CLASSES}>
-                        {FA_DOWNLOAD} &nbsp; {p.ymStr} / {p.start} ~ {p.end}
-                    </button>
-                </div>
-            )(this.periods[2], 2)}
-
-
-        </div>;
     }
 }
 

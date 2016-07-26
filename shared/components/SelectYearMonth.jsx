@@ -1,25 +1,17 @@
 import React, { PropTypes, Component } from 'react';
 
-function ButtonStyle(selected) {
-    if (typeof selected !== 'boolean') throw "'selected' parameter must be a boolean value.";
-    
-    const style = {};
-    
-    if (selected) {
-        style.backgroundColor = "#fff";
-        style.color = "#000";
-    }
-    
-    return style;
-}
 
 export default class SelectYearMonth extends Component {
     static propTypes = {
         setDateRange: PropTypes.func.isRequired,  // callback
+        HIGHLIGHTED_BTN: PropTypes.object.isRequired,
+        BTN_CLASSES: PropTypes.string.isRequired,
+        year: PropTypes.number.isRequired,
+        month: PropTypes.number,  // not required
     }
     
     state = {
-        year: this.props.year || new Date().getFullYear(),
+        year: this.props.year,
         month: this.props.month || undefined,
     }
     
@@ -50,15 +42,18 @@ export default class SelectYearMonth extends Component {
     }
     
     render() {
+        console.log("SYM");
+        console.dir(this.state);
+        const props = this.props;
+        
         return <div className="row">
             <div className="col-md-4" style={{padding: "0px"}}>
                 {
                     this.years.map(year => 
                    <button className="form-control btn btn-warning" 
-                       style={ButtonStyle(year === this.state.year)}
-                       key={year} value={year}
-                       onClick={() => this.setYear(year)}
-                       >
+                           style={year === this.state.year ? props.HIGHLIGHTED_BTN : {}}
+                           key={year} value={year}
+                           onClick={() => this.setYear(year)} >
                        {year + "年"}
                    </button>
                     )
@@ -67,9 +62,8 @@ export default class SelectYearMonth extends Component {
             <div className="col-md-8" style={{padding: "0px"}}>
                 
                <button className="row form-control btn btn-warning" 
-                   style={ButtonStyle(this.state.month === undefined)}
-                   onClick={() => this.setMonth(undefined)}
-                   >
+                       style={this.state.month === undefined ? props.HIGHLIGHTED_BTN : {}}
+                       onClick={() => this.setMonth(undefined)} >
                    整年
                </button>
                 
@@ -77,11 +71,10 @@ export default class SelectYearMonth extends Component {
                     <div className="col-md-4" style={{padding: "0px"}}>
                             {
                                 [0,1,2,3].map(month => 
-                                   <button className="form-control btn btn-warning" 
-                                       style={ButtonStyle(month === this.state.month)}
-                                       key={month} value={month}
-                                       onClick={() => this.setMonth(month)}
-                                       >
+                                   <button className={props.BTN_CLASSES} 
+                                           style={month === this.state.month ? props.HIGHLIGHTED_BTN : {}}
+                                           key={month} value={month}
+                                           onClick={() => this.setMonth(month)} >
                                        {(month+1) + "月"}
                                    </button>
                                 )
@@ -90,11 +83,10 @@ export default class SelectYearMonth extends Component {
                     <div className="col-md-4" style={{padding: "0px"}}>
                             {
                                 [4,5,6,7].map((month) => 
-                                   <button className="form-control btn btn-warning" 
-                                       style={ButtonStyle(month === this.state.month)}
-                                       key={month} value={month}
-                                       onClick={() => this.setMonth(month)}
-                                       >
+                                   <button className={props.BTN_CLASSES} 
+                                           style={month === this.state.month ? props.HIGHLIGHTED_BTN : {}}
+                                           key={month} value={month}
+                                           onClick={() => this.setMonth(month)} >
                                        {(month+1) + "月"}
                                    </button>
                                 )
@@ -103,11 +95,10 @@ export default class SelectYearMonth extends Component {
                     <div className="col-md-4" style={{padding: "0px"}}>
                             {
                                 [8,9,10,11].map((month) => 
-                                   <button className="form-control btn btn-warning" 
-                                       style={ButtonStyle(month === this.state.month)}
-                                       key={month} value={month}
-                                       onClick={() => this.setMonth(month)}
-                                       >
+                                   <button className={props.BTN_CLASSES} 
+                                           style={month === this.state.month ? props.HIGHLIGHTED_BTN : {}}
+                                           key={month} value={month}
+                                           onClick={() => this.setMonth(month)} >
                                        {(month+1) + "月"}
                                    </button>
                                 )
