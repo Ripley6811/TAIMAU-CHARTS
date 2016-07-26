@@ -19,6 +19,9 @@ class AppLayout extends Component {
         children: PropTypes.object.isRequired,
     }
 
+    /**
+     * Used for both the sidebar and padding for main window.
+     */
     get sidebarWidth() {
         return '200px';
     }
