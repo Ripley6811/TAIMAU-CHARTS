@@ -68,10 +68,10 @@ class Sidebar extends Component {
     componentWillMount() {
         // Load "query" parameters from local storage on client-side
         if (typeof window !== 'undefined') {
-            this.location = window.location.pathname;
-            if (!!window.localStorage[this.stateStorageKey]) {
+            this.location = location.pathname;
+            if (!!localStorage[LOCALSTORAGE_KEY_FOR_STATE]) {
                 this.setState(
-                    JSON.parse(window.localStorage[this.stateStorageKey]),
+                    JSON.parse(localStorage[LOCALSTORAGE_KEY_FOR_STATE]),
                     this.updateSavedQuery
                 );
             }

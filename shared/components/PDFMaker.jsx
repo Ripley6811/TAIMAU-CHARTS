@@ -96,8 +96,8 @@ class PDFMaker extends Component {
     componentWillMount() {
         // Load "query" parameters from local storage on client-side
         if (typeof window !== 'undefined') {
-            if (!!localStorage[PERIOD_STORAGE_KEY]) {
-                this.setState(JSON.parse(localStorage[PERIOD_STORAGE_KEY]));
+            if (!!localStorage[LOCALSTORAGE_KEY_FOR_STATE]) {
+                this.setState(JSON.parse(localStorage[LOCALSTORAGE_KEY_FOR_STATE]));
             }
         }
     }
