@@ -41,9 +41,8 @@ const CompanyColumn = props => React.createElement(
 );
 
 CompanyColumn.propTypes = {
-    selectedCompany: PropTypes.string.isRequired,
-    selectedDept: PropTypes.string.isRequired,
     company: PropTypes.string.isRequired,
+    depts: PropTypes.arrayOf( PropTypes.string ).isRequired,
     onClick: PropTypes.func.isRequired,
     BTN_CLASS_STRING: PropTypes.string.isRequired,
     HIGHLIGHTED_BTN: PropTypes.object.isRequired,

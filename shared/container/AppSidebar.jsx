@@ -17,6 +17,7 @@ import PDFMaker from '../components/PDFMaker';
 const BTN_CLASS_STRING = "btn btn-warning form-control",
       HIGHLIGHTED_BTN = {backgroundColor: "white", /* text */ color: "black"},
       LOCALSTORAGE_KEY_FOR_STATE = "query",
+      FA_SPINNING_COG = <i className="fa fa-cog fa-2x slow-spin" aria-hidden="true" />,
       PAGE_NAV_BTNS = [ 
           {text: "ChartView | 數量圖表", route: "/"},
           {text: "Shipments | 出貨紀錄", route: "/shipments"},
@@ -61,8 +62,7 @@ export default connect(
      * "Will Mount" necessary to set state properly before rendering. "Did Mount" fails this.
      */
     componentWillMount = () => {
-        console.dir(this.props);
-        // Load "query" parameters from local storage on client-side
+        // Load last used "query" parameters from local storage on client-side
         if (typeof window !== 'undefined') {
             this.location = location.pathname;
             if (!!localStorage[LOCALSTORAGE_KEY_FOR_STATE]) {
@@ -128,7 +128,7 @@ export default connect(
                                 right: "20px",
                                 zIndex: "1"}}
                     onClick={() => this.gotoRoute('/settings')}>
-                    <i className="fa fa-cog fa-2x fa-flip-horizontal slow-spin" aria-hidden="true" />
+                    {FA_SPINNING_COG}
                   </button>
             </div>
             <hr />
@@ -151,10 +151,8 @@ export default connect(
               deptLinks.map(rec =>
                 <CompanyColumn key={rec.company}
                     company={rec.company} 
-                    onClick={this.setSelectedDept}
-                    selectedCompany={this.state.company || ""}
-                    selectedDept={this.state.dept || ""}
                     depts={rec.departments}
+                    onClick={this.setSelectedDept}
                     BTN_CLASS_STRING={BTN_CLASS_STRING}
                     HIGHLIGHTED_BTN={HIGHLIGHTED_BTN} />
               )
