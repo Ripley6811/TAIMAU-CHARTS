@@ -20,6 +20,7 @@ const HIGHLIGHTED_BTN = {
 
 
 const BTN_CLASSES = "btn btn-warning form-control";
+const LOCALSTORAGE_KEY_FOR_STATE = "query";
 
 
 const CompanyColumn = (props) =>
@@ -56,8 +57,6 @@ class Sidebar extends Component {
         width: PropTypes.string.isRequired,
         dispatch: PropTypes.func.isRequired,
     }
-
-    get stateStorageKey() { return "query"; }
 
     state = {  // Initial state == Query parameters
         company: undefined,
@@ -100,7 +99,7 @@ class Sidebar extends Component {
 
     updateSavedQuery() {
         // Save most recent query in local storage and in redux store
-        window.localStorage.setItem([this.stateStorageKey], JSON.stringify(this.state));
+        localStorage.setItem([LOCALSTORAGE_KEY_FOR_STATE], JSON.stringify(this.state));
         this.props.dispatch(Actions.updateSavedQuery(this.state));
         this.props.dispatch(Actions.fetchShipments(this.state));
     }
@@ -159,7 +158,7 @@ class Sidebar extends Component {
             <hr />
               <div className="row">
             {
-              props.deptLinks.map((rec) =>
+              props.deptLinks.map(rec =>
                 <CompanyColumn title={rec.company} key={rec.company}
                     onClick={this.setSelectedDept}
                     selectedCompany={this.state.company}
@@ -172,7 +171,9 @@ class Sidebar extends Component {
             <SelectYearMonth
                 year={this.state.year}
                 month={this.state.month}
-                setDateRange={this.setDateRange} />
+                setDateRange={this.setDateRange}
+                BTN_CLASSES={BTN_CLASSES}
+                HIGHLIGHTED_BTN={HIGHLIGHTED_BTN} />
 
 
             <hr />
