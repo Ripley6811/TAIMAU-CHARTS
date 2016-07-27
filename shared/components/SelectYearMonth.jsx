@@ -53,7 +53,7 @@ class SelectYearMonth extends Component {
         return <div className="row">
             <div className="col-md-4" style={{padding: "0px"}}>
                 { YEARS_ARRAY.map(year => 
-                    <button className="form-control btn btn-warning" 
+                    <button className={BTN_CLASS_STRING} 
                             style={year === this.state.year ? HIGHLIGHTED_BTN : {}}
                             key={year} value={year}
                             onClick={() => this.setYear(year)} >
@@ -62,11 +62,13 @@ class SelectYearMonth extends Component {
                 ) }
             </div>
             <div className="col-md-8" style={{padding: "0px"}}>
-                <button className="row form-control btn btn-warning" 
-                        style={this.state.month === undefined ? HIGHLIGHTED_BTN : {}}
-                        onClick={() => this.setMonth(undefined)} >
-                    整年
-                </button>
+                <div className="row">
+                    <button className={BTN_CLASS_STRING}
+                            style={this.state.month === undefined ? HIGHLIGHTED_BTN : {}}
+                            onClick={() => this.setMonth(undefined)} >
+                        整年
+                    </button>
+                </div>
                 <div className="row">
                     { [0,4,8].map(i => 
                         <div className="col-md-4" key={`${i}-${i}`} style={{padding: "0px"}}>

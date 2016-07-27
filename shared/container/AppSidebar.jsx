@@ -14,8 +14,14 @@ import SelectYearMonth from '../components/SelectYearMonth';
 import PDFMaker from '../components/PDFMaker';
 
 
-const BTN_CLASS_STRING = "btn btn-warning form-control",
-      HIGHLIGHTED_BTN = {backgroundColor: "white", /* text */ color: "black"},
+const BTN_CLASS_STRING = "btn form-control btn-properties",
+      HIGHLIGHTED_BTN = {
+          backgroundColor: "white",
+          boxShadow: "4px 3px 6px black",
+          left: "-2px",
+          top: "-2px",
+          zIndex: "10",
+      },
       LOCALSTORAGE_KEY_FOR_STATE = "query",
       FA_SPINNING_COG = <i className="fa fa-cog fa-2x slow-spin" aria-hidden="true" />,
       PAGE_NAV_BTNS = [ 
@@ -120,8 +126,7 @@ export default connect(
           <div className="sidebar-content"
                style={{padding: '10px', margin: '0 auto -100px', height: '100%'}}>
               <div className="text-center">
-                <img src="../img/logo.png"
-                     style={{position: "relative", borderRadius: '22px 50px 7px 18px', zIndex: "2"}} />
+                <img src="../img/logo.png" className="logo-style" />
                 <button style={{backgroundColor: "inherit",
                                 borderStyle: "inherit",
                                 position: "absolute",
