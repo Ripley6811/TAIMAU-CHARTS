@@ -1,16 +1,19 @@
-import React, { PropTypes } from 'react';
-
 /**
- * Although the imported "React" etc. are not seen below, 
+ * @overview Display a table of data. Used in "ChartsView.jsx
+ * Note: Although the imported "React" etc. are not seen below, 
  * They appear after conversion from JSX to JavaScript.
  */
+import React, { PropTypes } from 'react';
+
 
 AggregatedTable.defaultProps = {
     data: [[],[]],
     totals: [[],[],[]],
 }
 
-export default function AggregatedTable(props) { return (
+
+export default 
+function AggregatedTable(props) { return (
 <table className="table-bordered table-condensed cell-height-min" 
     style={{fontSize: "16px"}}>
 

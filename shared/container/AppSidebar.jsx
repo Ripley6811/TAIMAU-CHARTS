@@ -28,7 +28,7 @@ const BTN_CLASS_STRING = "btn btn-warning form-control",
 export default connect(
     ({deptLinks}) => ({deptLinks}),  // Pull items from store
     { updateSavedQuery, fetchShipments }  // Bind actions with dispatch
-)(class Sidebar extends Component {
+)(class AppSidebar extends Component {
     /**
      * Validates incoming props.
      */
@@ -116,12 +116,12 @@ export default connect(
         
         return (
         <div className="sidebar"
-            style={{width: width, position: 'fixed', height: '100%'}} >
+             style={{width: width, position: 'fixed', height: '100%'}} >
           <div className="sidebar-content"
-              style={{padding: '10px', margin: '0 auto -100px', height: '100%'}}>
+               style={{padding: '10px', margin: '0 auto -100px', height: '100%'}}>
               <div className="text-center">
                 <img src="../img/logo.png"
-                    style={{position: "relative", borderRadius: '22px 50px 7px 18px', zIndex: "2"}} />
+                     style={{position: "relative", borderRadius: '22px 50px 7px 18px', zIndex: "2"}} />
                 <button style={{backgroundColor: "inherit",
                                 borderStyle: "inherit",
                                 position: "absolute",
@@ -132,8 +132,7 @@ export default connect(
                   </button>
             </div>
             <hr />
-              {
-                  PAGE_NAV_BTNS.map(({text, route}, i) =>
+                { PAGE_NAV_BTNS.map(({text, route}, i) =>
                     <div className="row" key={i+route}>
                         <div>
                         <button className={BTN_CLASS_STRING} type="button"
@@ -143,21 +142,18 @@ export default connect(
                         </button>
                         </div>
                     </div>
-                    )
-              }
+                ) }
             <hr />
-              <div className="row">
-            {
-              deptLinks.map(rec =>
-                <CompanyColumn key={rec.company}
-                    company={rec.company} 
-                    depts={rec.departments}
-                    onClick={this.setSelectedDept}
-                    BTN_CLASS_STRING={BTN_CLASS_STRING}
-                    HIGHLIGHTED_BTN={HIGHLIGHTED_BTN} />
-              )
-            }
-              </div>
+            <div className="row">
+                { deptLinks.map(rec =>
+                    <CompanyColumn key={rec.company}
+                        company={rec.company} 
+                        depts={rec.departments}
+                        onClick={this.setSelectedDept}
+                        BTN_CLASS_STRING={BTN_CLASS_STRING}
+                        HIGHLIGHTED_BTN={HIGHLIGHTED_BTN} />
+                ) }
+            </div>
             <hr />
             <SelectYearMonth
                 year={this.state.year}
@@ -165,7 +161,6 @@ export default connect(
                 setDateRange={this.setDateRange}
                 BTN_CLASS_STRING={BTN_CLASS_STRING}
                 HIGHLIGHTED_BTN={HIGHLIGHTED_BTN} />
-
             <hr />
             <PDFMaker
                 company={this.state.company}
@@ -174,10 +169,9 @@ export default connect(
                 BTN_CLASS_STRING={BTN_CLASS_STRING} />
           </div>
 
-
            <div className="footer" style={{height: '100px'}} >
              <p>&copy; 2016 &middot; Jay W Johnson</p>
-             <p>GitHub : <a href="https://github.com/Ripley6811" target="_Blank">Ripley6811</a></p>
+             <p>GitHub &middot; <a href="https://github.com/Ripley6811" target="_Blank">Ripley6811</a></p>
            </div>
         </div>
       );

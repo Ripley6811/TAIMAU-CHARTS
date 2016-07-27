@@ -1,33 +1,43 @@
+/**
+ * @overview Place to enter sets of shipments.
+ */
 import React, { Component, PropTypes } from 'react';
-// Redux
 import { connect } from 'react-redux';
-import * as Actions from '../redux/actions/actions';
+// Actions
+import { fetchShipmentTemplates } from '../redux/actions/actions';
 
 
-class ShipmentCreator extends Component {
+const GLYPHICON_ARROW_LEFT = <span className="glyphicon glyphicon-arrow-left"></span>,
+      GLYPHICON_PLUS = <span className="glyphicon glyphicon-plus"></span>,
+      GLYPHICON_MINUS = <span className="glyphicon glyphicon-minus"></span>;
+
+
+export default connect(
+    ({ query, templates }) => ({ query, templates }),  // Pull items from store
+    { fetchShipmentTemplates }  // Bind actions with dispatch
+)(class ShipmentCreator extends Component {
     static propTypes = {
+        // Parent
         submitShipments: PropTypes.func.isRequired,
-        templates: PropTypes.array,
-        query: PropTypes.object,
-        dispatch: PropTypes.func,
-    }
-
-    static defaultProps = {
-        templates: [],
-        shipments: []
+        // Store
+        templates: PropTypes.array.isRequired,
+        query: PropTypes.object.isRequired,
+        // Actions
+        fetchShipmentTemplates: PropTypes.func.isRequired,
     }
 
     state = {
         newShipments: [],
     }
 
-    componentWillMount() {
+    componentWillMount = () => {
         // Ensure required data is loaded.
-        if (this.props.templates.length === 0)
-            this.props.dispatch(Actions.fetchShipmentTemplates());
+        if (this.props.templates.length === 0) {
+            this.props.fetchShipmentTemplates();
+        }
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps = (nextProps) => {
         // If company selection changes, then delete new shipments list.
         const key = "company";
         if (nextProps.query[key] !== this.props.query[key]) {
@@ -56,7 +66,7 @@ class ShipmentCreator extends Component {
      * @param   {string} unit Unit name
      * @returns {Array}  Array of templates matching dept and unit.
      */
-    getProdOptions(dept, unit) {
+    getProdOptions = (dept, unit) => {
         return this.filteredTemplates.filter(each => each.dept === dept && each.unit === unit);
     }
 
@@ -179,15 +189,15 @@ class ShipmentCreator extends Component {
     }
 
     render() {
-        const props = this.props;
+        const { company } = this.props.query,
+              { newShipments } = this.state;
 
-        if (!props.query.company) {
+        if (!company) {
             return (
             <div>
             <legend>Create New Shipment</legend>
                 <h2>
-                    <span className="glyphicon glyphicon-arrow-left"></span>
-                    &nbsp;Select a company
+                    {GLYPHICON_ARROW_LEFT} &nbsp; Select a company
                 </h2>
             </div>
             )
@@ -199,13 +209,13 @@ class ShipmentCreator extends Component {
             <div className="form-group row">
                 <div className="col-xs-1 text-right" style={{padding: "0px"}}>
                     <button className="btn btn-success"
-                        onClick={this.addRow}>
-                        <span className="glyphicon glyphicon-plus"></span>
+                            onClick={this.addRow}>
+                        {GLYPHICON_PLUS}
                     </button>
                 </div>
                 <div className="col-xs-3 text-center"
-                    style={{fontSize: "30px"}}>
-                    {props.query.company}
+                     style={{fontSize: "30px"}}>
+                    {company}
                 </div>
                 <div className="col-xs-3 text-center">
                     <h5>
@@ -213,55 +223,55 @@ class ShipmentCreator extends Component {
                     </h5>
                 </div>
             </div>
-            {this.state.newShipments.map((each,i) =>
+            { newShipments.map((each,i) =>
             <div key={`${each}${i}`} className="row">
                 { /** REMOVE BUTTON */ }
                 <div className="col-xs-1 text-right" style={{padding: "0px"}}>
                     <button className="btn btn-danger"
                             onClick={() => this.removeRow(i)}>
-                        <span className="glyphicon glyphicon-minus"></span>
+                        {GLYPHICON_MINUS}
                     </button>
                 </div>
                 { /** DATE INPUT */ }
                 <div className="col-xs-3" style={{padding: "0px"}}>
                     <input className="form-control" type="date" value={each.date}
-                        onChange={e => this.setProperty(i, "date", e.target.value)} />
+                           onChange={e => this.setProperty(i, "date", e.target.value)} />
                 </div>
                 { /** DEPT-UNIT SELECTION LIST */ }
                 <div className="col-xs-2" style={{padding: "0px"}}>
                 <select className="form-control"
-                    onChange={e => this.setDeptUnit(e,i)}>
-                    {this.deptOptions.map((temp, i2) =>
+                        onChange={e => this.setDeptUnit(e,i)}>
+                    { this.deptOptions.map((temp, i2) =>
                         <option key={i2} value={i2}>
                             {temp.dept} {temp.unit}
                         </option>
-                    )}
+                    ) }
                 </select>
                 </div>
                 { /** PRODUCT SELECTION LIST */ }
                 <div className="col-xs-2" style={{padding: "0px"}}>
                 <select className="form-control"
                     onChange={e => this.setProduct(e,i)}>
-                    {this.getProdOptions(each.dept, each.unit).map((temp, i2) =>
+                    { this.getProdOptions(each.dept, each.unit).map((temp, i2) =>
                         <option key={`${temp.pn}${i2}`} value={i2}>
                             {temp.product} &nbsp;&nbsp; {temp.pn}
                         </option>
-                    )}
+                    ) }
                 </select>
                 </div>
                 { /** AMOUNT INPUT */ }
                 <div className="col-xs-2" style={{padding: "0px"}}>
                     <input className="form-control" type="number"
-                        placeholder="需求量"
-                        value={each.amount}
-                        onChange={e => this.setProperty(i, "amount", e.target.value)}></input>
+                           placeholder="需求量"
+                           value={each.amount}
+                           onChange={e => this.setProperty(i, "amount", e.target.value)}></input>
                 </div>
                 { /** NOTE INPUT */ }
                 <div className="col-xs-2" style={{padding: "0px"}}>
                     <input className="form-control" type="text"
-                        placeholder="備註"
-                        value={each.note}
-                        onChange={e => this.setProperty(i, "note", e.target.value)}></input>
+                           placeholder="備註"
+                           value={each.note}
+                           onChange={e => this.setProperty(i, "note", e.target.value)}></input>
                 </div>
             </div>
             )}
@@ -269,36 +279,28 @@ class ShipmentCreator extends Component {
             <div className="row" style={{margin: "8px"}}>
                 { /** REF PAGE INPUT */ }
                 <label className="col-xs-2 form-control-label text-right"
-                    style={{padding: "5px", margin: "0px"}}>參考頁</label>
+                       style={{padding: "5px", margin: "0px"}}>參考頁</label>
                 <div className="col-xs-1">
                     <input className="form-control"
-                        type="number" ref="refPage" placeholder="#"
-                        onChange={this.setReference} />
+                           type="number" ref="refPage" placeholder="#"
+                           onChange={this.setReference} />
                 </div>
                 <div className="col-xs-2 text-center">
                     <button className="btn btn-success"
-                        onClick={this.submitNewShipments}
-                        disabled={this.state.newShipments.length < 1}>
-                    提交 / Submit
+                            onClick={this.submitNewShipments}
+                            disabled={newShipments.length < 1}>
+                        提交 / Submit
                     </button>
                 </div>
                 <div className="col-xs-2 col-xs-push-2 text-center">
                     <button className="btn btn-warning"
-                        onClick={this.clearAllTextInputs}
-                        disabled={this.state.newShipments.length < 1}>
-                    Clear All
+                            onClick={this.clearAllTextInputs}
+                            disabled={newShipments.length < 1}>
+                        Clear All
                     </button>
                 </div>
             </div>
         </div>
         );
     }
-}
-
-const mapStateToProps = store => ({
-    query: store.query,
-    shipment: store.shipment,
-    templates: store.templates,
 });
-
-export default connect(mapStateToProps)(ShipmentCreator)

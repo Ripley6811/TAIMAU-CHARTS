@@ -68,36 +68,18 @@ class SelectYearMonth extends Component {
                     整年
                 </button>
                 <div className="row">
-                    <div className="col-md-4" style={{padding: "0px"}}>
-                        { [0,1,2,3].map(month => 
-                            <button className={BTN_CLASS_STRING} 
-                                    style={month === this.state.month ? HIGHLIGHTED_BTN : {}}
-                                    key={month} value={month}
-                                    onClick={() => this.setMonth(month)} >
-                                {(month+1) + "月"}
-                            </button>
-                        ) }
-                    </div>
-                    <div className="col-md-4" style={{padding: "0px"}}>
-                        { [4,5,6,7].map((month) => 
-                            <button className={BTN_CLASS_STRING} 
-                                    style={month === this.state.month ? HIGHLIGHTED_BTN : {}}
-                                    key={month} value={month}
-                                    onClick={() => this.setMonth(month)} >
-                                {(month+1) + "月"}
-                            </button>
-                        ) }
-                    </div>
-                    <div className="col-md-4" style={{padding: "0px"}}>
-                        { [8,9,10,11].map((month) => 
-                            <button className={BTN_CLASS_STRING} 
-                                    style={month === this.state.month ? HIGHLIGHTED_BTN : {}}
-                                    key={month} value={month}
-                                    onClick={() => this.setMonth(month)} >
-                                {(month+1) + "月"}
-                            </button>
-                        ) }
-                    </div>
+                    { [0,4,8].map(i => 
+                        <div className="col-md-4" key={`${i}-${i}`} style={{padding: "0px"}}>
+                            { [0+i,1+i,2+i,3+i].map(month => 
+                                <button className={BTN_CLASS_STRING} 
+                                        style={month === this.state.month ? HIGHLIGHTED_BTN : {}}
+                                        key={month} value={month}
+                                        onClick={() => this.setMonth(month)} >
+                                    {(month+1) + "月"}
+                                </button>
+                            ) }
+                        </div>
+                    ) }
                 </div>
             </div>
         </div>

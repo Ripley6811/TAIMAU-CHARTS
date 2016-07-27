@@ -155,18 +155,18 @@ export default function(data) {
             }
         }
     }
-    for (let i=0; i<pnData.length; i++) {
-        if (productOrder.indexOf(pnData[i].pn) >= 0) { continue; }
+    for (let each of pnData) {
+        if (productOrder.indexOf(each.pn) >= 0) { continue; }
 
         posY += 5;
-        doc.altText(LEFT_MARGIN, posY, pnData[i].product, DEFAULT_FONT_SIZE);
-        doc.altText(LEFT_MARGIN+30, posY, pnData[i].pn, DEFAULT_FONT_SIZE-2);
+        doc.altText(LEFT_MARGIN, posY, each.product, DEFAULT_FONT_SIZE);
+        doc.altText(LEFT_MARGIN+30, posY, each.pn, DEFAULT_FONT_SIZE-2);
         let allUnitsTotal = 0;
         let ui;
         for (ui=0; ui<unitNames.length; ui++) {
             const UNIT = unitNames[ui];
-            doc.altText(LEFT_MARGIN+70+UNIT_AMT_SPACING*ui, posY, pnData[i][UNIT] || "", DEFAULT_FONT_SIZE);
-            allUnitsTotal += pnData[i][UNIT] || 0;
+            doc.altText(LEFT_MARGIN+70+UNIT_AMT_SPACING*ui, posY, each[UNIT] || "", DEFAULT_FONT_SIZE);
+            allUnitsTotal += each[UNIT] || 0;
         }
         // Show totals if more then one unit is shown.
         if (unitNames.length > 1) {
@@ -207,7 +207,6 @@ export default function(data) {
         posY+= 5;
     }
 
-
-
+    
     doc.output('dataurlnewwindow');
 }

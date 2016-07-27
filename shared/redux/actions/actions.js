@@ -1,30 +1,26 @@
 /**
- * @overview
+ * @overview Redux actions / AJAX requests.
  */
-import Config from '../../../server/config';
+import { baseURL } from '../../../server/config';
+import { encodeQuery } from '../../utils/utils';
 /**
  * `fetch` is a replacement for using XMLHttpRequest and employs ES6 "Promise"
  * https://github.com/matthew-andrews/isomorphic-fetch
  */
 import fetch from 'isomorphic-fetch';
 
-/**
- *
- * @param   {object} params Simple one-level (non-nested) object.
- * @returns {string} Query parameter string to add after "?".
- */
-function encodeQueryParameters(params) {
-    return Object.keys(params)
-        .map(
-            key => encodeURI(`${key}=${params[key]}`)
-        ).join("&");
-}
 
-const baseURL = typeof window === 'undefined' ? process.env.BASE_URL || (`http://localhost:${Config.port}`) : '';
+export const UPDATE_QUERY           = Symbol(),
+             ADD_SHIPMENTS          = Symbol(),
+             ADD_TEMPLATE           = Symbol(),
+             ADD_SELECTED_SHIPMENT  = Symbol(),
+             LOAD_SHIPMENTS         = Symbol(),
+             LOAD_TEMPLATES         = Symbol(),
+             ADD_DEPT_LINKS         = Symbol(),
+             DELETE_SHIPMENT        = Symbol(),
+             DELETE_TEMPLATE        = Symbol();
 
 
-
-export const UPDATE_QUERY = 'UPDATE_QUERY';
 export function updateSavedQuery(query) {
     return {
         type: UPDATE_QUERY,
@@ -33,33 +29,6 @@ export function updateSavedQuery(query) {
 }
 
 
-export function requestTriMonthlyPDF(company, startDate, endDate, callback) {
-    const URL = `${baseURL}/api/shipmentsPDF?` +
-          `company=${company}&start=${startDate}&end=${endDate}`;
-    return fetch(URL).
-        then(res => res.json()).
-        then(jsonData => callback(jsonData));
-}
-
-
-export function requestWasteWaterPDF(company, startDate, endDate, callback) {
-    const URL = `${baseURL}/api/shipmentsPDF?` +
-          `company=${company}&start=${startDate}&end=${endDate}&unit=廢水`;
-    return fetch(URL).
-        then(res => res.json()).
-        then(jsonData => callback(jsonData));
-}
-
-
-export function getAllProducts(callback) {
-    const URL = `${baseURL}/api/product`;
-    return fetch(URL).
-        then(res => res.json()).
-        then(records => callback(records));
-}
-
-
-export const ADD_SHIPMENTS = 'ADD_SHIPMENTS';
 /**
  * Used in `ShipmentContainer`.
  * @param   {object}   shipment New shipment data to send.
@@ -85,10 +54,10 @@ export function addShipmentsRequest(shipments) {
     };
 }
 // Routes single shipment to multiple shipment method
-export const addShipmentRequest = (shipment) =>addShipmentsRequest([shipment]);
+export const addShipmentRequest = (shipment) => 
+             addShipmentsRequest([shipment]);
 
 
-export const ADD_TEMPLATE = 'ADD_TEMPLATE';
 export function addTemplateRequest(template) {
     const reducerFormat = (template) => ({
         type: ADD_TEMPLATE,
@@ -113,7 +82,7 @@ export function addTemplateRequest(template) {
 }
 
 
-export const ADD_SELECTED_SHIPMENT = 'ADD_SELECTED_SHIPMENT';
+
 /**
  * Set the `state.shipment` to the selected shipment.
  * @param   {object} shipment Shipment data object
@@ -127,7 +96,7 @@ export function addSelectedShipment(shipment) {
 }
 
 
-export const LOAD_SHIPMENTS = 'LOAD_SHIPMENTS';
+
 /**
  * Runs on server side first in ShipmentContainer.
  * @returns {function} Promise to send AJAX results to reducer.
@@ -144,18 +113,16 @@ export function fetchShipments() {
         if (params[key] === undefined) delete params[key];
     }
 
-    const paramString = "?" + encodeQueryParameters(params);
-
     // "dispatch" is a callback that runs the reducer.
     return (dispatch) => {
-        return fetch(`${baseURL}/api/shipment${paramString}`).
+        return fetch(`${baseURL}/api/shipment?${encodeQuery(params)}`).
         then((res) => res.json()).
         then((res) => dispatch(reducerFormat(res.shipments)));
     };
 }
 
 
-export const LOAD_TEMPLATES = 'LOAD_TEMPLATES';
+
 export function fetchShipmentTemplates() {
     const reducerFormat = (templates) => {
         return {
@@ -173,7 +140,7 @@ export function fetchShipmentTemplates() {
 }
 
 
-export const ADD_DEPT_LINKS = 'ADD_DEPT_LINKS';
+
 export function fetchDepartments() {
     const reducerFormat = (records) => {
         return {
@@ -191,7 +158,7 @@ export function fetchDepartments() {
 }
 
 
-export const DELETE_SHIPMENT = 'DELETE_SHIPMENT';
+
 export function deleteShipmentRequest(shipment) {
     const reducerFormat = (shipment) => ({
         type: DELETE_SHIPMENT,
@@ -216,7 +183,7 @@ export function deleteShipmentRequest(shipment) {
 }
 
 
-export const DELETE_TEMPLATE = 'DELETE_TEMPLATE';
+
 export function deleteTemplateRequest(template) {
     const reducerFormat = (template) => {
         const newTemplate = Object.assign({}, template);

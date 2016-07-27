@@ -1,25 +1,24 @@
+/**
+ * @overview Displays tables and D3 diagrams for a company/department.
+ */
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-
-import * as Actions from '../redux/actions/actions';
-
+// Components
 import AggregatedTable from '../components/AggregatedTable';
 import Pie from '../components/Pie';
 import YearGraph from '../components/YearGraph';
 
-class ChartsView extends Component {
+
+export default connect(
+    ({shipments, query}) => ({shipments, query})  // Pull items from store
+)(class ChartsView extends Component {
     static propTypes = {
         query: PropTypes.shape({
                 year: PropTypes.number,
                 month: PropTypes.number,
         }).isRequired,
-        shipments: PropTypes.array,
+        shipments: PropTypes.array.isRequired,
     };
-
-    static defaultProps = {
-        query: {},
-        shipments: [],
-    }
 
     get datesArray() {
         const retArray = [],
@@ -40,19 +39,20 @@ class ChartsView extends Component {
     }
 
     get isFullYear() {
-        const hasYear = typeof this.props.query.year === "number";
-        const hasMonth = typeof this.props.query.month === "number";
+        const { query } = this.props,
+              hasYear = typeof query.year === "number",
+              hasMonth = typeof query.month === "number";
         return hasYear && !hasMonth;
     }
 
     getDataArrays = () => {
-        const props = this.props;
+        const { query, shipments } = this.props;
 
         // Build arrays for display (aggregate shipment data).
         const dataArray = this.datesArray.map(each => [each]);
         const dataTotals = [];
 
-        const dateLength = (typeof props.query.month === "number") ? 10 : 7;
+        const dateLength = (typeof query.month === "number") ? 10 : 7;
 
         if (typeof d3 !== "undefined") {  // Ignore D3.js reference error on server-side
             // Calculates the product totals across all dates
@@ -60,14 +60,14 @@ class ChartsView extends Component {
                 .key(d => d.unit)
                 .key(d => d.product)
                 .rollup(v => d3.sum(v, d => d.amount))
-                .map(props.shipments);
+                .map(shipments);
 
             // Creates a object tree of units->depts
             let header = d3.nest()
                 .key(d => d.unit)
                 .key(d => d.product)
                 .rollup(v => ({}))
-                .map(props.shipments);
+                .map(shipments);
 
             let headArray = [];
             for (let unit in header) {
@@ -77,8 +77,8 @@ class ChartsView extends Component {
             }
 
             // Adds daily totals to `header`
-            for (let i=0; i<props.shipments.length; i++) {
-                const s = props.shipments[i];
+            for (let i=0; i<shipments.length; i++) {
+                const s = shipments[i];
                 const oldAmt = header[s.unit][s.product][s.date.substring(0,dateLength)] || 0;
                 header[s.unit][s.product][s.date.substring(0,dateLength)] = s.amount + oldAmt;
             }
@@ -98,7 +98,7 @@ class ChartsView extends Component {
 
             // Adds headers to `dataArray`
             dataArray.unshift(["日期"].concat(headArray.map(head => head[1])));
-            dataArray.unshift([this.props.query.dept].concat(headArray.map(head => head[0])));
+            dataArray.unshift([query.dept].concat(headArray.map(head => head[0])));
 
             // Creates 2D array of prods and grand totals
             dataTotals.push([""].concat(headArray.map(head => head[0])));
@@ -110,10 +110,10 @@ class ChartsView extends Component {
     }
 
     render() {
-        const props = this.props;
-        const [dataArray, dataTotals] = this.getDataArrays();
+        const { query } = this.props,
+              [dataArray, dataTotals] = this.getDataArrays();
 
-        if (!!props.query.dept) {
+        if (!!query.dept) {
             return (
                 <div className="container">
                     <div className="row">
@@ -156,13 +156,4 @@ class ChartsView extends Component {
             </div>
         );
     }
-}
-
-
-// Retrieve data from store as props
-const mapStateToProps = (store) => ({
-      shipments: store.shipments,
-      query: store.query,
 });
-
-export default connect(mapStateToProps)(ChartsView);

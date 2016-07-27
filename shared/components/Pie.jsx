@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 
 
+export default
 class Pie extends Component {
     static propTypes = {
         fullYear: PropTypes.bool.isRequired,
@@ -10,7 +11,7 @@ class Pie extends Component {
      * Reformats the incoming data to use in pie chart.
      * @returns {Array} Array of data for pie chart
      */
-    getData() {
+    getData = () => {
         const d = this.props.data,
               newDataArray = [],
               MIN_ARRAY_SIZE = 6;
@@ -34,9 +35,7 @@ class Pie extends Component {
         return newDataArray;
     }
 
-    componentDidMount() {  // D3 create
-        console.log("MOUNTING");
-        
+    componentDidMount = () => {  // D3 create
         var width = 300;
         var height = 300;
         var radius = height/2;
@@ -57,7 +56,7 @@ class Pie extends Component {
         this.forceUpdate();
     }
     
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate = (nextProps, nextState) => {
         const a1 = this.props.data[2];
         const a2 = nextProps.data[2];
         const yearMonthChanged = this.props.fullYear !== nextProps.fullYear;
@@ -67,13 +66,13 @@ class Pie extends Component {
             yearMonthChanged;
     }
 
-    componentDidUpdate(prevProps, prevState) {  // D3 update
-        const self = this;
-        const CAT20B_GREEN_START = 4;
-        const color = d3.scale.category20b().range().slice(CAT20B_GREEN_START);
-        const data = self.getData();
-        const LEGEND_RECT_SPACING = 18;
-        const LEGEND_SPACING = 4;
+    componentDidUpdate = (prevProps, prevState) => {  // D3 update
+        const self = this,
+              CAT20B_GREEN_START = 4,
+              color = d3.scale.category20b().range().slice(CAT20B_GREEN_START),
+              data = self.getData(),
+              LEGEND_RECT_SPACING = 18,
+              LEGEND_SPACING = 4;
 
         // select paths, use arc generator to draw
         const path = self.svg.selectAll("path")
@@ -139,13 +138,7 @@ class Pie extends Component {
         });        
     }
 
-    componentWillUnmount() {  // D3 destroy
-
-    }
-
     render() {
         return <div id="chart"></div>;
     }
 }
-
-export default Pie;

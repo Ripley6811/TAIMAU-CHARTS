@@ -1,78 +1,76 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-
-import * as Actions from '../redux/actions/actions';
-
-// COMPONENTS
+// Actions
+import { fetchShipmentTemplates } from '../redux/actions/actions';
+import { addShipmentsRequest, deleteShipmentRequest } from '../redux/actions/actions';
+// Components
 import ShipmentCreator from '../components/ShipmentCreator';
 import Table from '../components/Table';
 
 
-
-class ShipmentsView extends Component {
+export default connect(
+    ({query, shipments}) => ({query, shipments}),  // Pull items from store
+    { addShipmentsRequest, deleteShipmentRequest }  // Bind actions with dispatch
+)(class ShipmentsView extends Component {
     // Server-side data retrieval (for server rendering).
-    static need = [Actions.fetchShipmentTemplates]  // Preload for sub-component
+    static need = [fetchShipmentTemplates]  // Preload for sub-component
+  
+    /**
+     * Validates incoming props.
+     */
+    static propTypes = {  // ES7 style
+        // Props from store
+        query: PropTypes.object.isRequired,
+        shipments: PropTypes.array.isRequired,
+        // Dispatch actions
+        addShipmentsRequest: PropTypes.func.isRequired,
+        deleteShipmentRequest: PropTypes.func.isRequired,
+    }
     
     static defaultProps = {
         shipments: []
     }
 
     submitShipments = (newShipmentsArray) => {
-        this.props.dispatch(Actions.addShipmentsRequest(newShipmentsArray));
+        this.props.addShipmentsRequest(newShipmentsArray);
     }
     
     deleteShipment = (shipment) => {
         if (confirm('真的要把檔案刪除嗎?\nDo you want to delete this shipment?')) {
-            this.props.dispatch(Actions.deleteShipmentRequest(shipment));
+            this.props.deleteShipmentRequest(shipment);
         }
     }
 
     render() {
-        const props = this.props;
+        const { query, shipments } = this.props;
         let tableHeaders = ["公司", "頁", "進貨日期", "材料名稱", "需求量", "Dept", "Unit", "備註", "除"];
         let tableKeys = ["company", "refPage", "date", "product", "amount", "dept", "unit", "note"];
         
         // Remove dept and company columns if selected on sidebar and in query.
-        if (props.query.dept) {
+        if (query.dept) {
             tableHeaders = tableHeaders.filter(each => each !== "Dept");
             tableKeys = tableKeys.filter(each => each !== "dept");
         }
-        if (props.query.company) {
+        if (query.company) {
             tableHeaders = tableHeaders.filter(each => each !== "公司");
             tableKeys = tableKeys.filter(each => each !== "company");
         }
         
         // Remove time from date string.
-        props.shipments.forEach(s => s.date = s.date.substr(0,10));
+        shipments.forEach(s => s.date = s.date.substr(0,10));
         
         return (
-        <div className="container"
-             style={{maxWidth: '1400px', margin: 'auto'}}>
-            <ShipmentCreator
-                submitShipments={this.submitShipments}
-                />
-            <br />
-            <legend>Shipment History</legend>
-            <Table 
-                tableHeaders={tableHeaders}
-                tableKeys={tableKeys}
-                tableRows={props.shipments}
-                onDelete={this.deleteShipment}
-                />
-        </div>
+            <div className="container"
+                 style={{maxWidth: '1400px', margin: 'auto'}}>
+                <ShipmentCreator submitShipments={this.submitShipments} />
+                <br />
+                <legend>Shipment History</legend>
+                <Table 
+                    tableHeaders={tableHeaders}
+                    tableKeys={tableKeys}
+                    tableRows={shipments}
+                    onDelete={this.deleteShipment} />
+            </div>
         );
     }
-}
-
-// Retrieve data from store as props
-const mapStateToProps = (store) => ({
-    query: store.query,
-    shipment: store.shipment,
-    shipments: store.shipments,
 });
-
-/**
- * Redux's `connect` method injects `dispatch` method into class.
- * `mapStateToProps` makes store objects accessible as props.
- */
-export default connect(mapStateToProps)(ShipmentsView);

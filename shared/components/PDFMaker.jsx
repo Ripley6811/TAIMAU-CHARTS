@@ -5,8 +5,8 @@
 
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-// Actions
-import { requestTriMonthlyPDF, requestWasteWaterPDF } from '../redux/actions/actions';
+// Requests
+import { requestTriMonthlyPDF, requestWasteWaterPDF } from '../utils/requests/requests';
 // Components
 import createTriMonthlyPDF from './CreateTriMonthlyPDF';
 import createWasteWaterPDF from './CreateWasteWaterPDF';
@@ -26,7 +26,7 @@ const INPUT_STYLE = {
 
 export default connect(
     null,  // Pull items from store
-    { requestTriMonthlyPDF, requestWasteWaterPDF }  // Bind actions with dispatch
+    {}  // Bind actions with dispatch
 )(class PDFMaker extends Component {
     static propTypes = {
         company: PropTypes.string,
@@ -65,7 +65,7 @@ export default connect(
         if (this.props.month) {
             const p = this.periods[i];
 
-            this.props.requestTriMonthlyPDF(
+            requestTriMonthlyPDF(
                 this.props.company,
                 `${p.year}/${p.month+1}/${p.start}`,
                 `${p.year}/${p.month+1}/${p.end}`,
@@ -74,7 +74,7 @@ export default connect(
         } else {
             const p = this.halfyears[i];
             const lastDay = new Date(p.year, p.end, 0).getDate();
-            this.props.requestWasteWaterPDF(
+            requestWasteWaterPDF(
                 this.props.company,
                 `${p.year}/${p.start}/1`,
                 `${p.year}/${p.end}/${lastDay}`,
