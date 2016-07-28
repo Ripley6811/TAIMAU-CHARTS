@@ -151,7 +151,7 @@ export function fetchDepartments() {
 
     return (dispatch) => {
         // If used in "need" list then requires "return" keyword below (?)
-        return fetch(`${baseURL}/api/getDepartments`).
+        return fetch(`${baseURL}/api/department`).
         then(res => res.json()).
         then(docs => dispatch(reducerFormat(docs)));
     };

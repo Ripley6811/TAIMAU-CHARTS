@@ -192,7 +192,7 @@ th {
 }
 
 .table>tbody>tr>td {
-    padding: 3px 4px;
+    padding: 1px 3px;
 }
 
 .pieLabel {
@@ -238,8 +238,8 @@ th {
 }
 
 .logo-style {
-    position: relative; 
+    position: relative;
     border-radius: 22px 50px 7px 18px;
-    z-index: 2; 
+    z-index: 2;
     box-shadow: 4px 3px 6px black;
 }

@@ -29,7 +29,7 @@ router.route('/shipmentTemplate')
     .post(ShipmentTemplateController.addTemplate)
     .delete(ShipmentTemplateController.deleteTemplate);
 
-router.route('/getDepartments')
+router.route('/department')
     .get(ShipmentTemplateController.getDepartments);
 
 router.route('/product')
