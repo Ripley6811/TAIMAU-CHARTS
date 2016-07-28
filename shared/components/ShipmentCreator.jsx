@@ -62,13 +62,7 @@ export default connect(
         const newSet = [...new Set(this.companyTemplates.map(temp => `${temp.dept}|${temp.unit}`))].map(
             each => ({dept: each.split("|")[0], unit: each.split("|")[1]})
         );
-        return newSet.sort((a, b) => {
-            // Sort by unit first descending
-            if (a.unit < b.unit) return 1;
-            if (a.unit > b.unit) return -1;
-            // Then by dept "number" (first number in dept string)
-            return +a.dept.match(/\d+/)[0] - +b.dept.match(/\d+/)[0];
-        });
+        return newSet;
     }
 
     /**

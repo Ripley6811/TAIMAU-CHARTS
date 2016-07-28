@@ -21,13 +21,11 @@ export default {
         }
 
         Shipment.find(query).sort('-date').limit(Number(rq.limit))
-            .exec((err, shipments) => {
+            .exec((err, docs) => {
                 if (err) {
                     return res.status(500).send(err);
                 }
-                res.json({
-                    shipments
-                });
+                res.json(docs);
             });
     },
     
@@ -110,31 +108,15 @@ export default {
             }
             return false;
         });
-
-        function onInsert(err, recs) {
-            if (err) {
-                return res.status(500).send(err);
-            }
-            return res.json({
-                shipments: recs
-            });
-        };
         
         if (shipments.every(each => !!each)) {
-            Shipment.insertMany(shipments, onInsert);
-        } else res.status(403).end();
-    },
-
-    getShipment: function (req, res) {
-        const _id = req.query._id;
-        Shipment.findOne(_id).exec((err, shipment) => {
-            if (err) {
-                return res.status(500).send(err);
-            }
-            res.json({
-                shipment
+            Shipment.insertMany(shipments, (err, recs) => {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+                return res.json(recs);
             });
-        });
+        } else res.status(403).end();
     },
 
     deleteShipment: function (req, res) {

@@ -10,16 +10,21 @@ export default {
         Template.find()
             .sort({
                 company: 1,
-                dept: 1,
-                unit: 1
+                unit: -1
             })
-            .exec((err, templates) => {
+            .exec((err, docs) => {
                 if (err) {
                     return res.status(500).send(err);
                 }
-                res.json({
-                    templates
+            
+                docs.sort((a, b) => {
+                    // Company and Unit sort already done
+                    if (a.company === b.company && a.unit === b.unit) {
+                        return +a.dept.match(/\d+/)[0] - +b.dept.match(/\d+/)[0];
+                    }
                 });
+            
+                res.json(docs);
             });
     },
 
@@ -64,27 +69,6 @@ export default {
             });
     },
 
-    /**
-     * Expects a filter in the body of a POST method.
-     * GET method retrieves all records.
-     */
-    getTemplate: function (req, res) {
-        Template.find(req.method === 'POST' ? req.body : {})
-            .sort({
-                company: 1,
-                dept: 1,
-                unit: 1
-            })
-            .exec((err, templates) => {
-                if (err) {
-                    return res.status(500).send(err);
-                }
-                res.json({
-                    templates
-                });
-            });
-    },
-
     addTemplate: function (req, res) {
         const newTemplate = {
             company: sanitizeHtml(req.body.company),
@@ -107,9 +91,7 @@ export default {
                 return res.status(500).send(err);
             }
 
-            return res.json({
-                savedRec
-            });
+            return res.json(savedRec);
         });
     },
 

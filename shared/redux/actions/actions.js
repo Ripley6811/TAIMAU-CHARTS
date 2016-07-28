@@ -49,8 +49,8 @@ export function addShipmentsRequest(shipments) {
                 'Content-Type': 'application/json',
             }),
         }).
-        then((res) => res.json()).
-        then((res) => dispatch(reducerFormat(res.shipments)));
+        then(res => res.json()).
+        then(docs => dispatch(reducerFormat(docs)));
     };
 }
 // Routes single shipment to multiple shipment method
@@ -77,7 +77,7 @@ export function addTemplateRequest(template) {
             }),
         }).
         then(res => res.json()).  // Throws error if no json
-        then(data => dispatch(reducerFormat(data.savedRec)));
+        then(doc => dispatch(reducerFormat(doc)));
     };
 }
 
@@ -116,8 +116,8 @@ export function fetchShipments() {
     // "dispatch" is a callback that runs the reducer.
     return (dispatch) => {
         return fetch(`${baseURL}/api/shipment?${encodeQuery(params)}`).
-        then((res) => res.json()).
-        then((res) => dispatch(reducerFormat(res.shipments)));
+        then(res => res.json()).
+        then(docs => dispatch(reducerFormat(docs)));
     };
 }
 
@@ -134,8 +134,8 @@ export function fetchShipmentTemplates() {
     return (dispatch) => {
         // If used in "need" list then requires "return" keyword below (?)
         return fetch(`${baseURL}/api/shipmentTemplate`).
-        then((res) => res.json()).
-        then((res) => dispatch(reducerFormat(res.templates)));
+        then(res => res.json()).
+        then(docs => dispatch(reducerFormat(docs)));
     };
 }
 
@@ -152,8 +152,8 @@ export function fetchDepartments() {
     return (dispatch) => {
         // If used in "need" list then requires "return" keyword below (?)
         return fetch(`${baseURL}/api/getDepartments`).
-        then((res) => res.json()).
-        then((recs) => dispatch(reducerFormat(recs)));
+        then(res => res.json()).
+        then(docs => dispatch(reducerFormat(docs)));
     };
 }
 
