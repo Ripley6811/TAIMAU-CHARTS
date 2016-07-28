@@ -254,7 +254,7 @@ export default connect(
                         onChange={e => this.setDeptUnit(e,i)}>
                     { this.deptOptions.map((temp, i2) =>
                         <option key={i2} value={i2}>
-                            {(1+i2).toString(16)}) {temp.unit} {temp.dept} 
+                            {(1+i2).toString(36)}) &nbsp; {temp.unit} &nbsp; {temp.dept} 
                         </option>
                     ) }
                 </select>
@@ -265,7 +265,7 @@ export default connect(
                     onChange={e => this.setProduct(e,i)}>
                     { this.getDeptTemplates(each.dept, each.unit).map((temp, i2) =>
                         <option key={`${temp.pn}${i2}`} value={i2}>
-                            {temp.product} &nbsp;&nbsp; {temp.pn}
+                            {temp.product} &nbsp; &nbsp; {temp.pn}
                         </option>
                     ) }
                 </select>
