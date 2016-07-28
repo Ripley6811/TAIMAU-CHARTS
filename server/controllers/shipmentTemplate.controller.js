@@ -10,7 +10,7 @@ export default {
         Template.find()
             .sort({
                 company: 1,
-                unit: -1
+                unit: -1,
             })
             .exec((err, docs) => {
                 if (err) {
@@ -18,11 +18,12 @@ export default {
                 }
             
                 docs.sort((a, b) => {
-                    // Company and Unit sort already done
-                    if (a.company === b.company && a.unit === b.unit) {
-                        return +a.dept.match(/\d+/)[0] - +b.dept.match(/\d+/)[0];
-                    }
-                    return 0;
+                    // Ensure sorted after trimming whitespace
+                    if (a.company.trim() < b.company.trim()) return -1;
+                    if (a.company.trim() > b.company.trim()) return 1;
+                    if (a.unit.trim() < b.unit.trim()) return 1;
+                    if (a.unit.trim() > b.unit.trim()) return -1;
+                    return +(a.dept.match(/\d+/)[0]) - +(b.dept.match(/\d+/)[0]);
                 });
             
                 res.json(docs);
