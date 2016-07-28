@@ -8,12 +8,12 @@ class TemplateCreator extends React.Component {
 
     submit = () => {
         const validated = this.keys.every(key =>
-             this.refs[key].value.length > 0
+             this.refs[key].value.trim().length > 0
         );
 
         if (validated) {
             const template = {};
-            this.keys.forEach(key => template[key] = this.refs[key].value);
+            this.keys.forEach(key => template[key] = this.refs[key].value.trim());
             this.props.createTemplate(template);
             
             this.clearForm();
