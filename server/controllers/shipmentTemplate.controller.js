@@ -22,6 +22,7 @@ export default {
                     if (a.company === b.company && a.unit === b.unit) {
                         return +a.dept.match(/\d+/)[0] - +b.dept.match(/\d+/)[0];
                     }
+                    return 0;
                 });
             
                 res.json(docs);
