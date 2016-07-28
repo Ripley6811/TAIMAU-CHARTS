@@ -23,7 +23,12 @@ export default {
                     if (a.company.trim() > b.company.trim()) return 1;
                     if (a.unit.trim() < b.unit.trim()) return 1;
                     if (a.unit.trim() > b.unit.trim()) return -1;
-                    return +(a.dept.match(/\d+/)[0]) - +(b.dept.match(/\d+/)[0]);
+                    const aNo = Number(a.dept.match(/\d+/)[0]),
+                          bNo = Number(b.dept.match(/\d+/)[0]);
+                    if (aNo !== bNo) return aNo - bNo;
+                    if (a.dept.trim() < b.dept.trim()) return -1;
+                    if (a.dept.trim() > b.dept.trim()) return 1;
+                    return 0;
                 });
             
                 res.json(docs);
