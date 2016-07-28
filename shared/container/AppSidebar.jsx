@@ -17,7 +17,7 @@ import PDFMaker from '../components/PDFMaker';
 const BTN_CLASS_STRING = "btn form-control btn-properties",
       HIGHLIGHTED_BTN = {
           backgroundColor: "white",
-          boxShadow: "4px 3px 6px black",
+          boxShadow: "3px 2px 5px black",
           left: "-2px",
           top: "-2px",
           zIndex: "10",
