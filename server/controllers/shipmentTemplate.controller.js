@@ -67,16 +67,14 @@ export default {
                 }
             
                 for (let co of recs) {
-                    co.departments.sort(
-                        (a, b) => {
-                            const aNo = Number(a.dept.match(/\d+/)[0]),
-                                  bNo = Number(b.dept.match(/\d+/)[0]);
-                            if (aNo !== bNo) return aNo - bNo;
-                            if (a.dept.trim() < b.dept.trim()) return -1;
-                            if (a.dept.trim() > b.dept.trim()) return 1;
-                            return 0;
-                        }
-                    );
+                    co.departments.sort((a, b) => {
+                        const aNo = +a.match(/\d+/)[0],
+                              bNo = +b.match(/\d+/)[0];
+                        if (aNo !== bNo) return aNo - bNo;
+                        if (a.trim() < b.trim()) return -1;
+                        if (a.trim() > b.trim()) return 1;
+                        return 0;
+                    });
                 }
 
                 res.json(recs);
