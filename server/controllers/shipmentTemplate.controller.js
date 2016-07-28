@@ -34,9 +34,6 @@ export default {
                         dept: "$dept"
                     }
                 } },
-                { $sort: {
-                    "_id.dept": 1,
-                } },
                 { $group: {
                     _id: {
                         company: "$_id.company",
@@ -55,6 +52,12 @@ export default {
             .exec((err, recs) => {
                 if (err) {
                     return res.status(500).send(err);
+                }
+            
+                for (let co of recs) {
+                    co.departments.sort(
+                        (a, b) => +a.match(/\d+/)[0] - +b.match(/\d+/)[0]
+                    );
                 }
 
                 res.json(recs);

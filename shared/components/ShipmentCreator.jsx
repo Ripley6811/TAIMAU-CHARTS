@@ -45,7 +45,10 @@ export default connect(
         }
     }
 
-    get filteredTemplates() {
+    /**
+     * Returns a subset of templates matching the current global query.company.
+     */
+    get companyTemplates() {
         return this.props.templates.filter(temp =>
             temp.company === this.props.query.company
         );
@@ -56,18 +59,25 @@ export default connect(
      * then splits strings to return an array of objects.
      */
     get deptOptions() {
-        const newSet = [...new Set(this.filteredTemplates.map(temp => `${temp.dept}|${temp.unit}`))];
-        return newSet.map(each => ({dept: each.split("|")[0], unit: each.split("|")[1]}));
+        const newSet = [...new Set(this.companyTemplates.map(temp => `${temp.dept}|${temp.unit}`))].map(
+            each => ({dept: each.split("|")[0], unit: each.split("|")[1]})
+        );
+        return newSet.sort((a, b) => {
+            // Sort by unit first
+            if (a.unit < b.unit) return -1;
+            if (a.unit > b.unit) return 1;
+            // Then by dept "number" (first number in dept string)
+            return +a.dept.match(/\d+/)[0] - +b.dept.match(/\d+/)[0];
+        });
     }
 
     /**
-     * 
-     * @param   {string} dept Department name
-     * @param   {string} unit Unit name
-     * @returns {Array}  Array of templates matching dept and unit.
+     * Returns a subset of templates matching dept and unit.
      */
-    getProdOptions = (dept, unit) => {
-        return this.filteredTemplates.filter(each => each.dept === dept && each.unit === unit);
+    getDeptTemplates = (dept, unit) => {
+        return this.companyTemplates.filter(
+            each => each.dept === dept && each.unit === unit
+        );
     }
 
     removeAllEntries = () => {
@@ -78,10 +88,11 @@ export default connect(
     }
 
     addRow = () => {
-        const firstTemplate = this.filteredTemplates[0];
+        const firstTemplate = this.companyTemplates[0];
         this.setState({
             newShipments: [...this.state.newShipments,
                            {
+                               date: new Date().toISOString().slice(0,10),
                                company: firstTemplate.company,
                                dept: firstTemplate.dept,
                                unit: firstTemplate.unit,
@@ -144,7 +155,7 @@ export default connect(
     setDeptUnit = (event, i) => {
         const deptOptionsIndex = event.target.value,
               selectedDeptUnit = this.deptOptions[deptOptionsIndex];
-        let templates = this.getProdOptions(selectedDeptUnit.dept, selectedDeptUnit.unit);
+        let templates = this.getDeptTemplates(selectedDeptUnit.dept, selectedDeptUnit.unit);
         this.setState({
             newShipments: [...this.state.newShipments.slice(0,i),
                            Object.assign({}, this.state.newShipments[i], {
@@ -164,7 +175,7 @@ export default connect(
     setProduct = (event, i) => {
         const templateIndex = event.target.value;
         let shipment = this.state.newShipments[i];
-        let template = this.getProdOptions(shipment.dept, shipment.unit)[templateIndex];
+        let template = this.getDeptTemplates(shipment.dept, shipment.unit)[templateIndex];
         
         this.setState({
             newShipments: [...this.state.newShipments.slice(0,i),
@@ -243,7 +254,7 @@ export default connect(
                         onChange={e => this.setDeptUnit(e,i)}>
                     { this.deptOptions.map((temp, i2) =>
                         <option key={i2} value={i2}>
-                            {temp.dept} {temp.unit}
+                            {(1+i2).toString(16)}) {temp.unit} {temp.dept} 
                         </option>
                     ) }
                 </select>
@@ -252,7 +263,7 @@ export default connect(
                 <div className="col-xs-2" style={{padding: "0px"}}>
                 <select className="form-control"
                     onChange={e => this.setProduct(e,i)}>
-                    { this.getProdOptions(each.dept, each.unit).map((temp, i2) =>
+                    { this.getDeptTemplates(each.dept, each.unit).map((temp, i2) =>
                         <option key={`${temp.pn}${i2}`} value={i2}>
                             {temp.product} &nbsp;&nbsp; {temp.pn}
                         </option>
