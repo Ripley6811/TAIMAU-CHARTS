@@ -12,6 +12,7 @@ import { updateSavedQuery, fetchShipments } from '../redux/actions/actions';
 import CompanyColumn from '../components/CompanyColumn';
 import SelectYearMonth from '../components/SelectYearMonth';
 import PDFMaker from '../components/PDFMaker';
+import FontAwesome from '../components/FontAwesome';
 
 
 const BTN_CLASS_STRING = "btn form-control btn-properties",
@@ -23,7 +24,7 @@ const BTN_CLASS_STRING = "btn form-control btn-properties",
           zIndex: "10",
       },
       LOCALSTORAGE_KEY_FOR_STATE = "query",
-      FA_SPINNING_COG = <i className="fa fa-cog fa-2x slow-spin" aria-hidden="true" />,
+      FA_SPINNING_COG = FontAwesome("cog", "fa-2x slow-spin"),
       PAGE_NAV_BTNS = [ 
           {text: "ChartView | 數量圖表", route: "/"},
           {text: "Shipments | 出貨紀錄", route: "/shipments"},

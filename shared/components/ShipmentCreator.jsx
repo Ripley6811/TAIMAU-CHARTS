@@ -5,11 +5,8 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 // Actions
 import { fetchShipmentTemplates } from '../redux/actions/actions';
-
-
-const FA_CHEVRON_LEFT = <i className="fa fa-chevron-left" aria-hidden="true" />,
-      FA_PLUS = <i className="fa fa-plus" aria-hidden="true" />,
-      FA_MINUS = <i className="fa fa-minus" aria-hidden="true" />;
+// Components
+import { FA_CHEVRON_LEFT, FA_PLUS, FA_MINUS } from './FontAwesome';
 
 
 export default connect(

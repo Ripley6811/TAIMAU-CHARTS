@@ -3,6 +3,8 @@ import React from 'react';
 // COMPONENTS
 import TableHead from './TableHead';
 import TableRow from './TableRow';
+import { FA_TRASH } from './FontAwesome';
+
 
 function Table(props) {
     return (
@@ -14,7 +16,7 @@ function Table(props) {
              {/**Delete button added as a child of TableRow.*/}
              <td className="danger text-center cell-button" 
                  onClick={() => props.onDelete(row)}>
-                  <i className="fa fa-trash" aria-hidden="true" />
+                  {FA_TRASH}
              </td>
         </TableRow>
         ))}

@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import AggregatedTable from '../components/AggregatedTable';
 import Pie from '../components/Pie';
 import YearGraph from '../components/YearGraph';
+import { FA_CHEVRON_LEFT } from '../components/FontAwesome';
 
 
 export default connect(
@@ -149,7 +150,7 @@ export default connect(
                 <br /><br /><br /><br /><br />
                 <br /><br /><br /><br /><br />
                 <h2>
-                    <i className="fa fa-chevron-left" aria-hidden="true" />
+                    {FA_CHEVRON_LEFT}
                     &nbsp;
                     Select a department
                 </h2>

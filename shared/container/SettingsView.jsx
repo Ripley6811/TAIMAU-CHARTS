@@ -1,12 +1,12 @@
 import React, { PropTypes, Component } from 'react';
 // Redux
 import { getAllProducts } from '../utils/requests/requests';
+// Components
+import { FA_PLUS, FA_MINUS } from '../components/FontAwesome';
 
 
 const P_ORDER = "productOrder",
-      OPTIONS = "productOptions",
-      FA_PLUS = <i className="fa fa-plus" aria-hidden="true" />,
-      FA_MINUS = <i className="fa fa-minus" aria-hidden="true" />;
+      OPTIONS = "productOptions";
 
 
 export default

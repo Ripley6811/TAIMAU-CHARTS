@@ -10,6 +10,7 @@ import { requestTriMonthlyPDF, requestWasteWaterPDF } from '../utils/requests/re
 // Components
 import createTriMonthlyPDF from './CreateTriMonthlyPDF';
 import createWasteWaterPDF from './CreateWasteWaterPDF';
+import { FA_DOWNLOAD } from './FontAwesome';
 
 
 const INPUT_STYLE = {
@@ -18,7 +19,6 @@ const INPUT_STYLE = {
           padding: "6px", 
           backgroundColor: "burlywood",
       },
-      FA_DOWNLOAD = <i className="fa fa-download" aria-hidden="true" />,
       LOCALSTORAGE_KEY_FOR_STATE = "pdfperiodends",
       SELECTED_WHOLE_YEAR = Symbol(),
       SELECTED_ONE_MONTH = Symbol();
