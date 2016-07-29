@@ -25,7 +25,7 @@ input:-moz-placeholder {
 }
 
 body {
-    background-image: url("/img/taimau_symbol_h411_opaque.png");
+    background-image: url("/img/taimau_symbol_h411_opaque2.png");
     background-size: auto 800px;
     background-repeat: no-repeat;
     background-position: top;
@@ -33,6 +33,11 @@ body {
 	font-family: 'Roboto','Asap', sans-serif;
 	font-size: 18px;
     font-weight: bold;
+    color: #000;
+}
+
+.body-darken {
+    background-color: #BCB;
 }
 
 .subtitle {
