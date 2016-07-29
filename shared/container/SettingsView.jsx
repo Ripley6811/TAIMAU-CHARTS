@@ -4,7 +4,9 @@ import { getAllProducts } from '../utils/requests/requests';
 
 
 const P_ORDER = "productOrder",
-      OPTIONS = "productOptions";
+      OPTIONS = "productOptions",
+      FA_PLUS = <i className="fa fa-plus" aria-hidden="true" />,
+      FA_MINUS = <i className="fa fa-minus" aria-hidden="true" />;
 
 
 export default
@@ -72,7 +74,7 @@ class SettingsView extends Component {
                     <div className="col-xs-1 text-right" style={{padding: "0px"}}>
                         <button className="btn btn-success"
                                 onClick={this.addRow}>
-                            <span className="glyphicon glyphicon-plus"></span>
+                            {FA_PLUS}
                         </button>
                     </div>
                     <div className="col-xs-10">
@@ -85,7 +87,7 @@ class SettingsView extends Component {
                         <div className="col-xs-1 text-right" style={{padding: "0px"}}>
                             <button className="btn btn-danger"
                                     onClick={() => this.removeRow(i)}>
-                                <span className="glyphicon glyphicon-minus"></span>
+                                {FA_MINUS}
                             </button>
                         </div>
                         {/*** PN-PRODUCT SELECTION LIST ***/}

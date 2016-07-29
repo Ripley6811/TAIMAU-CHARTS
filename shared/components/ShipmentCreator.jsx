@@ -7,9 +7,9 @@ import { connect } from 'react-redux';
 import { fetchShipmentTemplates } from '../redux/actions/actions';
 
 
-const GLYPHICON_ARROW_LEFT = <span className="glyphicon glyphicon-arrow-left"></span>,
-      GLYPHICON_PLUS = <span className="glyphicon glyphicon-plus"></span>,
-      GLYPHICON_MINUS = <span className="glyphicon glyphicon-minus"></span>;
+const FA_CHEVRON_LEFT = <i className="fa fa-chevron-left" aria-hidden="true" />,
+      FA_PLUS = <i className="fa fa-plus" aria-hidden="true" />,
+      FA_MINUS = <i className="fa fa-minus" aria-hidden="true" />;
 
 
 export default connect(
@@ -170,7 +170,7 @@ export default connect(
         const templateIndex = event.target.value;
         let shipment = this.state.newShipments[i];
         let template = this.getDeptTemplates(shipment.dept, shipment.unit)[templateIndex];
-        
+
         this.setState({
             newShipments: [...this.state.newShipments.slice(0,i),
                            Object.assign({}, this.state.newShipments[i], {
@@ -202,7 +202,7 @@ export default connect(
             <div>
             <legend>Create New Shipment</legend>
                 <h2>
-                    {GLYPHICON_ARROW_LEFT} &nbsp; Select a company
+                    {FA_CHEVRON_LEFT} &nbsp; Select a company
                 </h2>
             </div>
             )
@@ -215,7 +215,7 @@ export default connect(
                 <div className="col-xs-1 text-right" style={{padding: "0px"}}>
                     <button className="btn btn-success"
                             onClick={this.addRow}>
-                        {GLYPHICON_PLUS}
+                        {FA_PLUS}
                     </button>
                 </div>
                 <div className="col-xs-3 text-center"
@@ -234,7 +234,7 @@ export default connect(
                 <div className="col-xs-1 text-right" style={{padding: "0px"}}>
                     <button className="btn btn-danger"
                             onClick={() => this.removeRow(i)}>
-                        {GLYPHICON_MINUS}
+                        {FA_MINUS}
                     </button>
                 </div>
                 { /** DATE INPUT */ }
@@ -248,7 +248,7 @@ export default connect(
                         onChange={e => this.setDeptUnit(e,i)}>
                     { this.deptOptions.map((temp, i2) =>
                         <option key={i2} value={i2}>
-                            {(1+i2).toString(36)}) &nbsp; {temp.unit} &nbsp; {temp.dept} 
+                            {(1+i2).toString(36)}) &nbsp; {temp.unit} &nbsp; {temp.dept}
                         </option>
                     ) }
                 </select>

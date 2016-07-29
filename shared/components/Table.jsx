@@ -14,7 +14,7 @@ function Table(props) {
              {/**Delete button added as a child of TableRow.*/}
              <td className="danger text-center cell-button" 
                  onClick={() => props.onDelete(row)}>
-                  <span className="glyphicon glyphicon-trash"></span>
+                  <i className="fa fa-trash" aria-hidden="true" />
              </td>
         </TableRow>
         ))}
