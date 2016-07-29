@@ -69,7 +69,6 @@ const renderFullPage = (html, initialState) => {
         <link rel="stylesheet" href=${bootstrapPath} />
         <link rel="stylesheet" href=${cssPath} />
         <link rel="stylesheet" href=${fontAwesomePath} />
-        <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'/>  
         <script src="/js/d3.min.js"></script>
         <script src="/js/jsPDF/jspdf.min.js"></script>
         <script src="/js/jsPDF/plugins/plugins.min.js"></script>
