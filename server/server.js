@@ -50,7 +50,9 @@ app.use('/api', apiRoutes);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
+  const bootstrapPath = 'css/bootstrap.min.css';
   const cssPath = process.env.NODE_ENV === 'production' ? '/css/app.min.css' : '/css/app.css';
+  const fontAwesomePath = '/font-awesome-4.6.3/css/font-awesome.min.css';
   const head = Helmet.rewind();
 
   return `
@@ -63,14 +65,13 @@ const renderFullPage = (html, initialState) => {
         ${head.link.toString()}
         ${head.script.toString()}
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/1.0.2/bootstrap-native.min.js"></script>
+        <link rel="stylesheet" href=${bootstrapPath} />
         <link rel="stylesheet" href=${cssPath} />
-        <link rel="stylesheet" href='/font-awesome-4.6.3/css/font-awesome.min.css' />
+        <link rel="stylesheet" href=${fontAwesomePath} />
         <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'/>  
-      <script src="/js/d3.min.js"></script>
-      <script src="/js/jsPDF/jspdf.min.js"></script>
-      <script src="/js/jsPDF/plugins/plugins.min.js"></script>
+        <script src="/js/d3.min.js"></script>
+        <script src="/js/jsPDF/jspdf.min.js"></script>
+        <script src="/js/jsPDF/plugins/plugins.min.js"></script>
 
       </head>
       <body>
