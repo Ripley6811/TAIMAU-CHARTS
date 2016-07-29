@@ -14,7 +14,8 @@ function Table(props) {
         {props.tableRows.map((row, i) => (
         <TableRow data={row} keys={props.tableKeys} key={`tablerow${i}`} >
              {/**Delete button added as a child of TableRow.*/}
-             <td className="danger text-center cell-button" 
+             <td className="danger text-center cell-button"
+                 style={{color: "black"}}
                  onClick={() => props.onDelete(row)}>
                   {FA_TRASH}
              </td>

@@ -25,7 +25,7 @@ const BTN_CLASS_STRING = "btn form-control btn-properties",
       },
       LOCALSTORAGE_KEY_FOR_STATE = "query",
       FA_SPINNING_COG = FontAwesome("cog", "fa-2x slow-spin"),
-      PAGE_NAV_BTNS = [ 
+      PAGE_NAV_BTNS = [
           {text: "ChartView | 數量圖表", route: "/"},
           {text: "Shipments | 出貨紀錄", route: "/shipments"},
           {text: "Templates | 記錄模板", route: "/templates"},
@@ -58,7 +58,7 @@ export default connect(
      * Initial state = global "query" parameters.
      * These query parameters are set in the sidebar and used throughout the program.
      */
-    state = {  
+    state = {
         company: undefined,
         dept: undefined,
         year: new Date().getFullYear(),
@@ -120,7 +120,7 @@ export default connect(
 
     render() {
         const { width, deptLinks } = this.props;
-        
+
         return (
         <div className="sidebar"
              style={{width: width, position: 'fixed', height: '100%'}} >
@@ -144,7 +144,7 @@ export default connect(
                         <button className={BTN_CLASS_STRING} type="button"
                             style={route === this.location ? HIGHLIGHTED_BTN : {}}
                             onClick={() => this.gotoRoute(route)}>
-                            {text}
+                            <strong>{text}</strong>
                         </button>
                         </div>
                     </div>
@@ -153,7 +153,7 @@ export default connect(
             <div className="row">
                 { deptLinks.map(rec =>
                     <CompanyColumn key={rec.company}
-                        company={rec.company} 
+                        company={rec.company}
                         depts={rec.departments}
                         onClick={this.setSelectedDept}
                         BTN_CLASS_STRING={BTN_CLASS_STRING}

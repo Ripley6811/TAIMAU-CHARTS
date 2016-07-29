@@ -14,10 +14,11 @@ import { FA_DOWNLOAD } from './FontAwesome';
 
 
 const INPUT_STYLE = {
-          width: "30%", 
+          width: "30%",
           textAlign: "left",
-          padding: "6px", 
+          padding: "6px",
           backgroundColor: "burlywood",
+          color: "black",
       },
       LOCALSTORAGE_KEY_FOR_STATE = "pdfperiodends",
       SELECTED_WHOLE_YEAR = Symbol(),
@@ -107,14 +108,14 @@ export default connect(
     render() {
         const props = this.props,
               {company, month} = this.props;
-        
+
         let displayType;
         if (typeof company === "string" && !!company && typeof month !== "number") {
             displayType = SELECTED_WHOLE_YEAR;
         } else if (typeof company === "string" && !!company && typeof month === "number") {
             displayType = SELECTED_ONE_MONTH;
         }
-        
+
         switch(displayType) {
             case SELECTED_WHOLE_YEAR:
                 return <div className="text-center">
@@ -125,11 +126,11 @@ export default connect(
                             className={props.BTN_CLASS_STRING}>
                             {FA_DOWNLOAD}
                             &nbsp;
-                            {p.yearStr} / {p.start} ~ {p.end}月 廢水
+                            <strong>{p.yearStr} / {p.start} ~ {p.end}月 廢水</strong>
                         </button>
                     )}
                 </div>;
-                
+
             case SELECTED_ONE_MONTH:
                 return <div className="text-center">
                     <h5>{company} PDF</h5>
@@ -161,7 +162,7 @@ export default connect(
                         </div>
                     )(this.periods[2], 2)}
                 </div>;
-                
+
             default:
                 return <div></div>;
         }
