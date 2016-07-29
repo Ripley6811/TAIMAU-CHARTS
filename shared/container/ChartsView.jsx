@@ -124,14 +124,14 @@ export default connect(
                                 totals={dataTotals} />
                         </div>
                         <div className="text-center" style={{float: "right"}}>
-                            <h2>Ave. # kg / {this.isFullYear ? "月" : "周"}</h2>
+                            <h2>公斤平均每<strong>{this.isFullYear ? "月" : "周"}</strong></h2>
                             <Pie id="pie"
                                 data={dataTotals}
                                 fullYear={this.isFullYear}
                                 ></Pie>
                         </div>
                     </div>
-                    
+
                     <div className="row text-center">
                         {this.isFullYear ? <div>
                         <h2>Monthly Trend</h2>
