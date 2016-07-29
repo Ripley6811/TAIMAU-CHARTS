@@ -65,6 +65,7 @@ const renderFullPage = (html, initialState) => {
         ${head.link.toString()}
         ${head.script.toString()}
 
+        <link href="https://fonts.googleapis.com/css?family=Asap:700|Roboto:700" rel="stylesheet">
         <link rel="stylesheet" href=${bootstrapPath} />
         <link rel="stylesheet" href=${cssPath} />
         <link rel="stylesheet" href=${fontAwesomePath} />
