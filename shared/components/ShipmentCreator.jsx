@@ -281,9 +281,11 @@ export default connect(
             <div className="row" style={{margin: "8px"}}>
                 { /** REF PAGE INPUT */ }
                 <label className="col-xs-2 form-control-label text-right"
-                       style={{padding: "5px", margin: "0px"}}>參考頁</label>
-                <div className="col-xs-1">
-                    <input className="form-control"
+                       style={{padding: "5px", margin: "0px"}}>
+                    參考頁
+                </label>
+                <div className="col-xs-1" style={{paddingLeft: "0px"}}>
+                    <input className="form-control" max="99"
                            type="number" ref="refPage" placeholder="#"
                            onChange={this.setReference} />
                 </div>
