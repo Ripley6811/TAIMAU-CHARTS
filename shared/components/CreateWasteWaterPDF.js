@@ -1,5 +1,5 @@
 /**
- * @overview Generates a pdf in a new window. Waste water report is a 
+ * @overview Generates a pdf in a new window. Waste water report is a
  * half-year report.
  */
 
@@ -196,10 +196,11 @@ export default function(data) {
         }
 
         const date = new Date(shipment.date);
-        doc.altText(TABLE_X_POS[0] + (columnNo-1)*100, posY, `${date.getMonth()+1} / ${date.getDate()}`, DEFAULT_FONT_SIZE);
-        doc.altText(TABLE_X_POS[1] + (columnNo-1)*100, posY, shipment[TABLE_KEYS[1]], DEFAULT_FONT_SIZE);
-        doc.altText(TABLE_X_POS[2] + (columnNo-1)*100, posY, shipment[TABLE_KEYS[2]], DEFAULT_FONT_SIZE);
-        doc.altText(TABLE_X_POS[3] + (columnNo-1)*100, posY, `${shipment.dept} ${shipment.unit}`, DEFAULT_FONT_SIZE);
+        const c2offset = (columnNo-1)*(LEFT_MARGIN_COL2-LEFT_MARGIN);
+        doc.altText(TABLE_X_POS[0] + c2offset, posY, `${date.getMonth()+1} / ${date.getDate()}`, DEFAULT_FONT_SIZE);
+        doc.altText(TABLE_X_POS[1] + c2offset, posY, shipment[TABLE_KEYS[1]], DEFAULT_FONT_SIZE);
+        doc.altText(TABLE_X_POS[2] + c2offset, posY, shipment[TABLE_KEYS[2]], DEFAULT_FONT_SIZE);
+        doc.altText(TABLE_X_POS[3] + c2offset, posY, `${shipment.dept} ${shipment.unit}`, DEFAULT_FONT_SIZE);
         posY+= 5;
     }
 
