@@ -10,8 +10,9 @@ export default function(data) {
           START_DATE = new Date(data.start),
           END_DATE = new Date(data.end),
           LEFT_MARGIN = 20,
+          LEFT_MARGIN_COL2 = 109,
           DEFAULT_FONT_SIZE = 11,
-          TABLE_HEADERS = ["進貨日期","材料名稱","需求量 (kg)","需求單位"],
+          TABLE_HEADERS = ["日期","材料名稱","需求量 (kg)","需求單位"],
           TABLE_KEYS = ["date","product","amount","dept"],
           TABLE_X_POS = [],
           THIN_LINE = 0.1,
@@ -19,13 +20,14 @@ export default function(data) {
           TABLE_START_Y = 30;
 
     // Create TABLE_X_POS positions based on desired spacing.
-    [0, 30, 40, 30].reduce((a,b,i) => TABLE_X_POS[i] = a+b, LEFT_MARGIN);
+    [0, 15, 24, 24].reduce((a,b,i) => TABLE_X_POS[i] = a+b, LEFT_MARGIN);
     if (TABLE_X_POS.length !== TABLE_HEADERS.length) {
         throw "Table positions and table headers do not match in length";
     }
 
     let posY,
-        pageNo = 1;
+        pageNo = 1,
+        columnNo = 1;
 
     // Check data for problems
     if (SHIPMENTS.length === 0) {
@@ -70,9 +72,12 @@ export default function(data) {
      */
     function printTableHeader(y) {
         TABLE_X_POS.forEach((x,i) => doc.altText(x, y, TABLE_HEADERS[i], DEFAULT_FONT_SIZE));
+        TABLE_X_POS.forEach((x,i) => doc.altText(
+            x - LEFT_MARGIN + LEFT_MARGIN_COL2, y, TABLE_HEADERS[i], DEFAULT_FONT_SIZE));
 
         doc.setLineWidth(THICK_LINE);
-        doc.line(20, y+1, 190, y+1);
+        doc.line(LEFT_MARGIN, y+1, LEFT_MARGIN+81, y+1);
+        doc.line(LEFT_MARGIN_COL2, y+1, LEFT_MARGIN_COL2+81, y+1);
         doc.setLineWidth(THIN_LINE);
         y += 5;
 
@@ -136,6 +141,7 @@ export default function(data) {
     doc.altText(LEFT_MARGIN, posY, "WASTE WATER SUMMARY", DEFAULT_FONT_SIZE+3);
     posY += 6;
     doc.altText(LEFT_MARGIN, posY, "材料名稱", DEFAULT_FONT_SIZE);
+    doc.altText(LEFT_MARGIN+30, posY, "料號", DEFAULT_FONT_SIZE);
     let ui;
     for (ui=0; ui<unitNames.length; ui++) {
         doc.altText(LEFT_MARGIN+70+UNIT_AMT_SPACING*ui, posY, unitNames[ui] + " (kg)", DEFAULT_FONT_SIZE);
@@ -152,6 +158,7 @@ export default function(data) {
     for (let i=0; i<pnData.length; i++) {
         posY+= 5;
         doc.altText(LEFT_MARGIN, posY, pnData[i].product, DEFAULT_FONT_SIZE);
+            doc.altText(LEFT_MARGIN+30, posY, pnData[i].pn, DEFAULT_FONT_SIZE-2);
         let allUnitsTotal = 0;
         let ui;
         for (ui=0; ui<unitNames.length; ui++) {
@@ -172,22 +179,28 @@ export default function(data) {
     posY += 6;
     doc.setLineWidth(THIN_LINE);
     posY = printTableHeader(posY);
+    let lastTableEndY = posY;
     for (let i=0; i<SHIPMENTS.length; i++) {
         shipment = SHIPMENTS[i];
 
         // NEW PAGE when reaching end. Leave space for summary
-        if (posY > 275) {
+        if (posY > 275 && columnNo === 2) {
             doc.addPage();
+            columnNo = 1;
             printHeadFoot();
             posY = printTableHeader(TABLE_START_Y);
+            lastTableEndY = posY;
+        } else if (posY > 275 && columnNo === 1) {
+            columnNo = 2;
+            posY = lastTableEndY;
         }
 
         const date = new Date(shipment.date);
-        doc.altText(TABLE_X_POS[0], posY, `${date.getMonth()+1} / ${date.getDate()}`, DEFAULT_FONT_SIZE);
-        doc.altText(TABLE_X_POS[1], posY, shipment[TABLE_KEYS[1]], DEFAULT_FONT_SIZE);
-        doc.altText(TABLE_X_POS[2], posY, shipment[TABLE_KEYS[2]], DEFAULT_FONT_SIZE);
-        doc.altText(TABLE_X_POS[3], posY, `${shipment.dept} ${shipment.unit}`, DEFAULT_FONT_SIZE);
-        posY+= 6;
+        doc.altText(TABLE_X_POS[0] + (columnNo-1)*100, posY, `${date.getMonth()+1} / ${date.getDate()}`, DEFAULT_FONT_SIZE);
+        doc.altText(TABLE_X_POS[1] + (columnNo-1)*100, posY, shipment[TABLE_KEYS[1]], DEFAULT_FONT_SIZE);
+        doc.altText(TABLE_X_POS[2] + (columnNo-1)*100, posY, shipment[TABLE_KEYS[2]], DEFAULT_FONT_SIZE);
+        doc.altText(TABLE_X_POS[3] + (columnNo-1)*100, posY, `${shipment.dept} ${shipment.unit}`, DEFAULT_FONT_SIZE);
+        posY+= 5;
     }
 
 
