@@ -9,6 +9,9 @@ import { fetchShipmentTemplates } from '../redux/actions/actions';
 import { FA_CHEVRON_LEFT, FA_PLUS, FA_MINUS } from './FontAwesome';
 
 
+const COLORS = ['rgb(236, 255, 230)', '#f5ce96'];
+
+
 export default connect(
     ({ query, templates }) => ({ query, templates }),  // Pull items from store
     { fetchShipmentTemplates }  // Bind actions with dispatch
@@ -193,6 +196,8 @@ export default connect(
     render() {
         const { company } = this.props.query,
               { newShipments } = this.state;
+        let lastUnit = "";
+        let colorIndex = -1;
 
         if (!company) {
             return (
@@ -243,10 +248,20 @@ export default connect(
                 <div className="col-xs-2" style={{padding: "0px"}}>
                 <select className="form-control"
                         onChange={e => this.setDeptUnit(e,i)}>
-                    { this.deptOptions.map((temp, i2) =>
-                        <option key={i2} value={i2}>
+                    { this.deptOptions.map((temp, i2) => {
+                        const unitChanged = temp.unit.trim() !== lastUnit.trim();
+                        lastUnit = temp.unit;
+                        if (unitChanged) {
+                            colorIndex = (colorIndex+1)%2;
+                        }
+
+                        return <option key={i2} value={i2}
+                            style={{backgroundColor: COLORS[colorIndex]}}>
                             {(1+i2).toString(36)}) &nbsp; {temp.unit} &nbsp; {temp.dept}
-                        </option>
+                        </option>;
+
+
+                      }
                     ) }
                 </select>
                 </div>
