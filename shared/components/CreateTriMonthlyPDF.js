@@ -110,7 +110,7 @@ export default function(data) {
     printHeadFoot();
 
     // Print product summary table header
-    const UNIT_AMT_SPACING = 18;
+    const UNIT_AMT_SPACING = 15;
     const [unitNames, pnData] = calcSummaryData();
     posY = TABLE_START_Y;  // START POSITION for data tables
     doc.altText(LEFT_MARGIN, posY, "PRODUCT SUMMARY", DEFAULT_FONT_SIZE+3);
@@ -119,11 +119,11 @@ export default function(data) {
     doc.altText(LEFT_MARGIN+30, posY, "料號", DEFAULT_FONT_SIZE);
     let ui;
     for (ui=0; ui<unitNames.length; ui++) {
-        doc.altText(LEFT_MARGIN+70+UNIT_AMT_SPACING*ui, posY, unitNames[ui], DEFAULT_FONT_SIZE);
+        doc.altText(LEFT_MARGIN+65+UNIT_AMT_SPACING*ui, posY, unitNames[ui], DEFAULT_FONT_SIZE);
     }
     // Show totals if more then one unit is shown.
     if (unitNames.length > 1) {
-        doc.altText(LEFT_MARGIN+70+UNIT_AMT_SPACING*ui, posY, "總額", DEFAULT_FONT_SIZE);
+        doc.altText(LEFT_MARGIN+65+UNIT_AMT_SPACING*ui, posY, "總額", DEFAULT_FONT_SIZE);
     }
     doc.setLineWidth(THICK_LINE);
     doc.line(20, posY+1, 190, posY+1);
@@ -146,12 +146,12 @@ export default function(data) {
             let ui;
             for (ui=0; ui<unitNames.length; ui++) {
                 const UNIT = unitNames[ui];
-                doc.altText(LEFT_MARGIN+70+UNIT_AMT_SPACING*ui, posY, pnData[i][UNIT] || "", DEFAULT_FONT_SIZE);
+                doc.altText(LEFT_MARGIN+65+UNIT_AMT_SPACING*ui, posY, pnData[i][UNIT] || "", DEFAULT_FONT_SIZE);
                 allUnitsTotal += pnData[i][UNIT] || 0;
             }
             // Show totals if more then one unit is shown.
             if (unitNames.length > 1) {
-                doc.altText(LEFT_MARGIN+70+UNIT_AMT_SPACING*ui, posY, `${allUnitsTotal}`, DEFAULT_FONT_SIZE);
+                doc.altText(LEFT_MARGIN+65+UNIT_AMT_SPACING*ui, posY, `${allUnitsTotal}`, DEFAULT_FONT_SIZE);
             }
         }
     }
@@ -165,12 +165,12 @@ export default function(data) {
         let ui;
         for (ui=0; ui<unitNames.length; ui++) {
             const UNIT = unitNames[ui];
-            doc.altText(LEFT_MARGIN+70+UNIT_AMT_SPACING*ui, posY, each[UNIT] || "", DEFAULT_FONT_SIZE);
+            doc.altText(LEFT_MARGIN+65+UNIT_AMT_SPACING*ui, posY, each[UNIT] || "", DEFAULT_FONT_SIZE);
             allUnitsTotal += each[UNIT] || 0;
         }
         // Show totals if more then one unit is shown.
         if (unitNames.length > 1) {
-            doc.altText(LEFT_MARGIN+70+UNIT_AMT_SPACING*ui, posY, `${allUnitsTotal}`, DEFAULT_FONT_SIZE);
+            doc.altText(LEFT_MARGIN+65+UNIT_AMT_SPACING*ui, posY, `${allUnitsTotal}`, DEFAULT_FONT_SIZE);
         }
     }
 
