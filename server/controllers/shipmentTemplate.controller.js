@@ -83,11 +83,11 @@ export default {
 
     addTemplate: function (req, res) {
         const newTemplate = {
-            company: sanitizeHtml(req.body.company),
-            dept: sanitizeHtml(req.body.dept),
-            unit: sanitizeHtml(req.body.unit),
-            product: sanitizeHtml(req.body.product),
-            pn: sanitizeHtml(req.body.pn),
+            company: sanitizeHtml(req.body.company).trim(),
+            dept: sanitizeHtml(req.body.dept).trim(),
+            unit: sanitizeHtml(req.body.unit).trim(),
+            product: sanitizeHtml(req.body.product).trim(),
+            pn: sanitizeHtml(req.body.pn).trim(),
         };
 
         // Ensure all keys have values
