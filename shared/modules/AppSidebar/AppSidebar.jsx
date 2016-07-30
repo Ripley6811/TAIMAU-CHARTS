@@ -7,12 +7,13 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router'
 // Actions
-import { updateSavedQuery, fetchShipments } from '../redux/actions/actions';
+import { updateSavedQuery } from './sidebar.actions';
+import { fetchShipments } from '../../modules/Shipment/shipment.actions';
 // Components
-import CompanyColumn from '../components/CompanyColumn';
-import SelectYearMonth from '../components/SelectYearMonth';
-import PDFMaker from '../components/PDFMaker';
-import FontAwesome from '../components/FontAwesome';
+import CompanyColumn from './components/CompanyColumn';
+import SelectYearMonth from './components/SelectYearMonth';
+import PDFMaker from './components/PDFMaker';
+import FontAwesome from '../../components/FontAwesome';
 
 
 const BTN_CLASS_STRING = "btn form-control btn-properties",

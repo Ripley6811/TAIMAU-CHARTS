@@ -1,8 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 // Redux
-import { getAllProducts } from '../utils/requests/requests';
+import { getAllProducts } from '../../utils/requests/requests';
 // Components
-import { FA_PLUS, FA_MINUS } from '../components/FontAwesome';
+import { FA_PLUS, FA_MINUS } from '../../components/FontAwesome';
 
 
 const P_ORDER = "productOrder",

@@ -6,11 +6,11 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 // Requests
-import { requestTriMonthlyPDF, requestWasteWaterPDF } from '../utils/requests/requests';
+import { requestTriMonthlyPDF, requestWasteWaterPDF } from '../../../utils/requests/requests';
 // Components
 import createTriMonthlyPDF from './CreateTriMonthlyPDF';
 import createWasteWaterPDF from './CreateWasteWaterPDF';
-import { FA_DOWNLOAD } from './FontAwesome';
+import { FA_DOWNLOAD } from '../../../components/FontAwesome';
 
 
 const INPUT_STYLE = {

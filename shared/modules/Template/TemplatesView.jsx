@@ -8,10 +8,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 // Actions
 import { fetchShipmentTemplates, fetchDepartments, 
-         deleteTemplateRequest, addTemplateRequest } from '../redux/actions/actions';
+         deleteTemplateRequest, addTemplateRequest } from './template.actions';
 // Components
-import Table from '../components/Table';
-import TemplateCreator from '../components/TemplateCreator';
+import Table from '../../components/Table';
+import TemplateCreator from './components/TemplateCreator';
 
 
 export default connect(

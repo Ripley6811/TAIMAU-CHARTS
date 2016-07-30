@@ -4,10 +4,10 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 // Components
-import AggregatedTable from '../components/AggregatedTable';
-import Pie from '../components/Pie';
-import YearGraph from '../components/YearGraph';
-import { FA_CHEVRON_LEFT } from '../components/FontAwesome';
+import AggregatedTable from './components/AggregatedTable';
+import Pie from './components/Pie';
+import YearGraph from './components/YearGraph';
+import { FA_CHEVRON_LEFT } from '../../components/FontAwesome';
 
 
 export default connect(

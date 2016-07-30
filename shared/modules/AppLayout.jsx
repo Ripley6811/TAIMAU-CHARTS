@@ -7,13 +7,14 @@ import React, { Component, PropTypes } from 'react';
  * Helmet is a library for automating <head> construction.
  */
 import Helmet from 'react-helmet';
-import Sidebar from './AppSidebar';
+import AppSidebar from './AppSidebar/AppSidebar';
 
-import * as Actions from '../redux/actions/actions';
+import { fetchDepartments } from './Template/template.actions';
+
 
 class AppLayout extends Component {
     // Server-side data retrieval (for server rendering).
-    static need = [Actions.fetchDepartments]
+    static need = [fetchDepartments]
     
     static propTypes = {
         children: PropTypes.object.isRequired,
@@ -43,7 +44,7 @@ class AppLayout extends Component {
             },
           ]}
         />
-        <Sidebar width={this.sidebarWidth} />
+        <AppSidebar width={this.sidebarWidth} />
         
         <div id="main-window" style={{paddingLeft: this.sidebarWidth}} >
             { this.props.children }

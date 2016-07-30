@@ -4,9 +4,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 // Actions
-import { fetchShipmentTemplates } from '../redux/actions/actions';
+import { fetchShipmentTemplates } from '../../Template/template.actions';
 // Components
-import { FA_CHEVRON_LEFT, FA_PLUS, FA_MINUS } from './FontAwesome';
+import { FA_CHEVRON_LEFT, FA_PLUS, FA_MINUS } from '../../../components/FontAwesome';
 
 
 const COLORS = ['rgb(236, 255, 230)', '#f5ce96'];
