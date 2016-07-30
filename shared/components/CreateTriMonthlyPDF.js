@@ -1,3 +1,7 @@
+/**
+ * @overview Generates a pdf in a new window. 
+ */
+
 export default function(data) {
     const doc = new jsPDF(),
           SHIPMENTS = data.shipments,

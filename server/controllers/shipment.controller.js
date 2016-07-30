@@ -1,3 +1,6 @@
+/**
+ * Uses Mongoose Models for db operations.
+ */
 import Shipment from '../models/shipment';
 import sanitizeHtml from 'sanitize-html';
 

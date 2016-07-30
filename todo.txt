@@ -22,4 +22,6 @@
 - Edit UNIT data to include sub-unit
 + Allow monthly report daterange editing (in sidebar?)
 - Password(less)
+- Add LOADING icon during PDF construction
+- Switch everything to MERN2.0
 
