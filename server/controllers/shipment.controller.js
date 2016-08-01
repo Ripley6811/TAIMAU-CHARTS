@@ -98,17 +98,18 @@ export default {
         shipments = shipments.map(s => {
             if (validateShipment(s)) {
                 return {
-                    product: sanitizeHtml(s.product),
-                    pn: sanitizeHtml(s.pn),
-                    note: sanitizeHtml(s.note || ""),
-                    company: sanitizeHtml(s.company),
-                    dept: sanitizeHtml(s.dept),
-                    unit: sanitizeHtml(s.unit),
-                    refPage: sanitizeHtml(s.refPage),
+                    product: s.product ? sanitizeHtml(s.product) : undefined,
+                    pn: s.pn ? sanitizeHtml(s.pn) : undefined,
+                    note: s.note ? sanitizeHtml(s.note) : "",
+                    company: s.company ? sanitizeHtml(s.company) : undefined,
+                    dept: s.dept ? sanitizeHtml(s.dept) : undefined,
+                    unit: s.unit ? sanitizeHtml(s.unit) : undefined,
+                    refPage: s.refPage ? sanitizeHtml(s.refPage) : undefined,
                     amount: s.amount,
                     date: s.date,
                 };
             }
+            // 403 Forbidden
             return false;
         });
         
@@ -130,7 +131,7 @@ export default {
             }
 
             shipment.remove(() => {
-                res.status(200).end();
+                res.status(204).end();
             });
         });
     },

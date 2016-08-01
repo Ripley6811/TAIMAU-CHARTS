@@ -5,10 +5,10 @@ import app from '../server';
 import chai from 'chai';
 import request from 'supertest';
 import mongoose from 'mongoose';
-import TestModel from '../models/shipmentTemplate';
+import TestModel from '../models/shipment';
 
 const expect = chai.expect,
-      endpointURL = `/api/shipmentTemplate`,
+      endpointURL = `/api/shipment`,
       COLLECTION_NAME = TestModel.collection.name;
 
 
@@ -21,21 +21,6 @@ function connectDB(done) {
         if (err) return done(err);
         done();
     });
-}
-
-
-function ensureIndexes(done) {
-    if (mongoose.connection.name !== 'mern-test') {
-        return done();
-    }
-    
-    mongoose.connection.collections[COLLECTION_NAME].ensureIndex(
-        {company:1, dept:1, unit:1, product:1}, 
-        {unique:1},
-        function () { 
-            return done();
-        }
-    );
 }
 
 
@@ -61,6 +46,8 @@ function dropDB(done) {
 }
 
 
+
+
 describe(`Testing "${endpointURL}" endpoint`, function () {
     
     this.timeout(12000);
@@ -77,15 +64,21 @@ describe(`Testing "${endpointURL}" endpoint`, function () {
     
     describe('Method: `GET`', function () {
 
-        beforeEach('add two template entries', function (done) {
-            var template1 = new TestModel({
-                    dept: "Estados",
-                    unit: "Unidos",
+        beforeEach('add two shipment entries', function (done) {
+            var shipment1 = new TestModel({
+                    date: new Date(2016, 7, 30),
+                    amount: 100,
+                    refPage: 5,
+                    dept: "Puerto",
+                    unit: "Rico",
                     product: 'Prashant',
                     pn: 'Hello Mern',
                     company: "All cats meow 'mern!'"
                 }),
-                template2 = new TestModel({
+                shipment2 = new TestModel({
+                    date: new Date(2016, 8, 1),
+                    amount: 200,
+                    refPage: 10,
                     dept: "Estados",
                     unit: "Unidos",
                     product: 'Mayank',
@@ -93,7 +86,7 @@ describe(`Testing "${endpointURL}" endpoint`, function () {
                     company: "All dogs bark 'mern!'"
                 });
 
-            TestModel.create([template1, template2], function (err, saved) {
+            TestModel.create([shipment1, shipment2], function (err, saved) {
                 if (err) console.log("ERR: ", err);
                 done();
             });
@@ -103,7 +96,7 @@ describe(`Testing "${endpointURL}" endpoint`, function () {
             dropCollection(done);
         });
 
-        it('Should correctly give number of Templates', function (done) {
+        it('Should correctly give number of Shipments', function (done) {
 
             request(app)
             .get(endpointURL)
@@ -121,16 +114,22 @@ describe(`Testing "${endpointURL}" endpoint`, function () {
 
     describe('Method: `POST`', function () {
         
-        var template1 = {
-                dept: "Estados",
-                unit: "Unidos",
+        var shipment1 = {
+                date: new Date(2016, 7, 30),
+                amount: 100,
+                refPage: 5,
+                dept: "Puerto",
+                unit: "Rico",
                 product: 'Prashant',
                 pn: 'Hello Mern',
                 company: "All cats meow 'mern!'"
             },
-            template2 = {
-                dept: "Puerto",
-                unit: "Rico",
+            shipment2 = {
+                date: new Date(2016, 8, 1),
+                amount: 200,
+                refPage: 10,
+                dept: "Estados",
+                unit: "Unidos",
                 product: 'Mayank',
                 pn: 'Hi Mern',
                 company: "All dogs bark 'mern!'"
@@ -138,14 +137,7 @@ describe(`Testing "${endpointURL}" endpoint`, function () {
 
         
         beforeEach('connect', function (done) {
-            ensureIndexes(
-                function () {
-                    TestModel.create(template1, function (err, saved) {
-                        if (err) console.log("ERR: ", err);
-                        done();
-                    });
-                }
-            );
+            done();
         });
 
         
@@ -154,58 +146,53 @@ describe(`Testing "${endpointURL}" endpoint`, function () {
         });
 
         
-        it('Should return the correct template', function (done) {
+        it('Should return the correct shipment', function (done) {
 
             request(app)
             .post(endpointURL)
-            .send(template2)
+            .send({shipments: [shipment1, shipment2]})
             .set('Accept', 'application/json')
             .end(function (err, res) {
-                TestModel.findOne({ pn: template2.pn }).exec(function (err, doc) {
-                    expect(doc.product).to.equal(template2.product);
+                TestModel.findOne({ pn: shipment1.pn }).exec(function (err, doc) {
+                    expect(doc.product).to.equal(shipment1.product);
                     done();
                 });
             });
         });
 
 
-        it('Should give a 403 error if Template has missing fields', function (done) {
+        it('Should give a 403 error if shipment has missing fields', function (done) {
 
             request(app)
             .post(endpointURL)
-            .send({})
+            .send({shipments: [{}, shipment2]})
             .set('Accept', 'application/json')
             .end(function (err, res) {
                 expect(res.status).to.equal(403);
                 done();
             });
         });
-
-
-        it('Should give a 409 if template already exists', function (done) {
-
-            request(app)
-            .post(endpointURL)
-            .send(template1)
-            .set('Accept', 'application/json')
-            .end(function (err, res) {
-                expect(res.status).to.equal(409);
-                done();
-            });
-        });
     });
+    
 
     describe('Method: `DELETE`', function () {
         
-        var templateId;
+        var shipmentId;
 
-        beforeEach('connect and add one Template entry', function(done){
-            var template = new TestModel({
-                product: 'Foo', pn: 'bar', unit: 'bar', dept: 'f34gb2bh24b24b2', company: 'Hello Mern says Foo' 
+        beforeEach('connect and add one Shipment entry', function(done){
+            var shipment = new TestModel({
+                date: new Date(2016, 8, 1),
+                amount: 200,
+                refPage: 10,
+                product: 'Foo', 
+                pn: 'bar', 
+                unit: 'bar', 
+                dept: 'f34gb2bh24b24b2', 
+                company: 'Hello Mern says Foo' 
             });
 
-            template.save(function (err, saved) {
-                templateId = saved._id;
+            shipment.save(function (err, saved) {
+                shipmentId = saved._id;
                 done();
             });
         });
@@ -214,22 +201,22 @@ describe(`Testing "${endpointURL}" endpoint`, function () {
             dropCollection(done);
         });
 
-        it('Should connect and delete a template', function (done) {
+        it('Should connect and delete a shipment', function (done) {
 
-            // Check if template is saved in DB
-            TestModel.findById(templateId).exec(function (err, template) {
-                expect(template.product).to.equal('Foo')
+            // Check if shipment is saved in DB
+            TestModel.findById(shipmentId).exec(function (err, shipment) {
+                expect(shipment.product).to.equal('Foo')
             });
 
             request(app)
             .delete(endpointURL)
-            .send({ _id: templateId})
+            .send({ _id: shipmentId})
             .set('Accept', 'application/json')
             .end(function (err, res) {
                 expect(res.status).to.equal(204);
-                // Check if template is removed from DB
-                TestModel.findById(templateId).exec(function (err, template) {
-                expect(template).to.equal(null);
+                // Check if shipment is removed from DB
+                TestModel.findById(shipmentId).exec(function (err, shipment) {
+                expect(shipment).to.equal(null);
                 done();
                 });
             });

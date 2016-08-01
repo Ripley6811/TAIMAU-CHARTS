@@ -30,7 +30,7 @@ export function addShipmentsRequest(shipments) {
     };
 }
 // Routes single shipment to multiple shipment method
-export function addShipmentRequest(shipment) { 
+export function addShipmentRequest(shipment) {
     addShipmentsRequest([shipment]);
 }
 

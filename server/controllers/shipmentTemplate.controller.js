@@ -83,16 +83,17 @@ export default {
 
     addTemplate: function (req, res) {
         const newTemplate = {
-            company: sanitizeHtml(req.body.company).trim(),
-            dept: sanitizeHtml(req.body.dept).trim(),
-            unit: sanitizeHtml(req.body.unit).trim(),
-            product: sanitizeHtml(req.body.product).trim(),
-            pn: sanitizeHtml(req.body.pn).trim(),
+            company: req.body.company ? sanitizeHtml(req.body.company).trim() : undefined,
+            dept: req.body.dept ? sanitizeHtml(req.body.dept).trim() : undefined,
+            unit: req.body.unit ? sanitizeHtml(req.body.unit).trim() : undefined,
+            product: req.body.product ? sanitizeHtml(req.body.product).trim() : undefined,
+            pn: req.body.pn ? sanitizeHtml(req.body.pn).trim() : undefined,
         };
 
         // Ensure all keys have values
         for (let key in newTemplate) {
             if (!newTemplate[key]) {
+                // 403 Forbidden
                 return res.status(403).end();
             }
         }
@@ -100,7 +101,8 @@ export default {
         // Each option should be unique
         new Template(newTemplate).save((err, savedRec) => {
             if (err) {
-                return res.status(500).send(err);
+                // 409 Conflict
+                return res.status(409).send(err);
             }
 
             return res.json(savedRec);
@@ -109,13 +111,15 @@ export default {
 
     deleteTemplate: function (req, res) {
         const _id = req.body._id;
+        
         Template.findById(_id).exec((err, template) => {
             if (err) {
                 return res.status(500).send(err);
             }
-
+            
             template.remove(() => {
-                res.status(200).end();
+                // 204 No Content
+                res.status(204).end();
             });
         });
     },
