@@ -45,10 +45,14 @@ export default (state, action) => {
             });
 
         case LOAD_SHIPMENTS :
-            return Object.assign({}, state, { shipments: action.shipments });
+            return Object.assign({}, state, { 
+                shipments: action.shipments 
+            });
 
         case ADD_SELECTED_SHIPMENT :
-            return Object.assign({}, state, { currShipment: action.shipment });
+            return Object.assign({}, state, { 
+                currShipment: action.shipment 
+            });
 
         case DELETE_SHIPMENT :
             return Object.assign({}, state, {
@@ -62,7 +66,9 @@ export default (state, action) => {
             });
 
         case LOAD_TEMPLATES :
-            return Object.assign({}, state, { templates: action.templates });
+            return Object.assign({}, state, { 
+                templates: action.templates 
+            });
 
         case ADD_TEMPLATE :
             return Object.assign({}, state, {
@@ -70,12 +76,14 @@ export default (state, action) => {
             });
 
         case ADD_DEPT_LINKS :
-            return Object.assign({}, state, { deptLinks: action.records });
+            return Object.assign({}, state, { 
+                deptLinks: action.records 
+            });
 
         default:
             if (action.type !== '@@INIT' && action.type !== '@@redux/INIT') {
                 console.log("Reducer case not found. Check action type.");
-                console.log(action.type);
+                console.log("Type: ", action.type);
             }
             return state; // Nothing changes for unknown actions.
     }
