@@ -112,11 +112,8 @@ app.use((req, res, next) => {
        */
     const initialState = {
         deptLinks: {},
-        currDept: undefined,
         templates: [],
-        currTemplate: undefined,
         shipments: [],
-        currShipment: undefined,
         query: {},
     };
 

@@ -7,7 +7,6 @@ import callApi from '../../utils/apiCaller';
 
 
 export const ADD_SHIPMENTS         = Symbol("shipment.actions.ADD_SHIPMENTS"),
-             ADD_SELECTED_SHIPMENT = Symbol("shipment.actions.ADD_SELECTED_SHIPMENT"),
              LOAD_SHIPMENTS        = Symbol("shipment.actions.LOAD_SHIPMENTS"),
              DELETE_SHIPMENT       = Symbol("shipment.actions.DELETE_SHIPMENT");
 
@@ -32,19 +31,6 @@ export function addShipmentsRequest(shipments) {
 // Routes single shipment to multiple shipment method
 export function addShipmentRequest(shipment) {
     addShipmentsRequest([shipment]);
-}
-
-
-/**
- * Set the `state.shipment` to the selected shipment.
- * @param   {object} shipment Shipment data object
- * @returns {object} Reducer object with action type
- */
-export function addSelectedShipment(shipment) {
-    return {
-        type: ADD_SELECTED_SHIPMENT,
-        shipment,
-    };
 }
 
 

@@ -30,27 +30,6 @@ describe('Reducer test_PERSISTENCE', () => {
             deepFreeze(action);
             expect(stateAfter).toEqual(mainReducer(stateBefore, action));
         });
-//
-//        it('ADD_SELECTED_SHIPMENT should set shipment as "state.currShipment".', () => {
-//            const stateBefore = {
-//                shipments: [{product: "LAST"}],
-//                currShipment: {product: "Old Spice"},
-//            };
-//
-//            const stateAfter = Object.assign({}, INITIAL_STATE, {
-//                shipments: [{product: "LAST"}],
-//                currShipment: {product: "Frosty"},
-//            });
-//
-//            const action = {
-//                type: ShipmentActions.ADD_SELECTED_SHIPMENT,
-//                shipment: {product: "Frosty"},
-//            };
-//
-//            deepFreeze(stateBefore);
-//            deepFreeze(action);
-//            expect(stateAfter).toEqual(mainReducer(stateBefore, action));
-//        });
 
         it('LOAD_SHIPMENTS should set array as "state.shipments".', () => {
             const stateBefore = {
