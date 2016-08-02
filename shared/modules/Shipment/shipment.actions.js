@@ -17,15 +17,12 @@ export const ADD_SHIPMENTS         = Symbol("shipment.actions.ADD_SHIPMENTS"),
  * @returns {function} Function to post a new shipment request and accepts a callback.
  */
 export function addShipmentsRequest(shipments) {
-    const reducerFormat = (shipments) => ({
-        type: ADD_SHIPMENTS,
-        shipments,
-    });
-
-    // "dispatch" is a callback that runs the reducer.
     return (dispatch) => {
         callApi(`shipment`, 'post', {shipments})
-        .then(docs => dispatch(reducerFormat(docs)));
+        .then(docs => dispatch({
+            type: ADD_SHIPMENTS,
+            shipments: docs,
+        }));
     };
 }
 // Routes single shipment to multiple shipment method
@@ -41,11 +38,6 @@ export function addShipmentRequest(shipment) {
 export function fetchShipments() {
     const params = Object.assign({}, arguments[0]);
 
-    const reducerFormat = (shipments) => ({
-        type: LOAD_SHIPMENTS,
-        shipments
-    });
-
     for (let key in params) {
         if (params[key] === undefined) delete params[key];
     }
@@ -53,19 +45,20 @@ export function fetchShipments() {
     // "dispatch" is a callback that runs the reducer.
     return (dispatch) => {
         return callApi(`shipment?${encodeQuery(params)}`)
-        .then(docs => dispatch(reducerFormat(docs)));
+        .then(docs => dispatch({
+            type: LOAD_SHIPMENTS,
+            shipments: docs
+        }));
     };
 }
 
 
 export function deleteShipmentRequest(shipment) {
-    const reducerFormat = (shipment) => ({
-        type: DELETE_SHIPMENT,
-        shipment,
-    });
-
     return (dispatch) => {
         callApi(`shipment`, 'delete', {_id: shipment._id})
-        .then(() => dispatch(reducerFormat(shipment)));
+        .then(() => dispatch({
+            type: DELETE_SHIPMENT,
+            shipment,
+        }));
     };
 }

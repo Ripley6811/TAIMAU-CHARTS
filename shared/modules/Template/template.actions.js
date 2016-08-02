@@ -13,66 +13,48 @@ export const ADD_TEMPLATE    = Symbol("template.actions.ADD_TEMPLATE"),
 
 
 export function fetchDepartments() {
-    const reducerFormat = (records) => {
-        return {
-            type: ADD_DEPT_LINKS,
-            records
-        };
-    };
-
     return (dispatch) => {
         // If used in "need" list then requires "return" keyword below (?)
         return callApi(`department`).
-        then(docs => dispatch(reducerFormat(docs)));
+        then(docs => dispatch({
+            type: ADD_DEPT_LINKS,
+            records: docs
+        }));
     };
 }
 
 
 export function addTemplateRequest(template) {
-    const reducerFormat = (template) => ({
-        type: ADD_TEMPLATE,
-        template
-    });
-
     return (dispatch) => {
-        /**
-         * AJAX req to `addTemplate` in `server/routes/template.routes` ->
-         * `server/controllers/shipmentTemplate.controller`
-         */
         callApi(`shipmentTemplate`, 'post', template)
-        .then(doc => dispatch(reducerFormat(doc)));
+        .then(doc => dispatch({
+            type: ADD_TEMPLATE,
+            template: doc
+        }));
     };
 }
 
 
 export function fetchShipmentTemplates() {
-    const reducerFormat = (templates) => {
-        return {
-            type: LOAD_TEMPLATES,
-            templates: templates
-        };
-    };
-
     return (dispatch) => {
         // If used in "need" list then requires "return" keyword below (?)
         return callApi(`shipmentTemplate`)
-        .then(docs => dispatch(reducerFormat(docs)));
+        .then(docs => dispatch({
+            type: LOAD_TEMPLATES,
+            templates: docs
+        }));
     };
 }
 
 
 export function deleteTemplateRequest(template) {
-    const reducerFormat = (template) => {
-        return {
-            type: DELETE_TEMPLATE,
-            deleteID: template._id
-        }
-    };
-
     return (dispatch) => {
         callApi(`shipmentTemplate`, 'delete', {
              _id: template._id,
         })
-        .then(() => dispatch(reducerFormat(template)));
+        .then(() => dispatch({
+            type: DELETE_TEMPLATE,
+            deleteID: template._id
+        }));
     };
 }
