@@ -63,18 +63,15 @@ export function fetchShipmentTemplates() {
 
 export function deleteTemplateRequest(template) {
     const reducerFormat = (template) => {
-        const newTemplate = Object.assign({}, template);
-        delete newTemplate['_id'];
         return {
             type: DELETE_TEMPLATE,
-            deleteID: template._id,
-            template: newTemplate,
+            deleteID: template._id
         }
     };
 
     return (dispatch) => {
         callApi(`shipmentTemplate`, 'delete', {
-                _id: template._id,
+             _id: template._id,
         })
         .then(() => dispatch(reducerFormat(template)));
     };

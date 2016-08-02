@@ -27,63 +27,63 @@ import {
 } from '../../modules/Shipment/shipment.actions.js';
 
 
-if (!UPDATE_QUERY || !ADD_SHIPMENTS || !LOAD_SHIPMENTS  || !ADD_SELECTED_SHIPMENT ||
-    !DELETE_SHIPMENT || !LOAD_TEMPLATES  || !ADD_TEMPLATE || !DELETE_TEMPLATE ||
-    !ADD_DEPT_LINKS ) throw "An action type is undefined.";
-
 
 export default (state, action) => {
+    return Object.assign({}, state, reducer(state, action));
+};
+
+function reducer(state, action) {
     switch (action.type) {
         case UPDATE_QUERY :
-            return Object.assign({}, state, {
+            return {
                 query: Object.assign({}, state.query, action.query)
-            });
+            };
 
         case ADD_SHIPMENTS :
-            return Object.assign({}, state, {
+            return {
                 shipments: [...action.shipments, ...state.shipments]
-            });
+            };
 
         case LOAD_SHIPMENTS :
-            return Object.assign({}, state, { 
+            return { 
                 shipments: action.shipments 
-            });
+            };
 
         case ADD_SELECTED_SHIPMENT :
-            return Object.assign({}, state, { 
+            return { 
                 currShipment: action.shipment 
-            });
+            };
 
         case DELETE_SHIPMENT :
-            return Object.assign({}, state, {
+            return {
+                deletedShipment: state.shipments.filter( s => s._id === action.shipment._id)[0],
                 shipments: state.shipments.filter( s => s._id !== action.shipment._id )
-            });
+            };
 
         case DELETE_TEMPLATE :
-            return Object.assign({}, state, {
-                currTemplate: action.template,
+            return {
+                deletedTemplate: state.templates.filter( t => t._id === action.deleteID )[0],
                 templates: state.templates.filter( t => t._id !== action.deleteID )
-            });
+            };
 
         case LOAD_TEMPLATES :
-            return Object.assign({}, state, { 
+            return { 
                 templates: action.templates 
-            });
+            };
 
         case ADD_TEMPLATE :
-            return Object.assign({}, state, {
+            return {
                 templates: [action.template, ...state.templates]
-            });
+            };
 
         case ADD_DEPT_LINKS :
-            return Object.assign({}, state, { 
+            return { 
                 deptLinks: action.records 
-            });
+            };
 
         default:
             if (action.type !== '@@INIT' && action.type !== '@@redux/INIT') {
-                console.log("Reducer case not found. Check action type.");
-                console.log("Type: ", action.type);
+                throw "Reducer case not found for the following action type: " + action.type;
             }
             return state; // Nothing changes for unknown actions.
     }
