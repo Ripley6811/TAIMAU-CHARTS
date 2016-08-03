@@ -45,8 +45,6 @@ app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(Express.static(path.resolve(__dirname, '../static')));
 app.use('/api', apiRoutes);
-//app.use('/api', shipment);
-//app.use('/api', shipmentTemplate);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
@@ -54,6 +52,11 @@ const renderFullPage = (html, initialState) => {
   const cssPath = process.env.NODE_ENV === 'production' ? '/css/app.min.css' : '/css/app.css';
   const fontAwesomePath = '/font-awesome-4.6.3/css/font-awesome.min.css';
   const head = Helmet.rewind();
+    const jasminePath = process.env.NODE_ENV === 'production' ? '' : `
+        <script src="/js/jasmine-2.4.1/jasmine.js"></script>
+        <script src="/js/jasmine-2.4.1/jasmine-html.js"></script>
+        <script src="/js/jasmine-2.4.1/boot.js"></script>
+        <link rel="stylesheet" href="/js/jasmine-2.4.1/jasmine.css" />`;
 
   return `
     <!doctype html>
@@ -72,6 +75,7 @@ const renderFullPage = (html, initialState) => {
         <script src="/js/d3.min.js"></script>
         <script src="/js/jsPDF/jspdf.min.js"></script>
         <script src="/js/jsPDF/plugins/plugins.min.js"></script>
+        ${jasminePath}
 
       </head>
       <body>
@@ -107,11 +111,9 @@ app.use((req, res, next) => {
       return next();
     }
 
-      /**
-       * Updated to hold "shipments"
-       */
+      // Important for initial server-side rendering
     const initialState = {
-        deptLinks: {},
+        deptLinks: [],
         templates: [],
         shipments: [],
         query: {},

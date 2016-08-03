@@ -12,6 +12,8 @@ import { fetchShipmentTemplates, fetchDepartments,
 // Components
 import Table from '../../components/Table';
 import TemplateCreator from './components/TemplateCreator';
+// Test suite
+import Tests from './tests/templates.spec.js';
 
 
 export default connect(
@@ -27,6 +29,7 @@ export default connect(
         // Redux store
         query: PropTypes.object.isRequired,
         templates: PropTypes.arrayOf(PropTypes.shape({
+            _id: PropTypes.string.isRequired,
             company: PropTypes.string.isRequired,
             dept: PropTypes.string.isRequired,
             unit: PropTypes.string.isRequired,
@@ -64,27 +67,33 @@ export default connect(
             this.props.fetchDepartments();
         }, 300);
     }
-
-    templateFilter = (template) => {
-        const { company, dept } = this.props.query;
+    
+    filteredTemplates = () => {
+        const { company, dept } = this.props.query,
+              { templates } = this.props;
         
-        if (!!dept) {
-            return template.company === company &&
-                   template.dept === dept;
-        } else if (!!company) {
-            return template.company === company;
-        }
+        return templates.filter(each => {
+            if (!!dept) {
+                return each.company === company &&
+                       each.dept === dept;
+            } else if (!!company) {
+                return each.company === company;
+            }
 
-        return false;
+            return false;
+        });
+    }
+    
+    componentDidMount = () => {
+        if (typeof describe === 'function') {
+            Tests(this);
+        }
     }
 
     render() {
         const { templates } = this.props;
         const tableHeaders = ["公司", "Dept", "Unit", "材料名稱", "料號", "除"];
         const tableKeys = ["company", "dept", "unit", "product", "pn"];
-
-        // Filter templates
-        const filteredTemplates = templates.filter(this.templateFilter);
 
         return (
             <div className="container"
@@ -95,7 +104,7 @@ export default connect(
                 <Table
                     tableHeaders={tableHeaders}
                     tableKeys={tableKeys}
-                    tableRows={filteredTemplates}
+                    tableRows={this.filteredTemplates()}
                     onDelete={this.deleteTemplate} />
             </div>
         )

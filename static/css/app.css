@@ -248,3 +248,8 @@ th {
     z-index: 2;
     box-shadow: 3px 2px 5px black;
 }
+
+.jasmine_html-reporter {
+    position: relative;
+    left: 200px;
+}

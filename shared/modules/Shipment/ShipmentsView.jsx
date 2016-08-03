@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 // Actions
-import { fetchShipmentTemplates } from './shipment.actions';
+import { fetchShipmentTemplates } from '../Template/template.actions';
 import { addShipmentsRequest, deleteShipmentRequest } from './shipment.actions';
 // Components
 import ShipmentCreator from './components/ShipmentCreator';

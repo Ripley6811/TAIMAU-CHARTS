@@ -5,11 +5,6 @@ import {
 } from './shipment.actions.js';
 
 
-
-//export default (state, action) => {
-//    return Object.assign({}, state, reducer(state, action));
-//};
-
 export default function reducer(state = [], action) {
     switch (action.type) {
 

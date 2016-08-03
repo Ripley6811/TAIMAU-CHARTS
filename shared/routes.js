@@ -1,5 +1,6 @@
 import { Route, IndexRoute } from 'react-router';
 import React from 'react';
+// Page components
 import AppLayout from './modules/AppLayout';
 import ShipmentsView from './modules/Shipment/ShipmentsView';
 import TemplatesView from './modules/Template/TemplatesView';

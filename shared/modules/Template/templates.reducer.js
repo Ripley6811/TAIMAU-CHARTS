@@ -5,13 +5,6 @@ import {
 } from './template.actions.js';
 
 
-//export default (state = {}, action) => {
-//    console.log('HERE I AM');
-//    console.log(state, action);
-//    console.log(Object.assign);
-//    return Object.assign({}, state, reducer(state, action));
-//};
-
 export default function reducer(state = [], action) {
     switch (action.type) {
 

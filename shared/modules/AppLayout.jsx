@@ -12,7 +12,7 @@ import AppSidebar from './AppSidebar/AppSidebar';
 import { fetchDepartments } from './Template/template.actions';
 
 
-class AppLayout extends Component {
+export default class AppLayout extends Component {
     // Server-side data retrieval (for server rendering).
     static need = [fetchDepartments]
     
@@ -53,6 +53,3 @@ class AppLayout extends Component {
         );
     }
 }
-
-// Inject `dispatch` and don't listen to store
-export default AppLayout;

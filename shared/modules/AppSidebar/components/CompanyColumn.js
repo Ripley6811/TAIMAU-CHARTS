@@ -14,7 +14,8 @@ const CompanyColumn = props => React.createElement(
     React.createElement(
         'button', 
         { 
-            className: props.BTN_CLASS_STRING,
+            id: props.company,
+            className: 'company-btn ' + props.BTN_CLASS_STRING,
             style: typeof window !== 'undefined' && localStorage['selectedCompany'] === props.company ? props.HIGHLIGHTED_BTN : {},
             type: 'button',
             onClick: () => props.onClick({ company: props.company })
@@ -28,8 +29,9 @@ const CompanyColumn = props => React.createElement(
     props.depts.map(dept => React.createElement(
         "button", 
         {
-            className: props.BTN_CLASS_STRING,
-            key: dept,
+            id: `${props.company}-${dept}`,
+            className: 'dept-btn ' + props.BTN_CLASS_STRING,
+            key: `${props.company}-${dept}`,
             style: typeof window !== 'undefined' && 
                    localStorage['selectedDepartment'] === dept ? 
                    props.HIGHLIGHTED_BTN : {},

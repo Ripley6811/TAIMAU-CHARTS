@@ -7,7 +7,7 @@ import sanitizeHtml from 'sanitize-html';
 
 export default {
     getTemplates: function (req, res) {
-        Template.find()
+        Template.find({}, {__v: 0})
             .sort({
                 company: 1,
                 unit: -1,

@@ -46,17 +46,18 @@ class TemplateCreator extends React.Component {
                             {this.labels[i]}
                         </label>
                         <input
-                            className="form-control"
+                            name={key}
+                            className={`${key} form-control`}
                             ref={key} />
                     </div>
                 )}
             </div>
             <div className="row text-center">
-                <input className="btn btn-success btn-margin" type="button"
+                <input id="template-submit-btn" className="btn btn-success btn-margin" type="button"
                     value="提交 / Submit" onClick={this.submit} />
             </div>
             <div className="row text-center">
-                <input className="btn btn-primary btn-margin" type="button"
+                <input id="template-clear-btn" className="btn btn-primary btn-margin" type="button"
                     value="Clear Fields" onClick={this.clearForm} />
             </div>
         </fieldset>

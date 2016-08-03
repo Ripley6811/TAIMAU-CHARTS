@@ -27,10 +27,14 @@ export function fetchDepartments() {
 export function addTemplateRequest(template) {
     return (dispatch) => {
         callApi(`shipmentTemplate`, 'post', template)
-        .then(doc => dispatch({
-            type: ADD_TEMPLATE,
-            template: doc
-        }));
+        .then(doc => {
+            if (!!doc.errmsg) return null;
+            
+            dispatch({
+                type: ADD_TEMPLATE,
+                template: doc
+            })
+        });
     };
 }
 
