@@ -24,7 +24,7 @@ const BTN_CLASS_STRING = "btn form-control btn-properties",
           top: "-2px",
           zIndex: "10",
       },
-      LOCALSTORAGE_KEY_FOR_STATE = "query",
+      COOKIE_QUERY_KEY = "query",
       FA_SPINNING_COG = FontAwesome("cog", "fa-2x slow-spin"),
       PAGE_NAV_BTNS = [
           {text: "ChartView | 數量圖表", route: "/"},
@@ -34,7 +34,7 @@ const BTN_CLASS_STRING = "btn form-control btn-properties",
 
 
 export default connect(
-    ({deptLinks}) => ({deptLinks}),  // Pull items from store
+    ({deptLinks, query}) => ({deptLinks, query}),  // Pull items from store
     { updateSavedQuery, fetchShipments }  // Bind actions with dispatch
 )(class AppSidebar extends Component {
     /**
@@ -68,17 +68,12 @@ export default connect(
 
     /**
      * "Will Mount" necessary to set state properly before rendering. "Did Mount" fails this.
+     * Sets query params from store if provided.
+     * Props query is provided if server renders page.
      */
     componentWillMount = () => {
-        // Load last used "query" parameters from local storage on client-side
-        if (typeof window !== 'undefined') {
-            this.location = location.pathname;
-            if (!!localStorage[LOCALSTORAGE_KEY_FOR_STATE]) {
-                this.setState(
-                    JSON.parse(localStorage[LOCALSTORAGE_KEY_FOR_STATE]),
-                    this.updateSavedQuery
-                );
-            }
+        if (this.props.query) {
+            this.setState(this.props.query);
         }
     }
 
@@ -103,25 +98,20 @@ export default connect(
 
     updateSavedQuery = () => {
         // Save most recent query in local storage and in redux store
-        document.cookie = "query=" + JSON.stringify(this.state);
-        localStorage.setItem([LOCALSTORAGE_KEY_FOR_STATE], JSON.stringify(this.state));
-        localStorage.setItem("selectedCompany", this.state.company);
-        localStorage.setItem("selectedDepartment", this.state.dept);
-        localStorage.setItem("selectedYear", this.state.year);
-        localStorage.setItem("selectedMonth", this.state.month);
+        document.cookie = COOKIE_QUERY_KEY + "=" + JSON.stringify(this.state);
         this.props.updateSavedQuery(this.state);
         this.props.fetchShipments(this.state);
         this.forceUpdate();
     }
 
     gotoRoute = (route) => {
-        this.location = route;
         browserHistory.push(route);
         this.forceUpdate();  // Force button style update
     }
 
     render() {
-        const { width, deptLinks } = this.props;
+        const { width, deptLinks, query } = this.props,
+              pathname = typeof location === 'object' ? location.pathname : undefined;
 
         return (
         <div className="sidebar"
@@ -144,7 +134,7 @@ export default connect(
                     <div className="row" key={i+route}>
                         <div>
                         <button className={BTN_CLASS_STRING} type="button"
-                            style={route === this.location ? HIGHLIGHTED_BTN : {}}
+                            style={route === pathname ? HIGHLIGHTED_BTN : {}}
                             onClick={() => this.gotoRoute(route)}>
                             <strong>{text}</strong>
                         </button>
@@ -155,6 +145,7 @@ export default connect(
             <div className="row">
                 { deptLinks.map(rec =>
                     <CompanyColumn key={rec.company}
+                        query={this.state}
                         company={rec.company}
                         depts={rec.departments}
                         onClick={this.setSelectedDept}

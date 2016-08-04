@@ -16,7 +16,7 @@ const CompanyColumn = props => React.createElement(
         { 
             id: props.company,
             className: 'company-btn ' + props.BTN_CLASS_STRING,
-            style: typeof window !== 'undefined' && localStorage['selectedCompany'] === props.company ? props.HIGHLIGHTED_BTN : {},
+            style: typeof window !== 'undefined' && props.query.company === props.company ? props.HIGHLIGHTED_BTN : {},
             type: 'button',
             onClick: () => props.onClick({ company: props.company })
         },
@@ -33,7 +33,7 @@ const CompanyColumn = props => React.createElement(
             className: 'dept-btn ' + props.BTN_CLASS_STRING,
             key: `${props.company}-${dept}`,
             style: typeof window !== 'undefined' && 
-                   localStorage['selectedDepartment'] === dept ? 
+                   props.query.dept === dept ? 
                    props.HIGHLIGHTED_BTN : {},
             type: "button",
             onClick: () => props.onClick({ company: props.company, dept: dept }) 

@@ -10,11 +10,12 @@ import Helmet from 'react-helmet';
 import AppSidebar from './AppSidebar/AppSidebar';
 
 import { fetchDepartments } from './Template/redux/template.actions';
+import { fetchShipments } from './Shipment/redux/shipment.actions';
 
 
 class AppLayout extends Component {
     // Server-side data retrieval (for server rendering).
-    static need = [fetchDepartments]
+    static need = [fetchDepartments, fetchShipments]
     
     static propTypes = {
         children: PropTypes.object.isRequired,

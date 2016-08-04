@@ -6,14 +6,24 @@
 import React, { PropTypes } from 'react';
 
 
+AggregatedTable.propTypes = {
+    data: PropTypes.array,
+    totals: PropTypes.array,
+}
+
 AggregatedTable.defaultProps = {
-    data: [[],[]],
-    totals: [[],[],[]],
+    data: [],
+    totals: [],
 }
 
 
 export default 
-function AggregatedTable(props) { return (
+function AggregatedTable(props) { 
+    if (props.totals.length === 0) {
+        return <div id="aggregated-table" name="no data"></div>;
+    }
+    
+    return (
 <table className="table-bordered table-condensed cell-height-min" 
     style={{fontSize: "16px"}}>
 
