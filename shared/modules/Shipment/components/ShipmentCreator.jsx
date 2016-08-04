@@ -167,10 +167,16 @@ export default class ShipmentCreator extends Component {
     }
 
     submitNewShipments = () => {
-        const datesAreGood = this.state.newShipments.every(each => !!each.date);
+        const datesAreGood = this.state.newShipments.every(each => {
+            if (!each.date) return false;
+            // Must be current or past date.
+            return new Date(each.date) <= new Date();
+        });
         const amountsAreGood = this.state.newShipments.every(each => !!each.amount);
         const refPageEntered = this.refs.refPage.value ? true : false;
-        if (datesAreGood && amountsAreGood && refPageEntered) {
+        if (!datesAreGood) {
+            alert("Check dates column. 一個多日期不好.");
+        } else if (datesAreGood && amountsAreGood && refPageEntered) {
             this.props.submitShipments(this.state.newShipments);
             this.clearAllTextInputs();
         } else {
@@ -183,6 +189,8 @@ export default class ShipmentCreator extends Component {
               { newShipments } = this.state;
         let lastUnit = "";
         let colorIndex = -1;
+        const today = new Date();
+        const maxDateString = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
 
         if (!company) {
             return (
@@ -226,8 +234,11 @@ export default class ShipmentCreator extends Component {
                 </div>
                 { /** DATE INPUT */ }
                 <div className="col-xs-3" style={{padding: "0px"}}>
-                    <input className="form-control" type="date" value={each.date}
-                           onChange={e => this.setProperty(i, "date", e.target.value)} />
+                    <input className="form-control" 
+                        type="date" 
+                        value={each.date}
+                        max={maxDateString}
+                        onChange={e => this.setProperty(i, "date", e.target.value)} />
                 </div>
                 { /** DEPT-UNIT SELECTION LIST */ }
                 <div className="col-xs-2" style={{padding: "0px"}}>
