@@ -11,10 +11,10 @@
 import { combineReducers } from 'redux';
 
 // Import Reducers
-import templates from '../modules/Template/templates.reducer.js';
-import deptLinks from '../modules/Template/deptLinks.reducer.js';
-import shipments from '../modules/Shipment/shipments.reducer.js';
-import query from '../modules/AppSidebar/query.reducer.js';
+import templates from '../modules/Template/redux/templates.reducer.js';
+import deptLinks from '../modules/Template/redux/deptLinks.reducer.js';
+import shipments from '../modules/Shipment/redux/shipments.reducer.js';
+import query from '../modules/AppSidebar/redux/query.reducer.js';
 
 
 // POLYFILL: Object.assign (because testing will fail without this).

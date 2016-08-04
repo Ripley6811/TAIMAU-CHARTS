@@ -1,9 +1,9 @@
 /**
  * @overview Redux actions / AJAX requests.
  */
-import { baseURL } from '../../../server/config';
-import { encodeQuery } from '../../utils/utils';
-import callApi from '../../utils/apiCaller';
+import { baseURL } from '../../../../server/config';
+import { encodeQuery } from '../../../utils/utils';
+import callApi from '../../../utils/apiCaller';
 
 
 export const ADD_TEMPLATE    = Symbol("template.actions.ADD_TEMPLATE"),

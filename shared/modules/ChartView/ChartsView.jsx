@@ -48,10 +48,17 @@ export default connect(
 
     getDataArrays = () => {
         const { query, shipments } = this.props;
+        
 
         // Build arrays for display (aggregate shipment data).
         const dataArray = this.datesArray.map(each => [each]);
         const dataTotals = [];
+        
+        
+        if (typeof shipments === 'undefined' || shipments.length === 0) {
+            return [undefined, undefined];
+        }
+        
 
         const dateLength = (typeof query.month === "number") ? 10 : 7;
 

@@ -9,10 +9,10 @@ import React, { Component, PropTypes } from 'react';
 import Helmet from 'react-helmet';
 import AppSidebar from './AppSidebar/AppSidebar';
 
-import { fetchDepartments } from './Template/template.actions';
+import { fetchDepartments } from './Template/redux/template.actions';
 
 
-export default class AppLayout extends Component {
+class AppLayout extends Component {
     // Server-side data retrieval (for server rendering).
     static need = [fetchDepartments]
     
@@ -53,3 +53,6 @@ export default class AppLayout extends Component {
         );
     }
 }
+
+// Inject `dispatch` and don't listen to store
+export default AppLayout;

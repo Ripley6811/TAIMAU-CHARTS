@@ -25,10 +25,7 @@ const INPUT_STYLE = {
       SELECTED_ONE_MONTH = Symbol();
 
 
-export default connect(
-    null,  // Pull items from store
-    {}  // Bind actions with dispatch
-)(class PDFMaker extends Component {
+export default class PDFMaker extends Component {
     static propTypes = {
         company: PropTypes.string,
         year: PropTypes.number.isRequired,
@@ -167,4 +164,4 @@ export default connect(
                 return <div></div>;
         }
     }
-});
+};

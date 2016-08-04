@@ -4,7 +4,12 @@ import React, { PropTypes, Component } from 'react';
 export default
 class Pie extends Component {
     static propTypes = {
+        data: PropTypes.array,
         fullYear: PropTypes.bool.isRequired,
+    }
+    
+    static defaultProps = {
+        data: [[],[],[]],
     }
 
     /**

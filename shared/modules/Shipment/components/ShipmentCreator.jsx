@@ -3,8 +3,6 @@
  */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-// Actions
-import { fetchShipmentTemplates } from '../../Template/template.actions';
 // Components
 import { FA_CHEVRON_LEFT, FA_PLUS, FA_MINUS } from '../../../components/FontAwesome';
 
@@ -12,29 +10,16 @@ import { FA_CHEVRON_LEFT, FA_PLUS, FA_MINUS } from '../../../components/FontAwes
 const COLORS = ['rgb(236, 255, 230)', '#f5ce96'];
 
 
-export default connect(
-    ({ query, templates }) => ({ query, templates }),  // Pull items from store
-    { fetchShipmentTemplates }  // Bind actions with dispatch
-)(class ShipmentCreator extends Component {
+export default class ShipmentCreator extends Component {
     static propTypes = {
         // Parent
         submitShipments: PropTypes.func.isRequired,
-        // Store
         templates: PropTypes.array.isRequired,
         query: PropTypes.object.isRequired,
-        // Actions
-        fetchShipmentTemplates: PropTypes.func.isRequired,
     }
 
     state = {
         newShipments: [],
-    }
-
-    componentWillMount = () => {
-        // Ensure required data is loaded.
-        if (this.props.templates.length === 0) {
-            this.props.fetchShipmentTemplates();
-        }
     }
 
     componentWillReceiveProps = (nextProps) => {
@@ -322,4 +307,4 @@ export default connect(
         </div>
         );
     }
-});
+};

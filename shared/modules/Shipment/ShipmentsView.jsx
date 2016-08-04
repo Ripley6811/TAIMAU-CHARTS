@@ -1,16 +1,16 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 // Actions
-import { fetchShipmentTemplates } from '../Template/template.actions';
-import { addShipmentsRequest, deleteShipmentRequest } from './shipment.actions';
+import { fetchShipmentTemplates } from '../Template/redux/template.actions';
+import { addShipmentsRequest, deleteShipmentRequest } from './redux/shipment.actions';
 // Components
 import ShipmentCreator from './components/ShipmentCreator';
 import Table from '../../components/Table';
 
 
 export default connect(
-    ({query, shipments}) => ({query, shipments}),  // Pull items from store
-    { addShipmentsRequest, deleteShipmentRequest }  // Bind actions with dispatch
+    ({query, shipments, templates}) => ({query, shipments, templates}),  // Pull items from store
+    { addShipmentsRequest, deleteShipmentRequest, fetchShipmentTemplates }  // Bind actions with dispatch
 )(class ShipmentsView extends Component {
     // Server-side data retrieval (for server rendering).
     static need = [fetchShipmentTemplates]  // Preload for sub-component
@@ -22,13 +22,22 @@ export default connect(
         // Props from store
         query: PropTypes.object.isRequired,
         shipments: PropTypes.array.isRequired,
-        // Dispatch actions
+        templates: PropTypes.array.isRequired,
+        // Dispatch bound actions
         addShipmentsRequest: PropTypes.func.isRequired,
         deleteShipmentRequest: PropTypes.func.isRequired,
+        fetchShipmentTemplates: PropTypes.func.isRequired,
     }
 
     static defaultProps = {
         shipments: []
+    }
+
+    componentWillMount = () => {
+        // Ensure required data is loaded.
+        if (this.props.templates.length === 0) {
+            this.props.fetchShipmentTemplates();
+        }
     }
 
     submitShipments = (newShipmentsArray) => {
@@ -62,7 +71,10 @@ export default connect(
         return (
             <div className="container"
                  style={{maxWidth: '1400px', margin: 'auto'}}>
-                <ShipmentCreator submitShipments={this.submitShipments} />
+                <ShipmentCreator 
+                    query={this.props.query}
+                    templates={this.props.templates}
+                    submitShipments={this.submitShipments} />
                 <br />
                 <legend>Shipment History</legend>
                 <Table

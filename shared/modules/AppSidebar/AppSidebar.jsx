@@ -7,8 +7,8 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router'
 // Actions
-import { updateSavedQuery } from './sidebar.actions';
-import { fetchShipments } from '../../modules/Shipment/shipment.actions';
+import { updateSavedQuery } from './redux/sidebar.actions';
+import { fetchShipments } from '../../modules/Shipment/redux/shipment.actions';
 // Components
 import CompanyColumn from './components/CompanyColumn';
 import SelectYearMonth from './components/SelectYearMonth';
@@ -103,6 +103,7 @@ export default connect(
 
     updateSavedQuery = () => {
         // Save most recent query in local storage and in redux store
+        document.cookie = "query=" + JSON.stringify(this.state);
         localStorage.setItem([LOCALSTORAGE_KEY_FOR_STATE], JSON.stringify(this.state));
         localStorage.setItem("selectedCompany", this.state.company);
         localStorage.setItem("selectedDepartment", this.state.dept);

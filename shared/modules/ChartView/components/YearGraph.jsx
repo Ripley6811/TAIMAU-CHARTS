@@ -23,6 +23,10 @@ export default class YearGraph extends Component {
         yearTotals: PropTypes.array,
         data: PropTypes.array,
     }
+    
+    static defaultProps = {
+        data: [[],[],[]],
+    }
 
     /**
      * Reformats the incoming data for use in pie chart.
