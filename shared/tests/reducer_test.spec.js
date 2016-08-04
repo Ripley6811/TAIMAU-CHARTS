@@ -1,14 +1,14 @@
 import expect from 'expect';
 import mainReducer from '../redux/reducers';
 import deepFreeze from 'deep-freeze';
-import * as ShipmentActions from '../modules/Shipment/shipment.actions';
-import * as TemplateActions from '../modules/Template/template.actions';
-import * as SidebarActions from '../modules/AppSidebar/sidebar.actions';
+import * as ShipmentActions from '../modules/Shipment/redux/shipment.actions';
+import * as TemplateActions from '../modules/Template/redux/template.actions';
+import * as SidebarActions from '../modules/AppSidebar/redux/sidebar.actions';
 
 
-const INITIAL_STATE = {query: {}, templates: [], shipments: [], deptLinks: {}};
+const INITIAL_STATE = {query: {}, templates: [], shipments: [], deptLinks: []};
 
-describe('Reducer test_PERSISTENCE', () => {
+describe('Reducer test', () => {
 
     describe('Shipment action types', () => {
 
