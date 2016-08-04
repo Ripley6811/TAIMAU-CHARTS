@@ -175,7 +175,7 @@ hr {
 }
 
 .cell-height-min > tbody > tr > td {
-    padding: 2px 12px;
+    padding: 1px 12px;
 }
 
 .cell-height-min > tbody > tr:nth-child(5n) {

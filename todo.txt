@@ -26,5 +26,5 @@
 - Switch everything to MERN2.0.  This required updating NPM and Node which will break Sails App if not careful
 - remove ACTION imports from sub-components. Pass down from main component (ShipmentCreator)
 - Prevent future dates from getting entered. Should always be past or current.
-- Set last used Company, dept, date data in cookie and send with initial load
++ Set last used Company, dept, date data in cookie and send with initial load
 

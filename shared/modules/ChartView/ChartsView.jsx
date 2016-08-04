@@ -125,23 +125,23 @@ export default connect(
             return (
                 <div className="container">
                     <div className="row">
-                        <div style={{float: "left"}}>
-                            <AggregatedTable
-                                data={dataArray}
-                                totals={dataTotals} />
-                        </div>
-                        <div className="text-center" style={{float: "right"}}>
+                        <div className="text-center" style={{float: "left", marginRight: "60px"}}>
                             <h2>公斤平均每<strong>{this.isFullYear ? "月" : "周"}</strong></h2>
                             <Pie id="pie"
                                 data={dataTotals}
                                 fullYear={this.isFullYear}
                                 ></Pie>
                         </div>
+                        <div style={{float: "left"}}>
+                            <AggregatedTable
+                                data={dataArray}
+                                totals={dataTotals} />
+                        </div>
                     </div>
-
-                    <div className="row text-center">
+                    <br />
+                    <div className="row text-center" style={{width: "600px"}}>
                         {this.isFullYear ? <div>
-                        <h2>Monthly Trend</h2>
+                        <h2>月度走勢</h2>
                         <YearGraph
                             data={dataArray}
                             ></YearGraph>
