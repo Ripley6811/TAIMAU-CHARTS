@@ -95,7 +95,7 @@ export default function(component) {
         
         describe('should not submit if a field is blank.', function() {
             
-            it('should fail with missing company', function(done) {
+            it('should fail to submit when missing company', function(done) {
                 submitTemplate(Object.assign({}, testTemplate, {company:""}));
 
                 setTimeout(function() {
@@ -105,7 +105,7 @@ export default function(component) {
                 }, 500);
             })
             
-            it('should fail with missing dept', function(done) {
+            it('should fail to submit when missing dept', function(done) {
                 submitTemplate(Object.assign({}, testTemplate, {dept:""}));
 
                 setTimeout(function() {
@@ -115,7 +115,7 @@ export default function(component) {
                 }, 500);
             })
             
-            it('should fail with missing unit', function(done) {
+            it('should fail to submit when missing unit', function(done) {
                 submitTemplate(Object.assign({}, testTemplate, {unit:""}));
 
                 setTimeout(function() {
@@ -125,7 +125,7 @@ export default function(component) {
                 }, 500);
             })
             
-            it('should fail with missing product', function(done) {
+            it('should fail to submit when missing product', function(done) {
                 submitTemplate(Object.assign({}, testTemplate, {product:""}));
 
                 setTimeout(function() {
@@ -135,7 +135,7 @@ export default function(component) {
                 }, 500);
             })
             
-            it('should fail with missing pn', function(done) {
+            it('should fail to submit when missing pn', function(done) {
                 submitTemplate(Object.assign({}, testTemplate, {pn:""}));
 
                 setTimeout(function() {
