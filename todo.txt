@@ -27,4 +27,5 @@
 - remove ACTION imports from sub-components. Pass down from main component (ShipmentCreator)
 + Prevent future dates from getting entered. Should always be past or current.
 + Set last used Company, dept, date data in cookie and send with initial load
+- Allow user to adjust record retreival limit, later add continuous loading up to one year
 
