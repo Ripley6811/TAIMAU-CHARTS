@@ -25,7 +25,6 @@ export default {
 
         Shipment.find(query, {__v: 0, dateAdded: 0})
             .sort('-date')
-            .limit(Number(rq.limit))
             .exec((err, docs) => {
                 if (err) {
                     return res.status(500).send(err);

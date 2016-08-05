@@ -63,8 +63,6 @@ export function fetchShipments(query, store) {
     for (let key in params) {
         if (params[key] === undefined) delete params[key];
     }
-    
-    params.limit = 100;
 
     // "dispatch" is a callback that runs the reducer.
     return (dispatch) => {
