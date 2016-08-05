@@ -1,30 +1,34 @@
 import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
 
-export default mongoose.model('ShipmentTemplate', new Schema({
-    company: { 
-        type: 'String', 
+export const name = 'ShipmentTemplate';
+export const schema = new mongoose.Schema({
+    company: {
+        type: 'String',
         required: true,
         minlength: 1,
     },
-    product: { 
-        type: 'String', 
+    product: {
+        type: 'String',
         required: true,
         minlength: 1,
     },
-    pn: { 
-        type: 'String', 
+    pn: {
+        type: 'String',
         required: true,
         minlength: 1,
     },
-    dept: { 
-        type: 'String', 
+    dept: {
+        type: 'String',
         required: true,
         minlength: 1,
     },
-    unit: { 
-        type: 'String', 
+    unit: {
+        type: 'String',
         required: true,
         minlength: 1,
     },
-}), 'shipmentTemplates');
+}, {
+    collection: 'shipmentTemplates'
+});
+
+export default mongoose.model(name, schema);

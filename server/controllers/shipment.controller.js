@@ -81,9 +81,7 @@ export default {
 
     /**
      * Server side code.
-     * Adds `shipment` record to Mongo database.
-     * @param   {object}   req [[Description]]
-     * @param   {[[Type]]} res [[Description]]
+     * Adds `shipment` records to Mongo database.
      * @returns {object}   Response object with error or save confirmation.
      */
     addShipments: function (req, res) {

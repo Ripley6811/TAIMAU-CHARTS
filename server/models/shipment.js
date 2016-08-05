@@ -1,18 +1,20 @@
 import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
 
-const shipmentSchema = new Schema({
+export const name = 'Shipment';
+export const schema = new mongoose.Schema({
     date: {
         type: 'Date',
         required: true
     },
     product: {
         type: 'String',
-        required: true
+        required: true,
+        minlength: 1,
     },
     pn: {
         type: 'String',
-        required: true
+        required: true,
+        minlength: 1,
     },
     amount: {
         type: 'Number',
@@ -20,15 +22,18 @@ const shipmentSchema = new Schema({
     },
     company: {
         type: 'String',
-        required: true
+        required: true,
+        minlength: 1,
     },
     dept: {
         type: 'String',
-        required: true
+        required: true,
+        minlength: 1,
     },
     unit: {
         type: 'String',
-        required: true
+        required: true,
+        minlength: 1,
     },
     refPage: {
         type: 'Number',
@@ -46,4 +51,4 @@ const shipmentSchema = new Schema({
     },
 });
 
-export default mongoose.model('Shipment', shipmentSchema);
+export default mongoose.model(name, schema);

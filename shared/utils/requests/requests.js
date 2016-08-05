@@ -1,5 +1,5 @@
 /**
- * @overview AJAX/AJAJ requests not related to Redux store.
+ * @overview AJAX/AJAJ requests NOT RELATED to Redux store.
  */
 import { baseURL } from '../../../server/config';
 /**
