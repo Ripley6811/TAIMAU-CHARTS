@@ -11,6 +11,13 @@ export const ADD_SHIPMENTS         = Symbol("shipment.actions.ADD_SHIPMENTS"),
              DELETE_SHIPMENT       = Symbol("shipment.actions.DELETE_SHIPMENT");
 
 
+function storeRecentIds(keyword, idArray) {
+    if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(keyword, JSON.stringify(idArray));
+    }
+}
+
+
 /**
  * Used in `ShipmentContainer`.
  * @param   {object}   shipment New shipment data to send.
@@ -19,10 +26,13 @@ export const ADD_SHIPMENTS         = Symbol("shipment.actions.ADD_SHIPMENTS"),
 export function addShipmentsRequest(shipments) {
     return (dispatch) => {
         callApi(`shipment`, 'post', {shipments})
-        .then(docs => dispatch({
-            type: ADD_SHIPMENTS,
-            shipments: docs,
-        }));
+        .then(docs => {
+            storeRecentIds('recent_shipments', docs.map(doc => doc._id));
+            return dispatch({
+                type: ADD_SHIPMENTS,
+                shipments: docs,
+            });
+        });
     };
 }
 // Routes single shipment to multiple shipment method

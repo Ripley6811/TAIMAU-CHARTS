@@ -7,6 +7,8 @@ import { addShipmentsRequest, deleteShipmentRequest } from './redux/shipment.act
 import ShipmentCreator from './components/ShipmentCreator';
 import Table from '../../components/Table';
 
+import Tests from './tests/shipments.spec.js';
+
 
 export default connect(
     ({query, shipments, templates}) => ({query, shipments, templates}),  // Pull items from store
@@ -38,6 +40,7 @@ export default connect(
         if (this.props.templates.length === 0) {
             this.props.fetchShipmentTemplates();
         }
+        this.highlightLastAdditions(this.props.shipments);
     }
 
     submitShipments = (newShipmentsArray) => {
@@ -48,6 +51,19 @@ export default connect(
         if (confirm('真的要把檔案刪除嗎?\nDo you want to delete this shipment?')) {
             this.props.deleteShipmentRequest(shipment);
         }
+    }
+
+    highlightLastAdditions = (shipments) => {
+        if (typeof localStorage !== 'undefined' && localStorage.recent_shipments) {
+            const idsToHighlight = JSON.parse(localStorage.recent_shipments);
+            for (const shipment of shipments) {
+                shipment.hightlight = idsToHighlight.indexOf(shipment._id) >= 0;
+            }
+        }
+    }
+
+    componentWillUpdate = (nextProps, nextState) => {
+        this.highlightLastAdditions(nextProps.shipments);
     }
 
     render() {
@@ -71,12 +87,14 @@ export default connect(
         return (
             <div className="container"
                  style={{maxWidth: '1400px', margin: 'auto'}}>
-                <ShipmentCreator 
+                <ShipmentCreator
                     query={this.props.query}
                     templates={this.props.templates}
                     submitShipments={this.submitShipments} />
                 <br />
-                <legend>Shipment History</legend>
+                <legend>Shipment History
+                    <label className="badge" style={{position: "relative", left: "20px", backgroundColor: "gold", color: "black"}}>金色 : 最近新增</label>
+                </legend>
                 <Table
                     tableHeaders={tableHeaders}
                     tableKeys={tableKeys}
