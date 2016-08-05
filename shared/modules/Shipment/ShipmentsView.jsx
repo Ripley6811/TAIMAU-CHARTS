@@ -66,6 +66,12 @@ export default connect(
         this.highlightLastAdditions(nextProps.shipments);
     }
 
+    componentDidMount = () => {
+        if (typeof describe === 'function') {
+            Tests(this);
+        }
+    }
+
     render() {
         const { query, shipments } = this.props;
         let tableHeaders = ["公司", "頁", "進貨日期", "材料名稱", "需求量", "Dept", "Unit", "備註", "除"];
