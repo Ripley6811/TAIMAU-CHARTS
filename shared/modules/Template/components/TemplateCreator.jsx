@@ -1,6 +1,7 @@
 import React from 'react';
 
 
+export default
 class TemplateCreator extends React.Component {
     static propTypes = {
         createTemplate: React.PropTypes.func.isRequired,
@@ -15,7 +16,7 @@ class TemplateCreator extends React.Component {
             const template = {};
             this.keys.forEach(key => template[key] = this.refs[key].value.trim());
             this.props.createTemplate(template);
-            
+
             this.clearForm();
         }
     }
@@ -65,5 +66,3 @@ class TemplateCreator extends React.Component {
         )
     }
 };
-
-export default TemplateCreator;

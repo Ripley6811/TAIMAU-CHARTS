@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+
 export const name = 'ShipmentTemplate';
 export const schema = new mongoose.Schema({
     company: {

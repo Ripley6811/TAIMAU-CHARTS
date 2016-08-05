@@ -10,7 +10,8 @@ import { FA_CHEVRON_LEFT, FA_PLUS, FA_MINUS } from '../../../components/FontAwes
 const COLORS = ['rgb(236, 255, 230)', '#f5ce96'];
 
 
-export default class ShipmentCreator extends Component {
+export default
+class ShipmentCreator extends Component {
     static propTypes = {
         // Parent
         submitShipments: PropTypes.func.isRequired,

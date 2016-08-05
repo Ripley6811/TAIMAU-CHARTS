@@ -16,7 +16,8 @@ const GRAPH_MARGIN = {TOP: 20, LEFT: 60, RIGHT: 40, BOTTOM: 30},
 const STYLE = {fontSize: "12px"};
 
 
-export default class YearGraph extends Component {
+export default
+class YearGraph extends Component {
     get DIV_ID() { return "year-chart"; }
 
     static propTypes = {
