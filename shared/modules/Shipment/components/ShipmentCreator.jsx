@@ -267,7 +267,7 @@ class ShipmentCreator extends Component {
                 <select className="form-control"
                     onChange={e => this.setProduct(e,i)}>
                     { this.getDeptTemplates(each.dept, each.unit).map((temp, i2) =>
-                        <option key={`${temp.pn}${i2}`} value={i2}>
+                        <option key={`${temp.dept}${temp.unit}${temp.pn}${i2}`} value={i2}>
                             {temp.product} &nbsp; &nbsp; {temp.pn}
                         </option>
                     ) }
