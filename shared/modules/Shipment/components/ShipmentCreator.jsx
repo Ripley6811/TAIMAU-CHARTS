@@ -8,6 +8,8 @@ import { FA_CHEVRON_LEFT, FA_PLUS, FA_MINUS } from '../../../components/FontAwes
 
 
 const COLORS = ['rgb(236, 255, 230)', '#f5ce96'];
+const INPUT_DIV_STYLE = {padding: "0px", fontSize: "17px"};
+const INPUT_INNER_STYLE = {padding: "0px 3px", fontSize: "17px"};
 
 
 export default
@@ -208,42 +210,71 @@ class ShipmentCreator extends Component {
         <div>
             <legend>Create New Shipment</legend>
             <div className="form-group row">
-                <div className="col-xs-1 text-right" style={{padding: "0px"}}>
-                    <button className="btn btn-success"
+                <div className="col-xs-2 text-left" style={{padding: "0px"}}>
+                    <button className="btn btn-success" style={{float: "left"}}
                             onClick={this.addRow}>
                         {FA_PLUS}
                     </button>
+                    <span style={{padding: "0px 5px", fontSize: "30px", float: "right"}}>
+                        {company}
+                    </span>
                 </div>
-                <div className="col-xs-3 text-center"
-                     style={{fontSize: "30px"}}>
-                    {company}
+                { /** REF PAGE INPUT */ }
+                <label className="col-xs-1 form-control-label text-right"
+                       style={{padding: "5px", margin: "0px"}}>
+                    參考頁
+                </label>
+                <div className="col-xs-1" style={{paddingLeft: "0px"}}>
+                    <input className="form-control" max="99"
+                           type="number" ref="refPage" placeholder="#"
+                           onChange={this.setReference} />
                 </div>
                 <div className="col-xs-3 text-center">
                     <h5>
                         (用<strong>紀錄模板</strong>輸入新的選擇)
                     </h5>
                 </div>
+                <div className="col-xs-2 text-center">
+                    <button className="btn btn-success"
+                            onClick={this.submitNewShipments}
+                            disabled={newShipments.length < 1}>
+                        提交 / Submit
+                    </button>
+                </div>
+                <div className="col-xs-2 text-center">
+                    <button className="btn btn-warning"
+                            style={{marginLeft: "10px"}}
+                            onClick={this.clearAllTextInputs}
+                            disabled={newShipments.length < 1}>
+                        Clear All
+                    </button>
+                </div>
             </div>
             { newShipments.map((each,i) =>
             <div key={`${each}${i}`} className="row">
                 { /** REMOVE BUTTON */ }
-                <div className="col-xs-1 text-right" style={{padding: "0px"}}>
-                    <button className="btn btn-danger"
-                            onClick={() => this.removeRow(i)}>
-                        {FA_MINUS}
-                    </button>
-                </div>
-                { /** DATE INPUT */ }
-                <div className="col-xs-3" style={{padding: "0px"}}>
-                    <input className="form-control" 
-                        type="date" 
-                        value={each.date}
-                        max={maxDateString}
-                        onChange={e => this.setProperty(i, "date", e.target.value)} />
+                <div className="col-xs-3" style={INPUT_DIV_STYLE}>
+                    <div className="row" style={INPUT_DIV_STYLE}>
+                        <div className="col-xs-2" style={INPUT_DIV_STYLE}>
+                            <button className="btn btn-danger"
+                                    onClick={() => this.removeRow(i)}>
+                                {FA_MINUS}
+                            </button>
+                        </div>
+                        { /** DATE INPUT */ }
+                        <div className="col-xs-10" style={INPUT_DIV_STYLE}>
+                            <input className="form-control"
+                                 style={Object.assign({}, INPUT_INNER_STYLE, {})}
+                                type="date"
+                                value={each.date}
+                                max={maxDateString}
+                                onChange={e => this.setProperty(i, "date", e.target.value)} />
+                        </div>
+                    </div>
                 </div>
                 { /** DEPT-UNIT SELECTION LIST */ }
-                <div className="col-xs-2" style={{padding: "0px"}}>
-                <select className="form-control"
+                <div className="col-xs-2" style={INPUT_DIV_STYLE}>
+                <select className="form-control" style={INPUT_INNER_STYLE}
                         onChange={e => this.setDeptUnit(e,i)}>
                     { this.deptOptions.map((temp, i2) => {
                         const unitChanged = temp.unit.trim() !== lastUnit.trim();
@@ -263,8 +294,8 @@ class ShipmentCreator extends Component {
                 </select>
                 </div>
                 { /** PRODUCT SELECTION LIST */ }
-                <div className="col-xs-2" style={{padding: "0px"}}>
-                <select className="form-control"
+                <div className="col-xs-2" style={INPUT_DIV_STYLE}>
+                <select className="form-control" style={INPUT_INNER_STYLE}
                     onChange={e => this.setProduct(e,i)}>
                     { this.getDeptTemplates(each.dept, each.unit).map((temp, i2) =>
                         <option key={`${temp.dept}${temp.unit}${temp.pn}${i2}`} value={i2}>
@@ -274,48 +305,23 @@ class ShipmentCreator extends Component {
                 </select>
                 </div>
                 { /** AMOUNT INPUT */ }
-                <div className="col-xs-2" style={{padding: "0px"}}>
+                <div className="col-xs-2" style={INPUT_DIV_STYLE}>
                     <input className="form-control" type="number"
+                           style={INPUT_INNER_STYLE}
                            placeholder="需求量"
                            value={each.amount}
                            onChange={e => this.setProperty(i, "amount", e.target.value)}></input>
                 </div>
                 { /** NOTE INPUT */ }
-                <div className="col-xs-2" style={{padding: "0px"}}>
+                <div className="col-xs-3" style={INPUT_DIV_STYLE}>
                     <input className="form-control" type="text"
+                           style={INPUT_INNER_STYLE}
                            placeholder="備註"
                            value={each.note}
                            onChange={e => this.setProperty(i, "note", e.target.value)}></input>
                 </div>
             </div>
             )}
-            { /** ADD ROW & SUBMIT BUTTONS */ }
-            <div className="row" style={{margin: "8px"}}>
-                { /** REF PAGE INPUT */ }
-                <label className="col-xs-2 form-control-label text-right"
-                       style={{padding: "5px", margin: "0px"}}>
-                    參考頁
-                </label>
-                <div className="col-xs-1" style={{paddingLeft: "0px"}}>
-                    <input className="form-control" max="99"
-                           type="number" ref="refPage" placeholder="#"
-                           onChange={this.setReference} />
-                </div>
-                <div className="col-xs-2 text-center">
-                    <button className="btn btn-success"
-                            onClick={this.submitNewShipments}
-                            disabled={newShipments.length < 1}>
-                        提交 / Submit
-                    </button>
-                </div>
-                <div className="col-xs-2 col-xs-push-2 text-center">
-                    <button className="btn btn-warning"
-                            onClick={this.clearAllTextInputs}
-                            disabled={newShipments.length < 1}>
-                        Clear All
-                    </button>
-                </div>
-            </div>
         </div>
         );
     }
