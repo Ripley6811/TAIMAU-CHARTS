@@ -47,6 +47,8 @@ export function addShipmentRequest(shipment) {
  * Called on server for initial page load. Current store state is passed as
  * second parameter on server and should include query parameters if sent in
  * cookie of initial page request.
+ * Returns empty array if no company is selected.
+ * Returns current year if no year is selected.
  * 
  * @param   {object}   query Query paramaters for database find.
  * @param   {object}   store Redux store state on server else undefined.
@@ -62,6 +64,19 @@ export function fetchShipments(query, store) {
 
     for (let key in params) {
         if (params[key] === undefined) delete params[key];
+    }
+    
+    // Require a company
+    if (!params.company) {
+        return dispatch({
+            type: LOAD_SHIPMENTS,
+            shipments: []
+        })
+    }
+    
+    // Limit to current year if no date selected
+    if (!params.year) {
+        params.year = new Date().getFullYear();
     }
 
     // "dispatch" is a callback that runs the reducer.
