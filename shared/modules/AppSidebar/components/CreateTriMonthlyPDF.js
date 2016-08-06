@@ -1,8 +1,9 @@
 /**
- * @overview Generates a pdf in a new window. 
+ * @overview Generates a pdf in a new window.
  */
 
-export default function(data) {
+export default
+function create(data) {
     const doc = new jsPDF(),
           SHIPMENTS = data.shipments,
           COMPANY = data.company,
@@ -138,7 +139,7 @@ export default function(data) {
 
     for (let poi in productOrder) {
         const pn = productOrder[poi];
-        
+
         if (!pn) {
             posY += 5;
         } else if (dataPNs.indexOf(pn) >= 0) {
@@ -211,6 +212,6 @@ export default function(data) {
         posY+= 5;
     }
 
-    
+
     doc.output('dataurlnewwindow');
 }

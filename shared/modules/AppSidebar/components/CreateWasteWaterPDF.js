@@ -3,7 +3,8 @@
  * half-year report.
  */
 
-export default function(data) {
+export default
+function create(data) {
     const doc = new jsPDF(),
           SHIPMENTS = data.shipments,
           COMPANY = data.company,

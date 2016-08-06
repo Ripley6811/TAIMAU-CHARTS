@@ -4,7 +4,6 @@
  */
 
 import React, { PropTypes, Component } from 'react';
-import { connect } from 'react-redux';
 // Requests
 import { requestTriMonthlyPDF, requestWasteWaterPDF } from '../../../utils/requests/requests';
 // Components
@@ -25,7 +24,8 @@ const INPUT_STYLE = {
       SELECTED_ONE_MONTH = Symbol();
 
 
-export default class PDFMaker extends Component {
+export default
+class PDFMaker extends Component {
     static propTypes = {
         company: PropTypes.string,
         year: PropTypes.number.isRequired,

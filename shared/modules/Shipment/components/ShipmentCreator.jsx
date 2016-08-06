@@ -2,7 +2,6 @@
  * @overview Place to enter sets of shipments.
  */
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 // Components
 import { FA_CHEVRON_LEFT, FA_PLUS, FA_MINUS } from '../../../components/FontAwesome';
 
