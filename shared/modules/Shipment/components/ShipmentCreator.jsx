@@ -276,8 +276,8 @@ class ShipmentCreator extends Component {
                 <select className="form-control" style={INPUT_INNER_STYLE}
                         onChange={e => this.setDeptUnit(e,i)}>
                     { this.deptOptions.map((temp, i2) => {
-                        const unitChanged = temp.unit.trim() !== lastUnit.trim();
-                        lastUnit = temp.unit;
+                        const unitChanged = temp.unit.trim().split("-")[0] !== lastUnit;
+                        lastUnit = temp.unit.trim().split("-")[0];
                         if (unitChanged) {
                             colorIndex = (colorIndex+1)%2;
                         }
