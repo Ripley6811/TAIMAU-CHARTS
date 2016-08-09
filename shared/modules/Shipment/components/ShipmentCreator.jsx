@@ -26,9 +26,13 @@ class ShipmentCreator extends Component {
 
     componentWillReceiveProps = (nextProps) => {
         // If company selection changes, then delete new shipments list.
-        const key = "company";
+        let key = "company";
         if (nextProps.query[key] !== this.props.query[key]) {
             this.removeAllEntries();
+        }
+        key = "month";
+        if (nextProps.query[key] !== this.props.query[key]) {
+            this.setState({newShipments: []});
         }
     }
 
@@ -73,7 +77,7 @@ class ShipmentCreator extends Component {
         this.setState({
             newShipments: [...this.state.newShipments,
                            {
-                               date: new Date().toISOString().slice(0,10),
+                               date: this.getYYYYMMDD(),
                                company: firstTemplate.company,
                                dept: firstTemplate.dept,
                                unit: firstTemplate.unit,
@@ -90,8 +94,23 @@ class ShipmentCreator extends Component {
                            ...this.state.newShipments.slice(i+1)]
         });
     }
+    
+    getYYYYMMDD = (day) => {
+        day = Number(day);
+        const { year, month } = this.props.query;
+        let mm = typeof month !== 'undefined' ? 1 + Number(month) : 1 + new Date().getMonth();
+        mm = mm < 10 ? `0${mm}` : `${mm}`;
+        let dd = `01`;
+        if (typeof day === 'number' && day > 0 && day < 32) {
+            dd = Number(day) < 10 ? `0${Number(day)}` : `${Number(day)}`;
+        }
+        return `${year}-${mm}-${dd}`;
+    }
 
     setProperty = (i, key, value) => {
+        if (key === "date") {
+            value = this.getYYYYMMDD(value);
+        }
         this.setState({
             newShipments: [...this.state.newShipments.slice(0,i),
                            Object.assign({}, this.state.newShipments[i], {
@@ -170,6 +189,7 @@ class ShipmentCreator extends Component {
 
     submitNewShipments = () => {
         const datesAreGood = this.state.newShipments.every(each => {
+            console.log(each.date);
             if (!each.date) return false;
             // Must be current or past date.
             return new Date(each.date) <= new Date();
@@ -187,12 +207,10 @@ class ShipmentCreator extends Component {
     }
 
     render() {
-        const { company } = this.props.query,
+        const { company, year, month } = this.props.query,
               { newShipments } = this.state;
         let lastUnit = "";
         let colorIndex = -1;
-        const today = new Date();
-        const maxDateString = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
 
         if (!company) {
             return (
@@ -209,20 +227,25 @@ class ShipmentCreator extends Component {
         <div>
             <legend>Create New Shipment</legend>
             <div className="form-group row">
-                <div className="col-xs-2 text-left" style={{padding: "0px"}}>
-                    <button className="btn btn-success" style={{float: "left"}}
-                            onClick={this.addRow}>
-                        {FA_PLUS}
-                    </button>
-                    <span style={{padding: "0px 5px", fontSize: "30px", float: "right"}}>
-                        {company}
-                    </span>
+                <div className="col-xs-3" style={{padding: "0px"}}>
+                    <div className="row">
+                        <div className="col-xs-2 text-right" style={INPUT_DIV_STYLE}>
+                            <button className="btn btn-success"
+                                    onClick={this.addRow}>
+                                {FA_PLUS}
+                            </button>
+                        </div>
+                        <div className="col-xs-6 text-center" style={INPUT_DIV_STYLE}>
+                            <span style={{padding: "0px 5px", fontSize: "30px"}}>
+                                {company}
+                            </span>
+                        </div>
+                        <div className="col-xs-4 text-right" style={{padding: "0px 3px"}}>
+                            <h4>參考頁</h4>
+                        </div>
+                    </div>
                 </div>
                 { /** REF PAGE INPUT */ }
-                <label className="col-xs-1 form-control-label text-right"
-                       style={{padding: "5px", margin: "0px"}}>
-                    參考頁
-                </label>
                 <div className="col-xs-1" style={{paddingLeft: "0px"}}>
                     <input className="form-control" max="99"
                            type="number" ref="refPage" placeholder="#"
@@ -250,23 +273,26 @@ class ShipmentCreator extends Component {
                 </div>
             </div>
             { newShipments.map((each,i) =>
-            <div key={`${each}${i}`} className="row">
+            <div key={`newrow${i}`} className="row">
                 { /** REMOVE BUTTON */ }
                 <div className="col-xs-3" style={INPUT_DIV_STYLE}>
-                    <div className="row" style={INPUT_DIV_STYLE}>
-                        <div className="col-xs-2" style={INPUT_DIV_STYLE}>
+                    <div className="row">
+                        <div className="col-xs-2 text-right" style={INPUT_DIV_STYLE}>
                             <button className="btn btn-danger"
                                     onClick={() => this.removeRow(i)}>
                                 {FA_MINUS}
                             </button>
                         </div>
+                        <div className="col-xs-6" style={INPUT_DIV_STYLE}>
+                            <input className="form-control text-right" disabled style={INPUT_INNER_STYLE}
+                               value={each.date.substring(0,8)} />
+                        </div>
                         { /** DATE INPUT */ }
-                        <div className="col-xs-10" style={INPUT_DIV_STYLE}>
-                            <input className="form-control"
-                                 style={Object.assign({}, INPUT_INNER_STYLE, {})}
-                                type="date"
-                                value={each.date}
-                                max={maxDateString}
+                        <div className="col-xs-4" style={INPUT_DIV_STYLE}>
+                            <input className="form-control" style={INPUT_INNER_STYLE}
+                                type="number"
+                                placeholder="日"
+                                value={Number(each.date.split("-")[2])}
                                 onChange={e => this.setProperty(i, "date", e.target.value)} />
                         </div>
                     </div>

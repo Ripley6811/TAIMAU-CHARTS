@@ -28,5 +28,7 @@
 + Prevent future dates from getting entered. Should always be past or current.
 + Set last used Company, dept, date data in cookie and send with initial load
 - Allow user to adjust record retreival limit, later add continuous loading up to one year
-- Remove report's unit subtotals
++ Remove report's unit subtotals
+- Add spec reports for shipments
+- Add month report
 

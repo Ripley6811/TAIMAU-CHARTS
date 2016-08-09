@@ -77,11 +77,12 @@ export default connect(
         let tableHeaders = ["公司", "頁", "進貨日期", "材料名稱", "需求量", "Dept", "Unit", "備註", "除"];
         let tableKeys = ["company", "refPage", "date", "product", "amount", "dept", "unit", "note"];
 
-        // Remove dept and company columns if selected on sidebar and in query.
-        if (query.dept) {
-            tableHeaders = tableHeaders.filter(each => each !== "Dept");
-            tableKeys = tableKeys.filter(each => each !== "dept");
-        }
+        // Remove dept column if selected on sidebar and in query.
+//        if (query.dept) {
+//            tableHeaders = tableHeaders.filter(each => each !== "Dept");
+//            tableKeys = tableKeys.filter(each => each !== "dept");
+//        }
+        // Remove company column if selected on sidebar and in query.
         if (query.company) {
             tableHeaders = tableHeaders.filter(each => each !== "公司");
             tableKeys = tableKeys.filter(each => each !== "company");
