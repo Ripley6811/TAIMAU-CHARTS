@@ -124,10 +124,12 @@ function create(data) {
     doc.altText(LEFT_MARGIN+30, posY, "料號", DEFAULT_FONT_SIZE);
     let ui;
     for (ui=0; ui<unitNames.length; ui++) {
-        doc.altText(LEFT_MARGIN+65+UNIT_AMT_SPACING*ui, posY, unitNames[ui], DEFAULT_FONT_SIZE);
+//        doc.altText(LEFT_MARGIN+65+UNIT_AMT_SPACING*ui, posY, unitNames[ui], DEFAULT_FONT_SIZE);
     }
     // Show totals if more then one unit is shown.
-    if (unitNames.length > 1) {
+//    if (unitNames.length > 1) {
+    ui = 0;
+    if (ui === 0) {
         doc.altText(LEFT_MARGIN+65+UNIT_AMT_SPACING*ui, posY, "總額", DEFAULT_FONT_SIZE);
     }
     doc.setLineWidth(THICK_LINE);
@@ -149,13 +151,18 @@ function create(data) {
             doc.altText(LEFT_MARGIN+30, posY, pnData[i].pn, DEFAULT_FONT_SIZE-2);
             let allUnitsTotal = 0;
             let ui;
+            /**
+             * Per unit breakdown not wanted. Skipping for now.
+             */
             for (ui=0; ui<unitNames.length; ui++) {
                 const UNIT = unitNames[ui];
-                doc.altText(LEFT_MARGIN+65+UNIT_AMT_SPACING*ui, posY, pnData[i][UNIT] || "", DEFAULT_FONT_SIZE);
+//                doc.altText(LEFT_MARGIN+65+UNIT_AMT_SPACING*ui, posY, pnData[i][UNIT] || "", DEFAULT_FONT_SIZE);
                 allUnitsTotal += pnData[i][UNIT] || 0;
             }
+            ui = 0;
             // Show totals if more then one unit is shown.
-            if (unitNames.length > 1) {
+//            if (unitNames.length > 1) {
+            if (ui === 0) {
                 doc.altText(LEFT_MARGIN+65+UNIT_AMT_SPACING*ui, posY, `${allUnitsTotal}`, DEFAULT_FONT_SIZE);
             }
         }
@@ -170,11 +177,13 @@ function create(data) {
         let ui;
         for (ui=0; ui<unitNames.length; ui++) {
             const UNIT = unitNames[ui];
-            doc.altText(LEFT_MARGIN+65+UNIT_AMT_SPACING*ui, posY, each[UNIT] || "", DEFAULT_FONT_SIZE);
+//            doc.altText(LEFT_MARGIN+65+UNIT_AMT_SPACING*ui, posY, each[UNIT] || "", DEFAULT_FONT_SIZE);
             allUnitsTotal += each[UNIT] || 0;
         }
         // Show totals if more then one unit is shown.
-        if (unitNames.length > 1) {
+//        if (unitNames.length > 1) {
+        ui = 0;
+        if (ui === 0) {
             doc.altText(LEFT_MARGIN+65+UNIT_AMT_SPACING*ui, posY, `${allUnitsTotal}`, DEFAULT_FONT_SIZE);
         }
     }
