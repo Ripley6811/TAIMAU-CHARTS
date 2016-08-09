@@ -276,6 +276,11 @@ class ShipmentCreator extends Component {
                 <select className="form-control" style={INPUT_INNER_STYLE}
                         onChange={e => this.setDeptUnit(e,i)}>
                     { this.deptOptions.map((temp, i2) => {
+                        if (i2 === 0) {
+                            // Reset for each new row
+                            lastUnit = "";
+                            colorIndex = -1;
+                        }
                         const unitChanged = temp.unit.trim().split("-")[0] !== lastUnit;
                         lastUnit = temp.unit.trim().split("-")[0];
                         if (unitChanged) {
