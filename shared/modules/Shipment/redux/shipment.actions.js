@@ -68,10 +68,7 @@ export function fetchShipments(query, store) {
     
     // Require a company
     if (!params.company) {
-        return dispatch({
-            type: LOAD_SHIPMENTS,
-            shipments: []
-        })
+        params.company = "none";
     }
     
     // Limit to current year if no date selected

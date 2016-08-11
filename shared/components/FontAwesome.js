@@ -9,7 +9,7 @@ import React from 'react';
  * var FA_SPINNING_COG = FontAwesome("cog", "fa-spin");
  * ```
  * 
- * @param   {string} type       Font Awesome class name (without "fa-").
+ * @param   {string} type       Font Awesome icon name (without "fa-").
  * @param   {string} classNames = "" Additional string to append to `class`.
  * @returns {object} React element that displays a Font Awesome icon.
  */
@@ -27,3 +27,6 @@ export const FA_DOWNLOAD = create('download');
 export const FA_CHEVRON_LEFT = create('chevron-left');
 export const FA_PLUS = create('plus');
 export const FA_MINUS = create('minus');
+export const FA_TIMES = create('times');
+export const FA_FILE_TEXT = create('file-text');  // Black doc with three lines
+export const FA_FILE_O = create('file-o');  // White empty doc
