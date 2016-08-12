@@ -49,19 +49,36 @@ class ShipmentCreator extends Component {
      * Merges possible dept-unit combinations as string to put in set
      * then splits strings to return an array of objects.
      */
-    get deptOptions() {
-        const newSet = [...new Set(this.companyTemplates.map(temp => `${temp.dept}|${temp.unit}`))].map(
-            each => ({dept: each.split("|")[0], unit: each.split("|")[1]})
-        );
-        return newSet;
+//    get deptOptions() {
+//        const newSet = [...new Set(this.companyTemplates.map(temp => `${temp.dept}|${temp.unit}`))].map(
+//            each => ({dept: each.split("|")[0], unit: each.split("|")[1]})
+//        );
+//        return newSet;
+//    }
+
+    /**
+     * Merges possible dept-unit combinations as string to put in set
+     * then splits strings to return an array of objects.
+     */
+    get productOptions() {
+        return [...new Set(this.companyTemplates.map(temp => temp.product))];
     }
 
     /**
      * Returns a subset of templates matching dept and unit.
      */
-    getDeptTemplates = (dept, unit) => {
+//    getDeptTemplates = (dept, unit) => {
+//        return this.companyTemplates.filter(
+//            each => each.dept === dept && each.unit === unit
+//        );
+//    }
+
+    /**
+     * Returns a subset of templates matching dept and unit.
+     */
+    getProductTemplates = (prodName) => {
         return this.companyTemplates.filter(
-            each => each.dept === dept && each.unit === unit
+            each => each.product === prodName
         );
     }
 
@@ -94,7 +111,7 @@ class ShipmentCreator extends Component {
                            ...this.state.newShipments.slice(i+1)]
         });
     }
-    
+
     getYYYYMMDD = (day) => {
         day = Number(day);
         const { year, month } = this.props.query;
@@ -152,19 +169,17 @@ class ShipmentCreator extends Component {
      * @param {object} event Select list event
      * @param {number} i     New shipments list index
      */
-    setDeptUnit = (event, i) => {
-        const deptOptionsIndex = event.target.value,
-              selectedDeptUnit = this.deptOptions[deptOptionsIndex];
-        let templates = this.getDeptTemplates(selectedDeptUnit.dept, selectedDeptUnit.unit);
+    setDeptUnit = (event, row) => {
+        const productTemplatesIndex = event.target.value;
+        const template = this.getProductTemplates(this.state.newShipments[row].product)[productTemplatesIndex];
         this.setState({
-            newShipments: [...this.state.newShipments.slice(0,i),
-                           Object.assign({}, this.state.newShipments[i], {
-                               dept: selectedDeptUnit.dept,
-                               unit: selectedDeptUnit.unit,
-                               product: templates[0].product,
-                               pn: templates[0].pn,
+            newShipments: [...this.state.newShipments.slice(0,row),
+                           Object.assign({}, this.state.newShipments[row], {
+                               dept: template.dept,
+                               unit: template.unit,
+                               pn: template.pn,
                            }),
-                           ...this.state.newShipments.slice(i+1)]
+                           ...this.state.newShipments.slice(row+1)]
         });
     }
 
@@ -172,18 +187,19 @@ class ShipmentCreator extends Component {
      * @param {object} event Select list event
      * @param {number} i     New shipments list index
      */
-    setProduct = (event, i) => {
-        const templateIndex = event.target.value;
-        let shipment = this.state.newShipments[i];
-        let template = this.getDeptTemplates(shipment.dept, shipment.unit)[templateIndex];
+    setProduct = (event, row) => {
+        const prodName = event.target.value;
+        const template = this.getProductTemplates(prodName)[0]
 
         this.setState({
-            newShipments: [...this.state.newShipments.slice(0,i),
-                           Object.assign({}, this.state.newShipments[i], {
+            newShipments: [...this.state.newShipments.slice(0,row),
+                           Object.assign({}, this.state.newShipments[row], {
                                product: template.product,
                                pn: template.pn,
+                               dept: template.dept,
+                               company: template.company,
                            }),
-                           ...this.state.newShipments.slice(i+1)]
+                           ...this.state.newShipments.slice(row+1)]
         });
     }
 
@@ -209,8 +225,6 @@ class ShipmentCreator extends Component {
     render() {
         const { company, year, month } = this.props.query,
               { newShipments } = this.state;
-        let lastUnit = "";
-        let colorIndex = -1;
 
         if (!company) {
             return (
@@ -274,9 +288,9 @@ class ShipmentCreator extends Component {
             </div>
             { newShipments.map((each,i) =>
             <div key={`newrow${i}`} className="row">
-                { /** REMOVE BUTTON */ }
                 <div className="col-xs-3" style={INPUT_DIV_STYLE}>
                     <div className="row">
+                        { /** REMOVE BUTTON */ }
                         <div className="col-xs-2 text-right" style={INPUT_DIV_STYLE}>
                             <button className="btn btn-danger"
                                     onClick={() => this.removeRow(i)}>
@@ -297,39 +311,25 @@ class ShipmentCreator extends Component {
                         </div>
                     </div>
                 </div>
-                { /** DEPT-UNIT SELECTION LIST */ }
-                <div className="col-xs-2" style={INPUT_DIV_STYLE}>
-                <select className="form-control" style={INPUT_INNER_STYLE}
-                        onChange={e => this.setDeptUnit(e,i)}>
-                    { this.deptOptions.map((temp, i2) => {
-                        if (i2 === 0) {
-                            // Reset for each new row
-                            lastUnit = "";
-                            colorIndex = -1;
-                        }
-                        const unitChanged = temp.unit.trim().split("-")[0] !== lastUnit;
-                        lastUnit = temp.unit.trim().split("-")[0];
-                        if (unitChanged) {
-                            colorIndex = (colorIndex+1)%2;
-                        }
-
-                        return <option key={i2} value={i2}
-                            style={{backgroundColor: COLORS[colorIndex]}}>
-                            {(1+i2).toString(36)}) &nbsp; {temp.unit} &nbsp; {temp.dept}
-                        </option>;
-
-
-                      }
-                    ) }
-                </select>
-                </div>
                 { /** PRODUCT SELECTION LIST */ }
                 <div className="col-xs-2" style={INPUT_DIV_STYLE}>
                 <select className="form-control" style={INPUT_INNER_STYLE}
                     onChange={e => this.setProduct(e,i)}>
-                    { this.getDeptTemplates(each.dept, each.unit).map((temp, i2) =>
+
+                    { this.productOptions.map((p, i2) =>
+                        <option key={`${p}${i2}`} value={p}>
+                            {p}
+                        </option>
+                    ) }
+                </select>
+                </div>
+                { /** DEPT-UNIT SELECTION LIST */ }
+                <div className="col-xs-2" style={INPUT_DIV_STYLE}>
+                <select className="form-control" style={INPUT_INNER_STYLE}
+                        onChange={e => this.setDeptUnit(e,i)}>
+                    { this.getProductTemplates(each.product).map((temp, i2) =>
                         <option key={`${temp.dept}${temp.unit}${temp.pn}${i2}`} value={i2}>
-                            {temp.product} &nbsp; &nbsp; {temp.pn}
+                            {temp.dept} &nbsp; &nbsp; {temp.unit}
                         </option>
                     ) }
                 </select>
