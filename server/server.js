@@ -77,7 +77,7 @@ const renderFullPage = (html, initialState) => {
             <script src="/js/d3.min.js"></script>
             <script src="/js/jsPDF/jspdf.min.js"></script>
             <script src="/js/jsPDF/plugins/plugins.min.js"></script>
-            ${jasminePath}
+            ${false ? jasminePath : ""}
         </head>
         <body>
             <div id="root">${html}</div>

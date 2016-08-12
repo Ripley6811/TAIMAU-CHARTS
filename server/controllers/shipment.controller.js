@@ -10,7 +10,7 @@ export default {
               query = {};
         if (rq.company) query.company = rq.company;
         if (rq.dept) query.dept = rq.dept;
-        
+
         if (rq.year && !rq.month) {
             query.date = {
                 "$gte": new Date(rq.year, 0, 1),
@@ -32,7 +32,7 @@ export default {
                 res.json(docs);
             });
     },
-    
+
     shipmentsPDF: function (req, res) {
         const WASTE_WATER = "廢水";
         if (!("company" in req.query && "start" in req.query && "end" in req.query)) {
@@ -47,7 +47,7 @@ export default {
         if (isNaN(start.getDate()) || isNaN(end.getDate())) {
             res.status(400).send({error: "Malformed dates. Check format is YYYY/MM/DD."});
         }
-        
+
         const query = {
             company: company,
             date: {
@@ -58,10 +58,10 @@ export default {
         if ("unit" in req.query && req.query.unit === WASTE_WATER) {
             query.unit = req.query.unit;
         }
-        
+
         const monthReportSort = { refPage: 1, date: 1 };
         const wasteWaterSort = { date: 1 };
-        
+
         // TODO: Could embed a secondary query to aggregate product totals.
         Shipment.find(query, {_id: 0, __v: 0, dateAdded: 0, note: 0})
             .sort(query.unit ? wasteWaterSort : monthReportSort)
@@ -85,15 +85,15 @@ export default {
      */
     addShipments: function (req, res) {
         let shipments = req.body.shipments;
-        
+
         function validateShipment(s) {
-            if (!s.date || !s.product || !s.pn || !s.amount 
+            if (!s.date || !s.product || !s.pn || !s.amount
                 || !s.company || !s.dept || !s.unit) {
                 return false;
             }
             return true;
         }
-        
+
         shipments = shipments.map(s => {
             if (validateShipment(s)) {
                 return {
@@ -111,7 +111,7 @@ export default {
             // 403 Forbidden
             return false;
         });
-        
+
         if (shipments.every(each => !!each)) {
             Shipment.insertMany(shipments, (err, recs) => {
                 if (err) {
@@ -123,7 +123,7 @@ export default {
     },
 
     deleteShipment: function (req, res) {
-        const _id = req.body._id;
+        const { _id } = req.body;
         Shipment.findById(_id).exec((err, shipment) => {
             if (err) {
                 return res.status(500).send(err);
@@ -132,6 +132,69 @@ export default {
             shipment.remove(() => {
                 res.status(204).end();
             });
+        });
+    },
+
+    updateSpecReport: function (req, res) {
+        const { id, report } = req.body;
+
+        Shipment.findById(id).exec((err, shipment) => {
+            if (err) {
+                return res.status(500).send(err);
+            }
+            console.log("report");
+            console.dir(report);
+            shipment.testReport = report;
+            shipment.save((err, doc) => {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+                res.json(doc);
+            })
+        });
+    },
+
+    specReports: function (req, res) {
+        const { pn } = req.query;
+        if (!pn) {
+            res.status(400).end();
+        }
+
+        Shipment.aggregate([
+            { $match: {
+                pn: pn,
+                "testReport.tests.0": {$exists: true}
+            } },
+            { $sample : { size: 5 } },  // Random selection
+            { $project: {
+                product: 1,
+                pn: 1,
+                testReport: 1,
+                tests: "$testReport.tests",
+                _id: 0,
+            } },
+            { $unwind: "$tests" },
+            { $group: {
+                _id: "$pn",
+                pn: {$first: "$pn"},
+                companyHeader: {$last: "$testReport.companyHeader"},
+                lotAmount: {$first: "$testReport.lotAmount"},
+                sampler: {$last: "$testReport.sampler"},
+                inspector: {$first: "$testReport.inspector"},
+                reporter: {$last: "$testReport.reporter"},
+                shelfLife: {$first: "$testReport.shelfLife"},
+                result: {$last: "$testReport.result"},
+
+                tests: {$addToSet: "$tests"},
+            } },
+        ]).exec((err, docs) => {
+            if (err) console.log("ERR:", err);
+
+            console.log('reports');
+            console.dir(docs);
+            if (docs.length > 0) console.dir(docs[0].tests);
+
+            res.json(docs.length > 0 ? docs[0] : null);
         });
     },
 }

@@ -8,6 +8,7 @@ import callApi from '../../../utils/apiCaller';
 
 export const ADD_SHIPMENTS         = Symbol("shipment.actions.ADD_SHIPMENTS"),
              LOAD_SHIPMENTS        = Symbol("shipment.actions.LOAD_SHIPMENTS"),
+             UPDATE_SHIPMENT       = Symbol("shipment.actions.UPDATE_SHIPMENT"),
              DELETE_SHIPMENT       = Symbol("shipment.actions.DELETE_SHIPMENT");
 
 
@@ -43,20 +44,20 @@ export function addShipmentRequest(shipment) {
 
 /**
  * Populates the redux store with shipment records.
- * 
+ *
  * Called on server for initial page load. Current store state is passed as
  * second parameter on server and should include query parameters if sent in
  * cookie of initial page request.
  * Returns empty array if no company is selected.
  * Returns current year if no year is selected.
- * 
+ *
  * @param   {object}   query Query paramaters for database find.
  * @param   {object}   store Redux store state on server else undefined.
  * @returns {function} Fetch shipments api dispatch method.
  */
 export function fetchShipments(query, store) {
     const params = query ? Object.assign({}, query) : {};
-    
+
     // Server-side "need" provides store reference
     if (store && store.query) {
         Object.assign(params, store.query);
@@ -65,12 +66,12 @@ export function fetchShipments(query, store) {
     for (let key in params) {
         if (params[key] === undefined) delete params[key];
     }
-    
+
     // Require a company
     if (!params.company) {
         params.company = "none";
     }
-    
+
     // Limit to current year if no date selected
     if (!params.year) {
         params.year = new Date().getFullYear();
@@ -95,4 +96,17 @@ export function deleteShipmentRequest(shipment) {
             shipment,
         }));
     };
+}
+
+
+export function updateSpecRequest(id, report) {
+    return (dispatch) => {
+        callApi(`shipment`, 'put', {id, report})
+        .then(doc => {
+            return dispatch({
+                type: UPDATE_SHIPMENT,
+                shipment: doc,
+            });
+        });
+    }
 }

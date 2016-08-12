@@ -16,10 +16,14 @@ const router = new Router();
 router.route('/shipment')
     .get(ShipmentController.getShipments)
     .post(ShipmentController.addShipments)
+    .put(ShipmentController.updateSpecReport)
     .delete(ShipmentController.deleteShipment);
 
 router.route('/shipmentsPDF')
     .get(ShipmentController.shipmentsPDF);
+
+router.route('/specReports')
+    .get(ShipmentController.specReports);
 
 /**
  * SHIPMENT TEMPLATES collection api

@@ -4,7 +4,7 @@ import React from 'react';
  * Creates a table row.
  *
  * Takes an object and list of keys and adds cells in order.
- * Additional cells may be added as children.
+ * Additional specialized cells may be added as children (must contain <td> tags).
  * @param   {object} props Passdown properties
  * @returns {object} React DOM element
  */

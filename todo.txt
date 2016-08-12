@@ -31,4 +31,8 @@
 + Remove report's unit subtotals
 - Add spec reports for shipments
 - Add month report
+- Fix deleting rows in shipment creator
+- Monthly graph adjusts height when toggling items
+- Create a default spec report from previous reports or else use DEFAULT
+- NEED to create unified Spec Report Modal
 

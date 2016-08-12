@@ -7,8 +7,8 @@ import React, { PropTypes, Component } from 'react';
 // Requests
 import { requestTriMonthlyPDF, requestWasteWaterPDF } from '../../../utils/requests/requests';
 // Components
-import createTriMonthlyPDF from './CreateTriMonthlyPDF';
-import createWasteWaterPDF from './CreateWasteWaterPDF';
+import createTriMonthlyPDF from '../js/TriMonthlyReport.jsPDF';
+import createWasteWaterPDF from '../js/WasteWaterReport.jsPDF';
 import { FA_DOWNLOAD } from '../../../components/FontAwesome';
 
 

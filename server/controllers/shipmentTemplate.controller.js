@@ -16,7 +16,7 @@ export default {
                 if (err) {
                     return res.status(500).send(err);
                 }
-            
+
                 docs.sort((a, b) => {
                     // Ensure sorted after trimming whitespace
                     if (a.company.trim() < b.company.trim()) return -1;
@@ -32,7 +32,7 @@ export default {
                     if (a.dept.trim() > b.dept.trim()) return 1;
                     return 0;
                 });
-            
+
                 res.json(docs);
             });
     },
@@ -67,7 +67,8 @@ export default {
                 if (err) {
                     return res.status(500).send(err);
                 }
-            
+
+                // Sort each set of departments
                 for (let co of recs) {
                     co.departments.sort((a, b) => {
                         const aNo = +a.match(/\d+/)[0],
@@ -113,12 +114,12 @@ export default {
 
     deleteTemplate: function (req, res) {
         const _id = req.body._id;
-        
+
         Template.findById(_id).exec((err, template) => {
             if (err) {
                 return res.status(500).send(err);
             }
-            
+
             template.remove(() => {
                 // 204 No Content
                 res.status(204).end();

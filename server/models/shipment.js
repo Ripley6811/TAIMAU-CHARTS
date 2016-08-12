@@ -50,6 +50,23 @@ export const schema = new mongoose.Schema({
         default: Date.now,
         required: true
     },
+    testReport: {
+        companyHeader: "String",
+        dateProduced: "String",
+        dateTested: "String",
+        lotAmount: "String",
+        lotID: "String",
+        inspector: "String",
+        sampler: "String",
+        reporter: "String",
+        shelfLife: "String",
+        result: "String",
+        tests: [{
+            attr: "String",
+            spec: "String",
+            rslt: "String",
+        }]
+    },
 });
 
 export default mongoose.model(name, schema);

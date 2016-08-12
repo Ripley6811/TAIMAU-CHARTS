@@ -42,3 +42,14 @@ export function getAllProducts(callback) {
         then(res => res.json()).
         then(records => callback(records));
 }
+
+
+/**
+ * Used in Spec Report Creator.
+ */
+export function getPreviousSpecReports(pn, callback) {
+    const URL = `${baseURL}/api/specReports?pn=${pn}`;
+    return fetch(URL).
+        then(res => res.json()).
+        then(docs => callback(docs));
+}

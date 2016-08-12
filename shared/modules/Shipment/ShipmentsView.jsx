@@ -2,17 +2,19 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 // Actions
 import { fetchShipmentTemplates } from '../Template/redux/template.actions';
-import { addShipmentsRequest, deleteShipmentRequest } from './redux/shipment.actions';
+import { addShipmentsRequest, deleteShipmentRequest, updateSpecRequest } from './redux/shipment.actions';
 // Components
 import ShipmentCreator from './components/ShipmentCreator';
 import Table from '../../components/Table';
+import SpecReportModal from './components/SpecReportModal'
 
 import Tests from './tests/shipments.spec.js';
 
 
 export default connect(
     ({query, shipments, templates}) => ({query, shipments, templates}),  // Pull items from store
-    { addShipmentsRequest, deleteShipmentRequest, fetchShipmentTemplates }  // Bind actions with dispatch
+    { addShipmentsRequest, deleteShipmentRequest, updateSpecRequest,
+      fetchShipmentTemplates }  // Bind actions with dispatch
 )(class ShipmentsView extends Component {
     // Server-side data retrieval (for server rendering).
     static need = [fetchShipmentTemplates]  // Preload for sub-component
@@ -29,6 +31,7 @@ export default connect(
         addShipmentsRequest: PropTypes.func.isRequired,
         deleteShipmentRequest: PropTypes.func.isRequired,
         fetchShipmentTemplates: PropTypes.func.isRequired,
+        updateSpecRequest: PropTypes.func.isRequired,
     }
 
     static defaultProps = {
@@ -74,7 +77,7 @@ export default connect(
 
     render() {
         const { query, shipments } = this.props;
-        let tableHeaders = ["公司", "頁", "進貨日期", "材料名稱", "需求量", "Dept", "Unit", "備註", "除"];
+        let tableHeaders = ["公司", "頁", "進貨日期", "材料名稱", "需求量", "Dept", "Unit", "備註", "規範", "除"];
         let tableKeys = ["company", "refPage", "date", "product", "amount", "dept", "unit", "note"];
 
         // Remove dept column if selected on sidebar and in query.
@@ -106,7 +109,9 @@ export default connect(
                     tableHeaders={tableHeaders}
                     tableKeys={tableKeys}
                     tableRows={shipments}
-                    onDelete={this.deleteShipment} />
+                    onDelete={this.deleteShipment}
+                    specModal={SpecReportModal}
+                    updateSpec={this.props.updateSpecRequest} />
             </div>
         );
     }
