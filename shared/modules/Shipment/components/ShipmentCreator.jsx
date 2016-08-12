@@ -313,26 +313,25 @@ class ShipmentCreator extends Component {
                 </div>
                 { /** PRODUCT SELECTION LIST */ }
                 <div className="col-xs-2" style={INPUT_DIV_STYLE}>
-                <select className="form-control" style={INPUT_INNER_STYLE}
-                    onChange={e => this.setProduct(e,i)}>
-
-                    { this.productOptions.map((p, i2) =>
-                        <option key={`${p}${i2}`} value={p}>
-                            {p}
-                        </option>
-                    ) }
-                </select>
+                    <select className="form-control" style={INPUT_INNER_STYLE}
+                        onChange={e => this.setProduct(e,i)}>
+                        { this.productOptions.map((p, i2) =>
+                            <option key={`${p}${i2}`} value={p}>
+                                {p}
+                            </option>
+                        ) }
+                    </select>
                 </div>
                 { /** DEPT-UNIT SELECTION LIST */ }
                 <div className="col-xs-2" style={INPUT_DIV_STYLE}>
-                <select className="form-control" style={INPUT_INNER_STYLE}
-                        onChange={e => this.setDeptUnit(e,i)}>
-                    { this.getProductTemplates(each.product).map((temp, i2) =>
-                        <option key={`${temp.dept}${temp.unit}${temp.pn}${i2}`} value={i2}>
-                            {temp.dept} &nbsp; &nbsp; {temp.unit}
-                        </option>
-                    ) }
-                </select>
+                    <select className="form-control" style={INPUT_INNER_STYLE}
+                            onChange={e => this.setDeptUnit(e,i)}>
+                        { this.getProductTemplates(each.product).map((temp, i2) =>
+                            <option key={`${temp.dept}${temp.unit}${temp.pn}${i2}`} value={i2}>
+                                {temp.dept} &nbsp; &nbsp; {temp.unit}
+                            </option>
+                        ) }
+                    </select>
                 </div>
                 { /** AMOUNT INPUT */ }
                 <div className="col-xs-2" style={INPUT_DIV_STYLE}>

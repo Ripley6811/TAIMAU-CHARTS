@@ -47,6 +47,8 @@ export default connect(
     }
 
     submitShipments = (newShipmentsArray) => {
+        // Strip the (Formulas) following chinese product names
+        newShipmentsArray.forEach(each => each.product = each.product.split("(")[0].trim());
         this.props.addShipmentsRequest(newShipmentsArray);
     }
 
