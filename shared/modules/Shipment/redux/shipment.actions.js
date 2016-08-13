@@ -6,10 +6,10 @@ import { encodeQuery } from '../../../utils/utils';
 import callApi from '../../../utils/apiCaller';
 
 
-export const ADD_SHIPMENTS         = Symbol("shipment.actions.ADD_SHIPMENTS"),
-             LOAD_SHIPMENTS        = Symbol("shipment.actions.LOAD_SHIPMENTS"),
-             UPDATE_SHIPMENT       = Symbol("shipment.actions.UPDATE_SHIPMENT"),
-             DELETE_SHIPMENT       = Symbol("shipment.actions.DELETE_SHIPMENT");
+export const ADD_SHIPMENTS   = Symbol("shipment.actions.ADD_SHIPMENTS"),
+             LOAD_SHIPMENTS  = Symbol("shipment.actions.LOAD_SHIPMENTS"),
+             UPDATE_SHIPMENT = Symbol("shipment.actions.UPDATE_SHIPMENT"),
+             DELETE_SHIPMENT = Symbol("shipment.actions.DELETE_SHIPMENT");
 
 
 function storeRecentIds(keyword, idArray) {

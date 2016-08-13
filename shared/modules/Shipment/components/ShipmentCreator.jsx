@@ -87,19 +87,16 @@ class ShipmentCreator extends Component {
     }
 
     addRow = () => {
-        const firstTemplate = this.templates[0];
-        const refA = +this.refs.refPageA.value;
-        const refPage = +refA + 0.01*this.refs.refPageB.value;
+        const { product, pn, dept, unit, company } = this.templates[0];
+        const { refPageA: { value: refA },
+                refPageB: { value: refB } } = this.refs,
+              refPage = +refA + 0.01*refB;
         this.setState({
             newShipments: [...this.state.newShipments,
                            {
                                date: this.getYYYYMMDD(),
-                               company: firstTemplate.company,
-                               dept: firstTemplate.dept,
-                               unit: firstTemplate.unit,
-                               product: firstTemplate.product,
-                               pn: firstTemplate.pn,
-                               refPage: refPage,
+                               refPage,
+                               product, pn, dept, unit, company,
                            }]
         });
     }
@@ -144,14 +141,14 @@ class ShipmentCreator extends Component {
 
     // Currently not used...
     clearField = (key) => {
-        const slist = this.state.newShipments;
+        const { newShipments: slist } = this.state;
         this.setState({
             newShipments: slist.map(each => Object.assign({}, each, {[key]: ""}))
         });
     }
 
     clearAllTextInputs = () => {
-        const slist = this.state.newShipments;
+        const { newShipments: slist } = this.state;
         // Wait for this "setState" to finish before triggering refPage "setState".
         this.setState({
             newShipments: slist.map(each => Object.assign({}, each, {
@@ -162,8 +159,9 @@ class ShipmentCreator extends Component {
     }
 
     setReference = () => {
-        const refA = +this.refs.refPageA.value;
-        const refPage = +refA + 0.01*this.refs.refPageB.value;
+        const { refPageA: { value: refA },
+                refPageB: { value: refB } } = this.refs,
+              refPage = +refA + 0.01*refB;
         this.setState({
             newShipments: this.state.newShipments.map(each =>
                               Object.assign({}, each, {refPage})
@@ -176,16 +174,17 @@ class ShipmentCreator extends Component {
      * @param {number} i     New shipments list index
      */
     setDeptUnit = (event, row) => {
-        const productTemplatesIndex = event.target.value;
-        const template = this.getProductTemplates(this.state.newShipments[row].product)[productTemplatesIndex];
+        const { getProductTemplates: getTemplates, state: { newShipments } } = this,
+              productTemplatesIndex = event.target.value,
+              template = getTemplates(newShipments[row].product)[productTemplatesIndex];
         this.setState({
-            newShipments: [...this.state.newShipments.slice(0,row),
-                           Object.assign({}, this.state.newShipments[row], {
+            newShipments: [...newShipments.slice(0,row),
+                           Object.assign({}, newShipments[row], {
                                dept: template.dept,
                                unit: template.unit,
                                pn: template.pn,
                            }),
-                           ...this.state.newShipments.slice(row+1)]
+                           ...newShipments.slice(row+1)]
         });
     }
 
@@ -194,39 +193,38 @@ class ShipmentCreator extends Component {
      * @param {number} i     New shipments list index
      */
     setProduct = (event, row) => {
-        const prodName = event.target.value;
-        console.log("set product:", prodName);
-        const template = this.getProductTemplates(prodName)[0];
+        const { value: prodName } = event.target;  // (Destructuring with rename, "value" is undefined)
+
+        const { product, pn, dept, unit, company } = this.getProductTemplates(prodName)[0];
 
         this.setState({
             newShipments: [...this.state.newShipments.slice(0,row),
-                           Object.assign({}, this.state.newShipments[row], {
-                               product: template.product,
-                               pn: template.pn,
-                               dept: template.dept,
-                               unit: template.unit,
-                               company: template.company,
-                           }),
+                           Object.assign({}, this.state.newShipments[row],
+                                         { product, pn, dept, unit, company }),
                            ...this.state.newShipments.slice(row+1)]
         });
     }
 
     submitNewShipments = () => {
-        const datesAreGood = this.state.newShipments.every(each => {
+        const { state: { newShipments }, 
+                refs: { refPageA, refPageB },
+                props: { submitShipments } } = this;
+        
+        const datesAreGood = newShipments.every(each => {
             console.log(each.date);
             if (!each.date) return false;
             // Must be current or past date.
             return new Date(each.date) <= new Date();
         });
-        const amountsAreGood = this.state.newShipments.every(each => !!each.amount);
-        const refPageAEntered = this.refs.refPageA.value ? true : false;
-        const refPageBEntered = this.refs.refPageB.value ? true : false;
+        const amountsAreGood = newShipments.every(each => !!each.amount);
+        
         if (!datesAreGood) {
             alert("Check dates column. 一個多日期不好.");
-        } else if (datesAreGood && amountsAreGood && refPageAEntered && refPageBEntered) {
-            const shipments = this.state.newShipments.map(e => Object.assign({},e));
-            for (let i in shipments) shipments[i].refPageSeq = +i;
-            this.props.submitShipments(shipments);
+        } else if (datesAreGood && amountsAreGood && 
+                   !!refPageA.value && !!refPageB.value) {
+            const outShipments = newShipments.map(e => Object.assign({},e));
+            for (let i in outShipments) outShipments[i].refPageSeq = +i;
+            submitShipments(outShipments);
             this.clearAllTextInputs();
         } else {
             alert("All fields except 'note' are required.");
@@ -234,8 +232,8 @@ class ShipmentCreator extends Component {
     }
 
     render() {
-        const { company } = this.props,
-              { newShipments } = this.state;
+        const { state: { newShipments }, 
+                props: { company } } = this;
 
         if (!company) {
             return (
