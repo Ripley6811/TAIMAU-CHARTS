@@ -16,7 +16,7 @@ class ShipmentCreator extends Component {
     static propTypes = {
         // Parent
         submitShipments: PropTypes.func.isRequired,
-        templates: PropTypes.array.isRequired,
+        companyTemplates: PropTypes.array.isRequired,
         query: PropTypes.object.isRequired,
     }
 
@@ -32,33 +32,50 @@ class ShipmentCreator extends Component {
         }
         key = "month";
         if (nextProps.query[key] !== this.props.query[key]) {
-            this.setState({newShipments: []});
+            this.removeAllEntries();
         }
     }
 
     /**
-     * Returns a subset of templates matching the current global query.company.
+     * Returns company templates.
      */
-    get companyTemplates() {
-        return this.props.templates.filter(temp =>
-            temp.company === this.props.query.company
+    get templates() {
+        return this.props.companyTemplates;
+    }
+
+    /**
+     * Creates a "Set" of products and returns an array of "option" components.
+     */
+    get productSelectOptions() {
+        const { company } = this.props.query,
+              optionsArray = [...new Set(this.templates.map(temp => temp.product))];
+
+        return optionsArray.map((product, i) =>
+            <option key={`${company}${i}${product}`} value={product}>
+                {product}
+            </option>
         );
     }
 
     /**
-     * Merges possible dept-unit combinations as string to put in set
-     * then splits strings to return an array of objects.
+     * Creates an array of dept-unit "option" components given a product.
      */
-    get productOptions() {
-        return [...new Set(this.companyTemplates.map(temp => temp.product))];
+    deptSelectOptions = (product) => {
+        const optionsArray = this.getProductTemplates(product);
+
+        return optionsArray.map((temp, i) =>
+            <option key={`${temp.dept}${temp.unit}${temp.pn}${i}`} value={i}>
+                {temp.dept} &nbsp; &nbsp; {temp.unit}
+            </option>
+        );
     }
 
     /**
-     * Returns a subset of templates matching dept and unit.
+     * Returns a subset of templates matching product.
      */
-    getProductTemplates = (prodName) => {
-        return this.companyTemplates.filter(
-            each => each.product === prodName
+    getProductTemplates = (product) => {
+        return this.templates.filter(
+            each => each.product === product
         );
     }
 
@@ -66,11 +83,11 @@ class ShipmentCreator extends Component {
         this.setState({
             newShipments: [],
         });
-        if (this.refs.refPage) this.refs.refPage.value = "";
+        this.refs.refPageB.value = "";
     }
 
     addRow = () => {
-        const firstTemplate = this.companyTemplates[0];
+        const firstTemplate = this.templates[0];
         const refA = +this.refs.refPageA.value;
         const refPage = +refA + 0.01*this.refs.refPageB.value;
         this.setState({
@@ -169,7 +186,6 @@ class ShipmentCreator extends Component {
                                pn: template.pn,
                            }),
                            ...this.state.newShipments.slice(row+1)]
-        });
     }
 
     /**
@@ -178,7 +194,8 @@ class ShipmentCreator extends Component {
      */
     setProduct = (event, row) => {
         const prodName = event.target.value;
-        const template = this.getProductTemplates(prodName)[0]
+        console.log("set product:", prodName);
+        const template = this.getProductTemplates(prodName)[0];
 
         this.setState({
             newShipments: [...this.state.newShipments.slice(0,row),
@@ -190,7 +207,6 @@ class ShipmentCreator extends Component {
                                company: template.company,
                            }),
                            ...this.state.newShipments.slice(row+1)]
-        });
     }
 
     submitNewShipments = () => {
@@ -285,14 +301,14 @@ class ShipmentCreator extends Component {
                     </button>
                 </div>
             </div>
-            { newShipments.map((each,i) =>
-            <div key={`newrow${i}`} className="row">
+            { newShipments.map((each,row) =>
+            <div key={`newrow${row}`} className="row">
                 <div className="col-xs-3" style={INPUT_DIV_STYLE}>
                     <div className="row">
                         { /** REMOVE BUTTON */ }
                         <div className="col-xs-2 text-right" style={INPUT_DIV_STYLE}>
                             <button className="btn btn-danger"
-                                    onClick={() => this.removeRow(i)}>
+                                    onClick={() => this.removeRow(row)}>
                                 {FA_MINUS}
                             </button>
                         </div>
@@ -306,19 +322,15 @@ class ShipmentCreator extends Component {
                                 type="number"
                                 placeholder="日"
                                 value={Number(each.date.split("-")[2])}
-                                onChange={e => this.setProperty(i, "date", e.target.value)} />
+                                onChange={e => this.setProperty(row, "date", e.target.value)} />
                         </div>
                     </div>
                 </div>
                 { /** PRODUCT SELECTION LIST */ }
                 <div className="col-xs-2" style={INPUT_DIV_STYLE}>
                     <select className="form-control" style={INPUT_INNER_STYLE}
-                        onChange={e => this.setProduct(e,i)}>
-                        { this.productOptions.map((p, i2) =>
-                            <option key={`${p}${i2}`} value={p}>
-                                {p}
-                            </option>
-                        ) }
+                        onChange={e => this.setProduct(e, row)}>
+                        { this.productSelectOptions }
                     </select>
                 </div>
                 { /** AMOUNT INPUT */ }
@@ -327,17 +339,13 @@ class ShipmentCreator extends Component {
                            style={INPUT_INNER_STYLE}
                            placeholder="需求量"
                            value={each.amount}
-                           onChange={e => this.setProperty(i, "amount", e.target.value)}></input>
+                           onChange={e => this.setProperty(row, "amount", e.target.value)}></input>
                 </div>
                 { /** DEPT-UNIT SELECTION LIST */ }
                 <div className="col-xs-2" style={INPUT_DIV_STYLE}>
                     <select className="form-control" style={INPUT_INNER_STYLE}
-                            onChange={e => this.setDeptUnit(e,i)}>
-                        { this.getProductTemplates(each.product).map((temp, i2) =>
-                            <option key={`${temp.dept}${temp.unit}${temp.pn}${i2}`} value={i2}>
-                                {temp.dept} &nbsp; &nbsp; {temp.unit}
-                            </option>
-                        ) }
+                            onChange={e => this.setDeptUnit(e, row)}>
+                        { this.deptSelectOptions(each.product) }
                     </select>
                 </div>
                 { /** NOTE INPUT */ }
@@ -346,7 +354,7 @@ class ShipmentCreator extends Component {
                            style={INPUT_INNER_STYLE}
                            placeholder="備註"
                            value={each.note}
-                           onChange={e => this.setProperty(i, "note", e.target.value)}></input>
+                           onChange={e => this.setProperty(row, "note", e.target.value)}></input>
                 </div>
             </div>
             )}

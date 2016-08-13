@@ -38,12 +38,30 @@ export default connect(
         shipments: []
     }
 
+    state = {
+        filteredCompanyTemplates: []
+    }
+
     componentWillMount = () => {
+        const { templates, query } = this.props;
         // Ensure required data is loaded.
-        if (this.props.templates.length === 0) {
+        if (templates.length === 0) {
             this.props.fetchShipmentTemplates();
         }
+        this.setFilteredCompanyTemplates(templates, query.company);
         this.highlightLastAdditions(this.props.shipments);
+    }
+
+    componentWillReceiveProps = (nextProps) => {
+        if (this.props.query.company !== nextProps.query.company) {
+            this.setFilteredCompanyTemplates(nextProps.templates, nextProps.query.company);
+        }
+    }
+    
+    setFilteredCompanyTemplates = (templates, company) => {
+        this.setState({
+            filteredCompanyTemplates: templates.filter(t => t.company === company)
+        });
     }
 
     submitShipments = (newShipmentsArray) => {
@@ -103,7 +121,7 @@ export default connect(
                  style={{maxWidth: '1400px', margin: 'auto'}}>
                 <ShipmentCreator
                     query={this.props.query}
-                    templates={this.props.templates}
+                    companyTemplates={this.state.filteredCompanyTemplates}
                     submitShipments={this.submitShipments} />
                 <br />
                 <legend>Shipment History
