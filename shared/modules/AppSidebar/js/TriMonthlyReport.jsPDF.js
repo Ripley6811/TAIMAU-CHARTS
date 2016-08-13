@@ -206,7 +206,7 @@ function create(data) {
         }
 
         if (shipment.refPage !== refPage) {
-            doc.altText(TABLE_X_POS[0], posY, shipment.refPage, DEFAULT_FONT_SIZE-1);
+            doc.altText(TABLE_X_POS[0], posY, String(shipment.refPage).split(".").map(ea => Number(ea)).join("-"), DEFAULT_FONT_SIZE-1);
             refPage = shipment.refPage;
             doc.line(20, posY+1-5, 190, posY+1-5);
         }
