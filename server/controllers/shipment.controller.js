@@ -59,7 +59,7 @@ export default {
             query.unit = req.query.unit;
         }
 
-        const monthReportSort = { refPage: 1, date: 1 };
+        const monthReportSort = { refPage: 1, refPageSeq: 1, dateAdded: 1 };
         const wasteWaterSort = { date: 1 };
 
         // TODO: Could embed a secondary query to aggregate product totals.
