@@ -186,6 +186,7 @@ class ShipmentCreator extends Component {
                                pn: template.pn,
                            }),
                            ...this.state.newShipments.slice(row+1)]
+        });
     }
 
     /**
@@ -207,6 +208,7 @@ class ShipmentCreator extends Component {
                                company: template.company,
                            }),
                            ...this.state.newShipments.slice(row+1)]
+        });
     }
 
     submitNewShipments = () => {
