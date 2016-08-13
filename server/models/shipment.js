@@ -50,6 +50,11 @@ export const schema = new mongoose.Schema({
         default: Date.now,
         required: true
     },
+    refPageSeq: {
+        type: 'Number',
+        required: true,
+        default: 0,
+    },
     testReport: {
         companyHeader: "String",
         dateProduced: "String",

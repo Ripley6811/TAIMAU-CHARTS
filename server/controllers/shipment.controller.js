@@ -24,7 +24,7 @@ export default {
         }
 
         Shipment.find(query, {__v: 0, dateAdded: 0})
-            .sort('-date')
+            .sort('-refPage refPageSeq dateAdded')
             .exec((err, docs) => {
                 if (err) {
                     return res.status(500).send(err);
@@ -88,7 +88,7 @@ export default {
 
         function validateShipment(s) {
             if (!s.date || !s.product || !s.pn || !s.amount
-                || !s.company || !s.dept || !s.unit) {
+                || !s.company || !s.dept || !s.unit || !s.refPage) {
                 return false;
             }
             return true;
@@ -103,7 +103,8 @@ export default {
                     company: s.company ? sanitizeHtml(s.company) : undefined,
                     dept: s.dept ? sanitizeHtml(s.dept) : undefined,
                     unit: s.unit ? sanitizeHtml(s.unit) : undefined,
-                    refPage: s.refPage ? sanitizeHtml(s.refPage) : undefined,
+                    refPage: s.refPage,
+                    refPageSeq: s.refPageSeq,
                     amount: s.amount,
                     date: s.date,
                 };

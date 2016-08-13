@@ -35,4 +35,5 @@
 - Monthly graph adjusts height when toggling items
 - Create a default spec report from previous reports or else use DEFAULT
 - NEED to create unified Spec Report Modal
+- selectable shipments list for specialized reports
 

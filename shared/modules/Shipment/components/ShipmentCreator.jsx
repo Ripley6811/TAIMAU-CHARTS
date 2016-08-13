@@ -49,29 +49,9 @@ class ShipmentCreator extends Component {
      * Merges possible dept-unit combinations as string to put in set
      * then splits strings to return an array of objects.
      */
-//    get deptOptions() {
-//        const newSet = [...new Set(this.companyTemplates.map(temp => `${temp.dept}|${temp.unit}`))].map(
-//            each => ({dept: each.split("|")[0], unit: each.split("|")[1]})
-//        );
-//        return newSet;
-//    }
-
-    /**
-     * Merges possible dept-unit combinations as string to put in set
-     * then splits strings to return an array of objects.
-     */
     get productOptions() {
         return [...new Set(this.companyTemplates.map(temp => temp.product))];
     }
-
-    /**
-     * Returns a subset of templates matching dept and unit.
-     */
-//    getDeptTemplates = (dept, unit) => {
-//        return this.companyTemplates.filter(
-//            each => each.dept === dept && each.unit === unit
-//        );
-//    }
 
     /**
      * Returns a subset of templates matching dept and unit.
@@ -91,6 +71,8 @@ class ShipmentCreator extends Component {
 
     addRow = () => {
         const firstTemplate = this.companyTemplates[0];
+        const refA = +this.refs.refPageA.value;
+        const refPage = +refA + 0.01*this.refs.refPageB.value;
         this.setState({
             newShipments: [...this.state.newShipments,
                            {
@@ -100,7 +82,7 @@ class ShipmentCreator extends Component {
                                unit: firstTemplate.unit,
                                product: firstTemplate.product,
                                pn: firstTemplate.pn,
-                               refPage: this.refs.refPage.value,
+                               refPage: refPage,
                            }]
         });
     }
@@ -128,6 +110,12 @@ class ShipmentCreator extends Component {
         if (key === "date") {
             value = this.getYYYYMMDD(value);
         }
+        if (key === "amount") {
+            value = Number(value);
+            if (isNaN(value)) {
+                value = 0;
+            }
+        }
         this.setState({
             newShipments: [...this.state.newShipments.slice(0,i),
                            Object.assign({}, this.state.newShipments[i], {
@@ -153,11 +141,12 @@ class ShipmentCreator extends Component {
                 amount: "",
                 note: "",
             }))
-        }, () => (this.refs.refPage.value = ""));
+        }, () => (this.refs.refPageB.value = ""));
     }
 
     setReference = () => {
-        const refPage = this.refs.refPage.value;
+        const refA = +this.refs.refPageA.value;
+        const refPage = +refA + 0.01*this.refs.refPageB.value;
         this.setState({
             newShipments: this.state.newShipments.map(each =>
                               Object.assign({}, each, {refPage})
@@ -211,11 +200,14 @@ class ShipmentCreator extends Component {
             return new Date(each.date) <= new Date();
         });
         const amountsAreGood = this.state.newShipments.every(each => !!each.amount);
-        const refPageEntered = this.refs.refPage.value ? true : false;
+        const refPageAEntered = this.refs.refPageA.value ? true : false;
+        const refPageBEntered = this.refs.refPageB.value ? true : false;
         if (!datesAreGood) {
             alert("Check dates column. 一個多日期不好.");
-        } else if (datesAreGood && amountsAreGood && refPageEntered) {
-            this.props.submitShipments(this.state.newShipments);
+        } else if (datesAreGood && amountsAreGood && refPageAEntered && refPageBEntered) {
+            const shipments = this.state.newShipments;
+            for (let i in shipments) shipments[i].refPageSeq = +i;
+            this.props.submitShipments(shipments);
             this.clearAllTextInputs();
         } else {
             alert("All fields except 'note' are required.");
@@ -260,10 +252,16 @@ class ShipmentCreator extends Component {
                     </div>
                 </div>
                 { /** REF PAGE INPUT */ }
-                <div className="col-xs-1" style={{paddingLeft: "0px"}}>
-                    <input className="form-control" max="99"
-                           type="number" ref="refPage" placeholder="#"
-                           onChange={this.setReference} />
+                <div className="col-xs-2" style={{paddingLeft: "0px"}}>
+                    <div className="input-group">
+                        <input className="form-control text-right" max="9"
+                               type="number" ref="refPageA" placeholder="#"
+                               onChange={this.setReference} />
+                        <span className="input-group-addon">{FA_MINUS}</span>
+                        <input className="form-control" max="99"
+                               type="number" ref="refPageB" placeholder="#"
+                               onChange={this.setReference} />
+                    </div>
                 </div>
                 <div className="col-xs-3 text-center">
                     <h5>
@@ -322,6 +320,14 @@ class ShipmentCreator extends Component {
                         ) }
                     </select>
                 </div>
+                { /** AMOUNT INPUT */ }
+                <div className="col-xs-2" style={INPUT_DIV_STYLE}>
+                    <input className="form-control" type="text"
+                           style={INPUT_INNER_STYLE}
+                           placeholder="需求量"
+                           value={each.amount}
+                           onChange={e => this.setProperty(i, "amount", e.target.value)}></input>
+                </div>
                 { /** DEPT-UNIT SELECTION LIST */ }
                 <div className="col-xs-2" style={INPUT_DIV_STYLE}>
                     <select className="form-control" style={INPUT_INNER_STYLE}
@@ -332,14 +338,6 @@ class ShipmentCreator extends Component {
                             </option>
                         ) }
                     </select>
-                </div>
-                { /** AMOUNT INPUT */ }
-                <div className="col-xs-2" style={INPUT_DIV_STYLE}>
-                    <input className="form-control" type="number"
-                           style={INPUT_INNER_STYLE}
-                           placeholder="需求量"
-                           value={each.amount}
-                           onChange={e => this.setProperty(i, "amount", e.target.value)}></input>
                 </div>
                 { /** NOTE INPUT */ }
                 <div className="col-xs-3" style={INPUT_DIV_STYLE}>

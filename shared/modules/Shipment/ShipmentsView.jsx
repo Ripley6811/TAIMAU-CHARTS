@@ -80,7 +80,7 @@ export default connect(
     render() {
         const { query, shipments } = this.props;
         let tableHeaders = ["公司", "頁", "進貨日期", "材料名稱", "需求量", "Dept", "Unit", "備註", "規範", "除"];
-        let tableKeys = ["company", "refPage", "date", "product", "amount", "dept", "unit", "note"];
+        let tableKeys = ["company", "refPageStr", "dateStr", "product", "amount", "dept", "unit", "note"];
 
         // Remove dept column if selected on sidebar and in query.
 //        if (query.dept) {
@@ -93,8 +93,10 @@ export default connect(
             tableKeys = tableKeys.filter(each => each !== "company");
         }
 
-        // Remove time from date string.
-        shipments.forEach(s => s.date = s.date.substr(0,10));
+        // Create date string from datetime field
+        shipments.forEach(s => s.dateStr = s.date.substr(0,10));
+        // Create hyphenated string from refPage decimal
+        shipments.forEach(s => s.refPageStr = String(s.refPage).split(".").map(ea => Number(ea)).join("-"));
 
         return (
             <div className="container"
