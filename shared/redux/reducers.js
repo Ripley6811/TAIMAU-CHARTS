@@ -1,5 +1,5 @@
 /**
- * @overview This is the root reducer. 
+ * @overview This is the root reducer.
  * Imported as "rootReducer" in `configureStore.js`
  * A reducer changes the "state" object according to an "action" taken.
  *
@@ -17,7 +17,7 @@ import shipments from '../modules/Shipment/redux/shipments.reducer.js';
 import query from '../modules/AppSidebar/redux/query.reducer.js';
 
 
-// POLYFILL: Object.assign (because testing will fail without this).
+// POLYFILL for TESTING: Object.assign (because testing will fail without this).
 if (typeof Object.assign !== 'function') {
   Object.assign = function(target) {
     'use strict';

@@ -224,7 +224,7 @@ class ShipmentCreator extends Component {
         if (!datesAreGood) {
             alert("Check dates column. 一個多日期不好.");
         } else if (datesAreGood && amountsAreGood && refPageAEntered && refPageBEntered) {
-            const shipments = this.state.newShipments;
+            const shipments = this.state.newShipments.map(e => Object.assign({},e));
             for (let i in shipments) shipments[i].refPageSeq = +i;
             this.props.submitShipments(shipments);
             this.clearAllTextInputs();
