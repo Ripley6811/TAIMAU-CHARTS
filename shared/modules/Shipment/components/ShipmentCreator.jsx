@@ -186,6 +186,7 @@ class ShipmentCreator extends Component {
                                product: template.product,
                                pn: template.pn,
                                dept: template.dept,
+                               unit: template.unit,
                                company: template.company,
                            }),
                            ...this.state.newShipments.slice(row+1)]
