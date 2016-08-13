@@ -57,7 +57,7 @@ export default connect(
             this.setFilteredCompanyTemplates(nextProps.templates, nextProps.query.company);
         }
     }
-    
+
     setFilteredCompanyTemplates = (templates, company) => {
         this.setState({
             filteredCompanyTemplates: templates.filter(t => t.company === company)
@@ -120,7 +120,9 @@ export default connect(
             <div className="container"
                  style={{maxWidth: '1400px', margin: 'auto'}}>
                 <ShipmentCreator
-                    query={this.props.query}
+                    company={this.props.query.company}
+                    year={this.props.query.year}
+                    month={this.props.query.month}
                     companyTemplates={this.state.filteredCompanyTemplates}
                     submitShipments={this.submitShipments} />
                 <br />

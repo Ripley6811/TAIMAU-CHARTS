@@ -17,7 +17,9 @@ class ShipmentCreator extends Component {
         // Parent
         submitShipments: PropTypes.func.isRequired,
         companyTemplates: PropTypes.array.isRequired,
-        query: PropTypes.object.isRequired,
+        company: PropTypes.string.isRequired,
+        year: PropTypes.number.isRequired,
+        month: PropTypes.number,
     }
 
     state = {
@@ -26,12 +28,10 @@ class ShipmentCreator extends Component {
 
     componentWillReceiveProps = (nextProps) => {
         // If company selection changes, then delete new shipments list.
-        let key = "company";
-        if (nextProps.query[key] !== this.props.query[key]) {
+        if (nextProps.company !== this.props.company) {
             this.removeAllEntries();
         }
-        key = "month";
-        if (nextProps.query[key] !== this.props.query[key]) {
+        if (nextProps.month !== this.props.month) {
             this.removeAllEntries();
         }
     }
@@ -47,7 +47,7 @@ class ShipmentCreator extends Component {
      * Creates a "Set" of products and returns an array of "option" components.
      */
     get productSelectOptions() {
-        const { company } = this.props.query,
+        const { company } = this.props,
               optionsArray = [...new Set(this.templates.map(temp => temp.product))];
 
         return optionsArray.map((product, i) =>
@@ -113,7 +113,7 @@ class ShipmentCreator extends Component {
 
     getYYYYMMDD = (day) => {
         day = Number(day);
-        const { year, month } = this.props.query;
+        const { year, month } = this.props;
         let mm = typeof month !== 'undefined' ? 1 + Number(month) : 1 + new Date().getMonth();
         mm = mm < 10 ? `0${mm}` : `${mm}`;
         let dd = `01`;
@@ -234,7 +234,7 @@ class ShipmentCreator extends Component {
     }
 
     render() {
-        const { company, year, month } = this.props.query,
+        const { company } = this.props,
               { newShipments } = this.state;
 
         if (!company) {
