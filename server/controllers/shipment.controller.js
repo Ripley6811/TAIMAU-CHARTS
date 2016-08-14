@@ -189,11 +189,11 @@ export default {
                 tests: {$addToSet: "$tests"},
             } },
         ]).exec((err, docs) => {
-            if (err) console.log("ERR:", err);
+            if (err) return res.send(err);
 
-            console.log('reports');
-            console.dir(docs);
-            if (docs.length > 0) console.dir(docs[0].tests);
+//            console.log('reports');
+//            console.dir(docs);
+//            if (docs.length > 0) console.dir(docs[0].tests);
 
             res.json(docs.length > 0 ? docs[0] : null);
         });
