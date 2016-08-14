@@ -167,7 +167,7 @@ export default {
                 "testReport.tests.0": {$exists: true}
             } },
 //            { $sample : { size: 5 } },  // Available in version 3.2+
-            { $limit : { size: 8 } },
+            { $limit : 8 },
             { $project: {
                 product: 1,
                 pn: 1,
