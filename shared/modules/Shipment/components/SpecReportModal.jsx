@@ -102,6 +102,8 @@ class SpecReportModal extends Component {
                 } else {
                     // Model data on previous report with current date info
                     const testAttrs = [];
+                    console.log("filtering:");
+                    console.dir(doc);
                     const tests = doc.tests.filter(test => {
                         if (testAttrs.indexOf(test.attr) < 0) {
                             testAttrs.push(test.attr);
