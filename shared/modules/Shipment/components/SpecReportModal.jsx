@@ -75,57 +75,47 @@ class SpecReportModal extends Component {
         report: DEFAULT_REPORT,
     }
 
-    componentWillMount = () => {
-        // TODO: Load a previous spec report if this doesn't exist. Or use default.
-//        const { shipment } = this.props;
-//        if (shipment.testReport && shipment.testReport.lotID) {
-//            const report = shipment.testReport;
-//            report.tests.push({ attr: "", spec: "", rslt: "" });
-//            report.tests.push({ attr: "", spec: "", rslt: "" });
-//            this.setState({report, id: shipment._id});
-//        } else {
-//            this.setState({report: DEFAULT_REPORT,
-//                           id: shipment._id});
-//        }
-    }
-
     openModal = () => {
         const { shipment } = this.props;
         // If there is no saved report, use default or previous report as model
         if (!shipment.testReport || !shipment.testReport.lotID) {
             getPreviousSpecReports(shipment.pn, (doc) => {
-                if (!doc) {
+                if (doc.name === "MongoError") {
+                    console.dir(doc);
+                }
+                if (!doc || doc.name === "MongoError") {
                     // Set default data with current date info
-                    this.setState({modalIsOpen: true,
-                                   report: DEFAULT_REPORT,
-                                   id: shipment._id});
+                    this.setState({
+                        modalIsOpen: true,
+                        id: shipment._id,
+                        report: DEFAULT_REPORT
+                    });
                 } else {
                     // Model data on previous report with current date info
-                    const testAttrs = [];
-                    const tests = doc.tests.filter(test => {
-                        if (testAttrs.indexOf(test.attr) < 0) {
-                            testAttrs.push(test.attr);
-                            return true;
-                        } else return false;
+                    const { companyHeader, lotAmount, inspector,
+                            sampler, reporter, shelfLife, result } = doc;
+                    const testAttrs = new Set(),
+                          tests = doc.tests.filter(({ attr }) => {
+                                if (testAttrs.has(attr)) return false;
+                              
+                                testAttrs.add(attr);
+                                return true;
                     });
+                    // New rows for adding more tests
                     tests.push({ attr: "", spec: "", rslt: "" });
                     tests.push({ attr: "", spec: "", rslt: "" });
 
-                    this.setState({modalIsOpen: true,
-                                   id: shipment._id,
-                                   report: {
-                                       dateProduced: getTaiwanDateString(),
-                                       dateTested: getTaiwanDateString(),
-                                       lotID: getLotIDString(),
-                                       companyHeader: doc.companyHeader,
-                                       lotAmount: doc.lotAmount,
-                                       inspector: doc.inspector,
-                                       sampler: doc.sampler,
-                                       reporter: doc.reporter,
-                                       shelfLife: doc.shelfLife,
-                                       result: doc.result,
-                                       tests: tests
-                                   }
+                    this.setState({
+                        modalIsOpen: true,
+                        id: shipment._id,
+                        report: {
+                            dateProduced: getTaiwanDateString(),
+                            dateTested: getTaiwanDateString(),
+                            lotID: getLotIDString(),
+                            companyHeader, lotAmount, inspector,
+                            sampler, reporter, shelfLife, result,
+                            tests
+                        }
                     });
                 }
             });
@@ -140,33 +130,36 @@ class SpecReportModal extends Component {
     }
 
     closeModal = () => {
-        this.setState({modalIsOpen: false,
-                       wantDeleteConfirmation: false});
+        this.setState({
+            modalIsOpen: false,
+            wantDeleteConfirmation: false
+        });
     }
 
     processInputs = () => {
+        const { state, props, refs } = this;
         const report = {
-            companyHeader: this.refs.companyHeader.value.trim(),
-            dateProduced: this.refs.dateProduced.value.trim(),
-            dateTested: this.refs.dateTested.value.trim(),
-            lotAmount: this.refs.lotAmount.value.trim(),
-            lotID: this.refs.lotID.value.trim(),
-            inspector: this.refs.inspector.value.trim(),
-            sampler: this.refs.sampler.value.trim(),
-            reporter: this.refs.reporter.value.trim(),
-            shelfLife: this.refs.shelfLife.value.trim(),
-            result: this.refs.result.value.trim(),
+            companyHeader: refs.companyHeader.value.trim(),
+            dateProduced: refs.dateProduced.value.trim(),
+            dateTested: refs.dateTested.value.trim(),
+            lotAmount: refs.lotAmount.value.trim(),
+            lotID: refs.lotID.value.trim(),
+            inspector: refs.inspector.value.trim(),
+            sampler: refs.sampler.value.trim(),
+            reporter: refs.reporter.value.trim(),
+            shelfLife: refs.shelfLife.value.trim(),
+            result: refs.result.value.trim(),
             tests: []
         }
         if (report.lotID.length < 9) {
             alert("批號不對");
             return false;
         }
-        for (let i=0; i<this.state.report.tests.length; i++) {
+        for (let i=0; i<state.report.tests.length; i++) {
             const test = {
-                attr: this.refs[`attr-${i}`].value.trim(),
-                spec: this.refs[`spec-${i}`].value.trim(),
-                rslt: this.refs[`rslt-${i}`].value.trim(),
+                attr: refs[`attr-${i}`].value.trim(),
+                spec: refs[`spec-${i}`].value.trim(),
+                rslt: refs[`rslt-${i}`].value.trim(),
             };
             if (test.attr || test.spec || test.rslt) {
                 report.tests.push(test);
@@ -178,7 +171,7 @@ class SpecReportModal extends Component {
             alert("沒有檢驗項目");
             return false;
         }
-        this.props.sendUpdate(this.state.id, report);
+        props.sendUpdate(state.id, report);
 
         report.tests.push({ attr: "", spec: "", rslt: "" });
         report.tests.push({ attr: "", spec: "", rslt: "" });

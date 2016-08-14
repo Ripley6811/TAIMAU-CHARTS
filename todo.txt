@@ -37,4 +37,5 @@
 - NEED to create unified Spec Report Modal
 - selectable shipments list for specialized reports
 - Fix z-index of refPage input boxes
+- Removed mongo "$sample", add in another form of randomization
 

@@ -206,10 +206,10 @@ class ShipmentCreator extends Component {
     }
 
     submitNewShipments = () => {
-        const { state: { newShipments }, 
+        const { state: { newShipments },
                 refs: { refPageA, refPageB },
                 props: { submitShipments } } = this;
-        
+
         const datesAreGood = newShipments.every(each => {
             console.log(each.date);
             if (!each.date) return false;
@@ -217,10 +217,10 @@ class ShipmentCreator extends Component {
             return new Date(each.date) <= new Date();
         });
         const amountsAreGood = newShipments.every(each => !!each.amount);
-        
+
         if (!datesAreGood) {
             alert("Check dates column. 一個多日期不好.");
-        } else if (datesAreGood && amountsAreGood && 
+        } else if (datesAreGood && amountsAreGood &&
                    !!refPageA.value && !!refPageB.value) {
             const outShipments = newShipments.map(e => Object.assign({},e));
             for (let i in outShipments) outShipments[i].refPageSeq = +i;
@@ -232,7 +232,7 @@ class ShipmentCreator extends Component {
     }
 
     render() {
-        const { state: { newShipments }, 
+        const { state: { newShipments },
                 props: { company } } = this;
 
         if (!company) {
@@ -270,7 +270,7 @@ class ShipmentCreator extends Component {
                 </div>
                 { /** REF PAGE INPUT */ }
                 <div className="col-xs-2" style={{paddingLeft: "0px"}}>
-                    <div className="input-group">
+                    <div className="input-group" style={{zIndex: "0"}}>
                         <input className="form-control text-right" max="9"
                                type="number" ref="refPageA" placeholder="#"
                                onChange={this.setReference} />
