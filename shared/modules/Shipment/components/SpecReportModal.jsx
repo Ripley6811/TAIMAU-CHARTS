@@ -88,15 +88,13 @@ class SpecReportModal extends Component {
 
     openModal = () => {
         const { shipment } = this.props;
-        console.dir(shipment);
         // If there is no saved report, use default or previous report as model
         if (!shipment.testReport || !shipment.testReport.lotID) {
             getPreviousSpecReports(shipment.pn, (doc) => {
-                console.dir("creating from model report");
-                if (doc.name === "MongoError") {
+                if (doc && doc.name === "MongoError") {
                     console.dir(doc);
                 }
-                if (!doc || doc.name === "MongoError") {
+                if (!doc) {
                     // Set default data with current date info
                     this.setState({
                         modalIsOpen: true,
