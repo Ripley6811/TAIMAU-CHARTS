@@ -75,11 +75,24 @@ class SpecReportModal extends Component {
         report: DEFAULT_REPORT,
     }
 
+    componentWillMount = () => {
+        // TODO: Load a previous spec report if this doesn't exist. Or use default.
+        const { testReport: report, _id: id } = this.props.shipment;
+
+        if (report && report.lotID) {
+            report.tests.push({ attr: "", spec: "", rslt: "" });
+            report.tests.push({ attr: "", spec: "", rslt: "" });
+            this.setState({ report, id });
+        }
+    }
+
     openModal = () => {
         const { shipment } = this.props;
+        console.dir(shipment);
         // If there is no saved report, use default or previous report as model
         if (!shipment.testReport || !shipment.testReport.lotID) {
             getPreviousSpecReports(shipment.pn, (doc) => {
+                console.dir("creating from model report");
                 if (doc.name === "MongoError") {
                     console.dir(doc);
                 }
@@ -97,7 +110,7 @@ class SpecReportModal extends Component {
                     const testAttrs = new Set(),
                           tests = doc.tests.filter(({ attr }) => {
                                 if (testAttrs.has(attr)) return false;
-                              
+
                                 testAttrs.add(attr);
                                 return true;
                     });

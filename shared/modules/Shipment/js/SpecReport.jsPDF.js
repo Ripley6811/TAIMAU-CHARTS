@@ -6,6 +6,7 @@ export default
 function create(shipment, report) {
     const doc = new jsPDF(),
           MARGIN = 30,
+          CENTER = 105,
           FONT_SIZE = 12,
           THIN_LINE = 0.1,
           THICK_LINE = 0.6;
@@ -31,7 +32,7 @@ function create(shipment, report) {
 //        doc.setLineWidth(THIN_LINE);
 
     // DEBUG: This displays a light grey grid for designing layout
-    if (false) {
+    if (true && process.env.NODE_ENV !== 'production') {
         doc.setDrawColor(200);
         doc.setTextColor(200,200,200);
         for (var i=0; i<50; i++) {
@@ -49,16 +50,17 @@ function create(shipment, report) {
           col1x = MARGIN,
           col2x = MARGIN + colWidth,
           col3x = MARGIN + colWidth*2;
-    let posY = MARGIN;
+    let posY = MARGIN,
+        nameSplit = report.companyHeader.split("");
 
-    doc.altText(MARGIN, posY, report.companyHeader, FONT_SIZE + 6);
-    posY += 8;
+    doc.altText(CENTER - nameSplit.length/2 * (10), posY, nameSplit.join("  "), FONT_SIZE + 6);
+    posY += 20;
     doc.altText(MARGIN, posY, "產品檢驗報告", FONT_SIZE + 3);
-    posY += 4;
-    doc.altText(MARGIN, posY, "Form FM0716A", FONT_SIZE - 4);
+//    posY += 4;
+    doc.altText(MARGIN + 37, posY, "FM0716B", FONT_SIZE - 3);
     doc.setLineWidth(THICK_LINE);
     doc.line(MARGIN, posY+2, MARGIN + colWidth, posY+2);
-    posY += 10;
+    posY += 12;
     doc.altText(MARGIN, posY, `品名 :\t\t\t ${product}`, FONT_SIZE);
     posY += 6;
     doc.altText(MARGIN, posY, `料號 :\t\t\t ${pn}`, FONT_SIZE);
@@ -74,7 +76,7 @@ function create(shipment, report) {
     doc.altText(MARGIN, posY, `取樣人員 :\t\t\t ${report.sampler}`, FONT_SIZE);
 
     // Tests specs and results in three columns
-    posY += 15;
+    posY += 20;
     doc.altText(col1x, posY, "檢 驗 項 目", FONT_SIZE);
     doc.altText(col2x, posY, "規 格", FONT_SIZE);
     doc.altText(col3x, posY, "檢 驗 結 果", FONT_SIZE);
@@ -91,7 +93,7 @@ function create(shipment, report) {
         }
     }
 
-    posY += 15;
+    posY += 20;
     doc.altText(MARGIN, posY, `檢驗日期 :\t\t\t ${report.dateTested}`, FONT_SIZE);
     posY += 6;
     doc.altText(MARGIN, posY, `結果研判 :\t\t\t ${report.result}`, FONT_SIZE);
@@ -99,10 +101,6 @@ function create(shipment, report) {
     doc.altText(MARGIN, posY, `檢驗人員 :\t\t\t ${report.inspector}`, FONT_SIZE);
     posY += 6;
     doc.altText(MARGIN, posY, `製表人員 :\t\t\t ${report.reporter}`, FONT_SIZE);
-
-
-
-
 
 
     doc.output('dataurlnewwindow');
