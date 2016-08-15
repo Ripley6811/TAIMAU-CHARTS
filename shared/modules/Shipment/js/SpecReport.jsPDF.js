@@ -7,7 +7,7 @@ function create(shipment, report) {
     const doc = new jsPDF(),
           MARGIN = 30,
           CENTER = 105,
-          FONT_SIZE = 12,
+          FONT_SIZE = 13,
           THIN_LINE = 0.1,
           THICK_LINE = 0.6;
 
@@ -53,14 +53,13 @@ function create(shipment, report) {
     let posY = MARGIN,
         nameSplit = report.companyHeader.split("");
 
-    doc.altText(CENTER - nameSplit.length/2 * (10), posY, nameSplit.join("  "), FONT_SIZE + 6);
-    posY += 20;
-    doc.altText(MARGIN, posY, "產品檢驗報告", FONT_SIZE + 3);
-//    posY += 4;
-    doc.altText(MARGIN + 37, posY, "FM0716B", FONT_SIZE - 3);
+    doc.altText(CENTER - nameSplit.length/2 * (12.2), posY, nameSplit.join("  "), FONT_SIZE + 10);
+    posY += 10;
+    doc.altText(85, posY, "產品檢驗報告", FONT_SIZE + 5);
     doc.setLineWidth(THICK_LINE);
-    doc.line(MARGIN, posY+2, MARGIN + colWidth, posY+2);
-    posY += 12;
+    posY += 5;
+    doc.line(MARGIN, posY, MARGIN + colWidth*3, posY);
+    posY += 10;
     doc.altText(MARGIN, posY, `品名 :\t\t\t ${product}`, FONT_SIZE);
     posY += 6;
     doc.altText(MARGIN, posY, `料號 :\t\t\t ${pn}`, FONT_SIZE);
@@ -81,7 +80,9 @@ function create(shipment, report) {
     doc.altText(col2x, posY, "規 格", FONT_SIZE);
     doc.altText(col3x, posY, "檢 驗 結 果", FONT_SIZE);
     doc.setLineWidth(THICK_LINE);
-    doc.line(MARGIN, posY+2, MARGIN + colWidth*3, posY+2);
+    posY += 2;
+    doc.line(MARGIN, posY, MARGIN + colWidth*3, posY);
+    posY += 1;
     for (let { attr, spec, rslt } of report.tests) {
         if (attr || spec || rslt) {
             posY +=6;
@@ -102,6 +103,7 @@ function create(shipment, report) {
     posY += 6;
     doc.altText(MARGIN, posY, `製表人員 :\t\t\t ${report.reporter}`, FONT_SIZE);
 
+    doc.altText(160, 280, "FM0716B", FONT_SIZE - 2);
 
     doc.output('dataurlnewwindow');
 }
