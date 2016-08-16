@@ -1,14 +1,14 @@
-import React, { PropTypes, Component } from 'react';
-import { connect } from 'react-redux';
+import React, { PropTypes, Component } from 'react'
+import { connect } from 'react-redux'
 // Actions
 import { fetchShipmentTemplates } from '../Template/redux/template.actions';
 import { addShipmentsRequest, deleteShipmentRequest, updateSpecRequest } from './redux/shipment.actions';
 // Components
-import ShipmentCreator from './components/ShipmentCreator';
-import Table from '../../components/Table';
+import ShipmentCreator from './components/ShipmentCreator'
+import Table from '../../components/Table'
 import SpecReportModal from './components/SpecReportModal'
 
-import Tests from './tests/shipments.spec.js';
+import Tests from './tests/shipments.spec'
 
 
 export default connect(
@@ -114,7 +114,11 @@ export default connect(
         // Create date string from datetime field
         shipments.forEach(s => s.dateStr = s.date.substr(0,10));
         // Create hyphenated string from refPage decimal
-        shipments.forEach(s => s.refPageStr = String(s.refPage).split(".").map(ea => Number(ea)).join("-"));
+        shipments.forEach(s => {
+            const sa = String(s.refPage).split(".");
+            if (sa[1] && sa[1].length < 2) sa[1] += "0";
+            s.refPageStr = sa.join("-");
+        });
 
         return (
             <div className="container"
