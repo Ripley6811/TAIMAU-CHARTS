@@ -1,8 +1,8 @@
 import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
 // Actions
-import { fetchShipmentTemplates } from '../Template/redux/template.actions';
-import { addShipmentsRequest, deleteShipmentRequest, updateSpecRequest } from './redux/shipment.actions';
+import { fetchTankerTemplates } from '../../redux/state/tankerTemplates.redux'
+import { addShipmentsRequest, deleteShipmentRequest, updateSpecRequest } from '../../redux/state/tankerShipments.redux'
 // Components
 import ShipmentCreator from './components/ShipmentCreator'
 import Table from '../../components/Table'
@@ -12,12 +12,14 @@ import Tests from './tests/shipments.spec'
 
 
 export default connect(
-    ({query, shipments, templates}) => ({query, shipments, templates}),  // Pull items from store
+    // Pull items from store
+    ({query, tankerShipments, tankerTemplates}) => ({query, tankerShipments, tankerTemplates}),
+    // Bind actions with dispatch
     { addShipmentsRequest, deleteShipmentRequest, updateSpecRequest,
-      fetchShipmentTemplates }  // Bind actions with dispatch
+      fetchTankerTemplates }
 )(class ShipmentsView extends Component {
     // Server-side data retrieval (for server rendering).
-    static need = [fetchShipmentTemplates]  // Preload for sub-component
+    static need = [fetchTankerTemplates]  // Preload for sub-component
 
     /**
      * Validates incoming props.
@@ -25,17 +27,13 @@ export default connect(
     static propTypes = {  // ES7 style
         // Props from store
         query: PropTypes.object.isRequired,
-        shipments: PropTypes.array.isRequired,
-        templates: PropTypes.array.isRequired,
+        tankerShipments: PropTypes.array.isRequired,
+        tankerTemplates: PropTypes.array.isRequired,
         // Dispatch bound actions
         addShipmentsRequest: PropTypes.func.isRequired,
         deleteShipmentRequest: PropTypes.func.isRequired,
-        fetchShipmentTemplates: PropTypes.func.isRequired,
+        fetchTankerTemplates: PropTypes.func.isRequired,
         updateSpecRequest: PropTypes.func.isRequired,
-    }
-
-    static defaultProps = {
-        shipments: []
     }
 
     state = {
@@ -43,18 +41,18 @@ export default connect(
     }
 
     componentWillMount = () => {
-        const { templates, query } = this.props;
+        const { tankerShipments, tankerTemplates, query } = this.props;
         // Ensure required data is loaded.
-        if (templates.length === 0) {
-            this.props.fetchShipmentTemplates();
+        if (tankerTemplates.length === 0) {
+            this.props.fetchTankerTemplates();
         }
-        this.setFilteredCompanyTemplates(templates, query.company);
-        this.highlightLastAdditions(this.props.shipments);
+        this.setFilteredCompanyTemplates(tankerTemplates, query.company);
+        this.highlightLastAdditions(tankerShipments);
     }
 
     componentWillReceiveProps = (nextProps) => {
         if (this.props.query.company !== nextProps.query.company) {
-            this.setFilteredCompanyTemplates(nextProps.templates, nextProps.query.company);
+            this.setFilteredCompanyTemplates(nextProps.tankerTemplates, nextProps.query.company);
         }
     }
 
@@ -86,7 +84,7 @@ export default connect(
     }
 
     componentWillUpdate = (nextProps, nextState) => {
-        this.highlightLastAdditions(nextProps.shipments);
+        this.highlightLastAdditions(nextProps.tankerShipments);
     }
 
     componentDidMount = () => {
@@ -96,7 +94,7 @@ export default connect(
     }
 
     render() {
-        const { query, shipments } = this.props;
+        const { query, tankerShipments } = this.props;
         let tableHeaders = ["公司", "頁", "進貨日期", "材料名稱", "需求量", "Dept", "Unit", "備註", "規範", "除"];
         let tableKeys = ["company", "refPageStr", "dateStr", "product", "amount", "dept", "unit", "note"];
 
@@ -112,9 +110,9 @@ export default connect(
         }
 
         // Create date string from datetime field
-        shipments.forEach(s => s.dateStr = s.date.substr(0,10));
+        tankerShipments.forEach(s => s.dateStr = s.date.substr(0,10));
         // Create hyphenated string from refPage decimal
-        shipments.forEach(s => {
+        tankerShipments.forEach(s => {
             const sa = String(s.refPage).split(".");
             if (sa[1] && sa[1].length < 2) sa[1] += "0";
             s.refPageStr = sa.join("-");
@@ -136,7 +134,7 @@ export default connect(
                 <Table
                     tableHeaders={tableHeaders}
                     tableKeys={tableKeys}
-                    tableRows={shipments}
+                    tableRows={tankerShipments}
                     onDelete={this.deleteShipment}
                     specModal={SpecReportModal}
                     updateSpec={this.props.updateSpecRequest} />

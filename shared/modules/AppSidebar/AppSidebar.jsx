@@ -7,8 +7,8 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router'
 // Actions
-import { updateSavedQuery } from './redux/sidebar.actions';
-import { fetchShipments } from '../../modules/Shipment/redux/shipment.actions';
+import { updateSavedQuery } from '../../redux/state/query.redux';
+import { fetchTankerShipments } from '../../redux/state/tankerShipments.redux';
 // Components
 import CompanyColumn from './components/CompanyColumn';
 import SelectYearMonth from './components/SelectYearMonth';
@@ -35,7 +35,7 @@ const BTN_CLASS_STRING = "btn form-control btn-properties",
 
 export default connect(
     ({deptLinks, query}) => ({deptLinks, query}),  // Pull items from store
-    { updateSavedQuery, fetchShipments }  // Bind actions with dispatch
+    { updateSavedQuery, fetchTankerShipments }  // Bind actions with dispatch
 )(class AppSidebar extends Component {
     /**
      * Validates incoming props.
@@ -52,7 +52,7 @@ export default connect(
         ).isRequired,
         // Dispatch actions
         updateSavedQuery: PropTypes.func.isRequired,
-        fetchShipments: PropTypes.func.isRequired,
+        fetchTankerShipments: PropTypes.func.isRequired,
     }
 
     /**
@@ -100,7 +100,7 @@ export default connect(
         // Save most recent query in local storage and in redux store
         document.cookie = COOKIE_QUERY_KEY + "=" + JSON.stringify(this.state);
         this.props.updateSavedQuery(this.state);
-        this.props.fetchShipments(this.state);
+        this.props.fetchTankerShipments(this.state);
         this.forceUpdate();
     }
 

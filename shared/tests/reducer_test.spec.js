@@ -1,9 +1,9 @@
 import expect from 'expect';
 import mainReducer from '../redux/reducers';
 import deepFreeze from 'deep-freeze';
-import * as ShipmentActions from '../modules/Shipment/redux/shipment.actions';
-import * as TemplateActions from '../modules/Template/redux/template.actions';
-import * as SidebarActions from '../modules/AppSidebar/redux/sidebar.actions';
+import * as ShipmentActions from '../../redux/state/tankerShipments.redux';
+import * as TemplateActions from '../../redux/state/tankerTemplates.redux';
+import * as SidebarActions from '../../redux/state/query.redux';
 
 
 const INITIAL_STATE = {query: {}, templates: [], shipments: [], deptLinks: []};
@@ -88,7 +88,7 @@ describe('Reducer test', () => {
             expect(stateAfter).toEqual(mainReducer(stateBefore, action));
         });
     });
-    
+
 
     describe('Template action types', () => {
 
@@ -188,7 +188,7 @@ describe('Reducer test', () => {
         });
     });
 
-    
+
     describe('Sidebar action types', () => {
 
         it('UPDATE_QUERY should update only attributes in new object', () => {

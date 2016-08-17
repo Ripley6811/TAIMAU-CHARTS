@@ -13,7 +13,7 @@ import fetch from 'isomorphic-fetch';
  * Used in "PDFMaker"
  */
 export function requestTriMonthlyPDF(company, startDate, endDate, callback) {
-    const URL = `${baseURL}/api/shipmentsPDF?` +
+    const URL = `${baseURL}/api/tankerShipmentsPDF?` +
           `company=${company}&start=${startDate}&end=${endDate}`;
     return fetch(URL).
         then(res => res.json()).
@@ -25,7 +25,7 @@ export function requestTriMonthlyPDF(company, startDate, endDate, callback) {
  * Used in "PDFMaker"
  */
 export function requestWasteWaterPDF(company, startDate, endDate, callback) {
-    const URL = `${baseURL}/api/shipmentsPDF?` +
+    const URL = `${baseURL}/api/tankerShipment/pdf?` +
           `company=${company}&start=${startDate}&end=${endDate}&unit=廢水`;
     return fetch(URL).
         then(res => res.json()).
@@ -37,7 +37,7 @@ export function requestWasteWaterPDF(company, startDate, endDate, callback) {
  * Used in "SettingsView"
  */
 export function getAllProducts(callback) {
-    const URL = `${baseURL}/api/product`;
+    const URL = `${baseURL}/api/tankerTemplate/products`;
     return fetch(URL).
         then(res => res.json()).
         then(records => callback(records));
@@ -48,7 +48,7 @@ export function getAllProducts(callback) {
  * Used in Spec Report Creator.
  */
 export function getPreviousSpecReports(pn, callback) {
-    const URL = `${baseURL}/api/specReports?pn=${pn}`;
+    const URL = `${baseURL}/api/tankerShipment/specReports?pn=${pn}`;
     return fetch(URL).
         then(res => res.json()).
         then(docs => callback(docs));

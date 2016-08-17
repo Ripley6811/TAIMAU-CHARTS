@@ -7,52 +7,59 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 // Actions
-import { fetchShipmentTemplates, fetchDepartments, 
-         deleteTemplateRequest, addTemplateRequest } from './redux/template.actions';
+import { fetchTankerTemplates,
+         deleteTemplateRequest as deleteTankerTemplate,
+         addTemplateRequest as addTankerTemplate } from '../../redux/state/tankerTemplates.redux';
+import { fetchTemplates as fetchBarrelTemplates,
+         deleteTemplateRequest as deleteBarrelTemplate,
+         addTemplateRequest as addBarrelTemplate } from '../../redux/state/barrelTemplates.redux';
+import { fetchDepartments } from '../../redux/state/deptLinks.redux';
 // Components
 import Table from '../../components/Table';
 import TemplateCreator from './components/TemplateCreator';
 // Test suite
-import Tests from './tests/templates.spec.js';
+import Tests from './tests/templates.spec';
 
 
 export default connect(
-    ({templates, query}) => ({templates, query}),  // Pull items from store
-    { fetchShipmentTemplates, fetchDepartments, 
-      deleteTemplateRequest, addTemplateRequest }  // Bind actions with dispatch
+    // Pull items from store
+    ({barrelTemplates, tankerTemplates, query}) => ({barrelTemplates, tankerTemplates, query}),
+    // Bind actions with dispatch
+    { fetchDepartments,
+      fetchTankerTemplates, deleteTankerTemplate, addTankerTemplate,
+      fetchBarrelTemplates, deleteBarrelTemplate, addBarrelTemplate }
 )(class TemplatesView extends React.Component {
     // Server-side data retrieval (for server rendering).
-    static need = [fetchShipmentTemplates]
+    static need = [fetchTankerTemplates, fetchBarrelTemplates]
 
     // Validates props
     static propTypes = {
         // Redux store
         query: PropTypes.object.isRequired,
-        templates: PropTypes.arrayOf(PropTypes.shape({
+        barrelTemplates: PropTypes.array.isRequired,
+        tankerTemplates: PropTypes.arrayOf(PropTypes.shape({
             _id: PropTypes.string.isRequired,
             company: PropTypes.string.isRequired,
-            dept: PropTypes.string.isRequired,
-            unit: PropTypes.string.isRequired,
             product: PropTypes.string.isRequired,
             pn: PropTypes.string.isRequired,
+            dept: PropTypes.string.isRequired,
+            unit: PropTypes.string.isRequired,
         })).isRequired,
-        // Actions
-        fetchShipmentTemplates: PropTypes.func.isRequired,
-        fetchDepartments: PropTypes.func.isRequired,
-        deleteTemplateRequest: PropTypes.func.isRequired,
-        addTemplateRequest: PropTypes.func.isRequired,
     }
 
     // Ensure required data is loaded.
     componentWillMount = () => {
-        if (this.props.templates.length === 0)
-            this.props.fetchShipmentTemplates();
+        console.dir(this.props.barrelTemplates);
+        if (this.props.tankerTemplates.length === 0)
+            this.props.fetchTankerTemplates();
+        if (this.props.barrelTemplates.length === 0)
+            this.props.fetchBarrelTemplates();
     }
 
-    deleteTemplate = (template) => {  // ES7 class function binding
+    deleteTankerTemplate = (template) => {  // ES7 class function binding
         // WARNING: Might have "race" problem between dispatches.
         if (confirm('真的要把檔案刪除嗎?\nDo you want to delete this template?')) {
-            this.props.deleteTemplateRequest(template);
+            this.props.deleteTankerTemplate(template);
             // Wait then dispatch update for sidebar
             setTimeout(() => {
                 this.props.fetchDepartments();
@@ -60,18 +67,37 @@ export default connect(
         }
     }
 
-    createTemplate = (template) => {
-        this.props.addTemplateRequest(template);
+    deleteBarrelTemplate = (template) => {  // ES7 class function binding
+        // WARNING: Might have "race" problem between dispatches.
+        if (confirm('真的要把檔案刪除嗎?\nDo you want to delete this template?')) {
+            this.props.deleteBarrelTemplate(template);
+            // Wait then dispatch update for sidebar
+            setTimeout(() => {
+                this.props.fetchDepartments();
+            }, 300);
+        }
+    }
+
+    createBarrelTemplate = (template) => {
+        this.props.addBarrelTemplate(template);
         // Wait then dispatch update for sidebar
         setTimeout(() => {
             this.props.fetchDepartments();
         }, 300);
     }
-    
+
+    createTankerTemplate = (template) => {
+        this.props.addTankerTemplate(template);
+        // Wait then dispatch update for sidebar
+        setTimeout(() => {
+            this.props.fetchDepartments();
+        }, 300);
+    }
+
     filteredTemplates = () => {
         const { company, dept } = this.props.query,
-              { templates } = this.props;
-        
+              { tankerTemplates: templates } = this.props;
+
         return templates.filter(each => {
             if (!!dept) {
                 return each.company === company &&
@@ -83,7 +109,7 @@ export default connect(
             return false;
         });
     }
-    
+
     componentDidMount = () => {
         if (typeof describe === 'function') {
             Tests(this);
@@ -91,21 +117,29 @@ export default connect(
     }
 
     render() {
-        const { templates } = this.props;
-        const tableHeaders = ["公司", "Dept", "Unit", "材料名稱", "料號", "除"];
-        const tableKeys = ["company", "dept", "unit", "product", "pn"];
+        const tankerTableHeaders = ["公司", "Dept", "Unit", "材料名稱", "料號", "除"];
+        const tankerTableKeys = ["company", "dept", "unit", "product", "pn"];
+        const barrelTableHeaders = ["公司", "rtCode", "材料名稱", "料號", "pkgQty", "shelfLife", "barcode", "datamatrix", "除"];
+        const barrelTableKeys = ["company", "rtCode", "product", "pn", "pkgQty", "shelfLife", "barcode", "datamatrix"];
 
         return (
             <div className="container"
                  style={{maxWidth: '900px', margin: 'auto'}}>
                 <TemplateCreator
-                    createTemplate={this.createTemplate} />
-                <legend>Shipment Templates</legend>
+                    createBarrelTemplate={this.createBarrelTemplate}
+                    createTankerTemplate={this.createTankerTemplate} />
+                <legend>Tanker Shipment Templates</legend>
                 <Table
-                    tableHeaders={tableHeaders}
-                    tableKeys={tableKeys}
+                    tableHeaders={tankerTableHeaders}
+                    tableKeys={tankerTableKeys}
                     tableRows={this.filteredTemplates()}
-                    onDelete={this.deleteTemplate} />
+                    onDelete={this.deleteTankerTemplate} />
+                <legend>Barrel Shipment Templates</legend>
+                <Table
+                    tableHeaders={barrelTableHeaders}
+                    tableKeys={barrelTableKeys}
+                    tableRows={this.props.barrelTemplates}
+                    onDelete={this.deleteBarrelTemplate} />
             </div>
         )
     }

@@ -1,36 +1,113 @@
-import React from 'react';
+import React from 'react'
+
+
+const BARREL_TYPE = Symbol('BARREL_TYPE')
+const TANKER_TYPE = Symbol('TANKER_TYPE')
 
 
 export default
 class TemplateCreator extends React.Component {
     static propTypes = {
-        createTemplate: React.PropTypes.func.isRequired,
+        createTankerTemplate: React.PropTypes.func.isRequired,
+        createBarrelTemplate: React.PropTypes.func.isRequired,
+    }
+
+    validateFieldsAndGetType = () => {
+        const valueOf = key => this.refs[key].value;
+        const checked = key => this.refs[key].checked;
+
+        if (!!valueOf('rtCode') || !!valueOf('pkgQty')) {
+            const requiredKeys = ['company','product','pn','rtCode','pkgQty','shelfLife'];
+            const keysSatisfied = requiredKeys.every(key => valueOf(key));
+            if (!keysSatisfied) {
+                alert("A required field is missing a value.");
+                return false;
+            }
+
+            if (!!checked('barcode') === !!checked('datamatrix')) {
+                alert("Either 'barcode' or 'datamatrix' must be selected.");
+                return false;
+            }
+            return BARREL_TYPE;
+        } else {
+            const requiredKeys = ['company','dept','unit','product','pn'];
+            const keysSatisfied = requiredKeys.every(key => valueOf(key));
+            if (!keysSatisfied) {
+                alert("A required field is missing a value.");
+                return false;
+            }
+            return TANKER_TYPE;
+        }
+        alert('Unknown error in field validation!');
+        return false;
     }
 
     submit = () => {
-        const validated = this.keys.every(key =>
-             this.refs[key].value.trim().length > 0
-        );
+        const templateType = this.validateFieldsAndGetType(),
+              newTemplate = {};
+        if (!templateType) return;
 
-        if (validated) {
-            const template = {};
-            this.keys.forEach(key => template[key] = this.refs[key].value.trim());
-            this.props.createTemplate(template);
-
-            this.clearForm();
+        this.fieldData.forEach(({key, inputType}) => {
+            switch (inputType) {
+                case 'text':
+                    if (templateType === BARREL_TYPE && key === 'dept') break;
+                    if (templateType === BARREL_TYPE && key === 'unit') break;
+                    newTemplate[key] = this.refs[key].value.trim();
+                    break;
+                case 'number':
+                    if (templateType !== BARREL_TYPE) break;
+                    newTemplate[key] = Number(this.refs[key].value);
+                    break;
+                case 'checkbox':
+                    if (templateType !== BARREL_TYPE) break;
+                    newTemplate[key] = this.refs[key].checked;
+                    break;
+                default:
+                    alert(`Key-value not saved for ${key}!`);
+            }
+        });
+        
+        switch (templateType) {
+            case TANKER_TYPE:
+                this.props.createTankerTemplate(newTemplate);
+                break;
+            case BARREL_TYPE:
+                this.props.createBarrelTemplate(newTemplate);
+                break;
         }
+        
+        this.clearForm();
     }
 
     clearForm = () => {
-        this.keys.forEach((key) => {this.refs[key].value = ""});
+        this.fieldData.forEach(({key, inputType: type}) => {
+            if (type === 'text' || type === 'number') {
+                this.refs[key].value = "";
+            }
+        });
     }
 
-    get labels() {
-        return ["公司", "Dept", "Unit", "材料名稱", "料號"];
+    get fieldData() {
+        return [
+            { key: "company",    inputType: "text",     colWidth: 1, label: "公司" },
+            { key: "dept",       inputType: "text",     colWidth: 1, label: "Dept" },
+            { key: "unit",       inputType: "text",     colWidth: 1, label: "Unit" },
+            { key: "product",    inputType: "text",     colWidth: 2, label: "材料名稱" },
+            { key: "pn",         inputType: "text",     colWidth: 2, label: "料號" },
+            { key: "rtCode",     inputType: "text",     colWidth: 1, label: "RT Code" },
+            { key: "pkgQty",     inputType: "number",   colWidth: 1, label: "容量" },
+            { key: "shelfLife",  inputType: "number",   colWidth: 1, label: "保質期" },
+            { key: "barcode",    inputType: "checkbox", colWidth: 1, label: "barcode" },
+            { key: "datamatrix", inputType: "checkbox", colWidth: 1, label: "datamatrix" },
+        ]
     }
 
-    get keys() {
-        return ["company", "dept", "unit", "product", "pn"];
+    get fieldLabels() {
+        return this.fieldData.map(f => f.label);
+    }
+
+    get fieldKeys() {
+        return this.fieldData.map(f => f.key);
     }
 
     render() {
@@ -40,13 +117,14 @@ class TemplateCreator extends React.Component {
             <legend>Create New Template</legend>
 
             <div className="row">
-                {this.keys.map((key, i) =>
-                    <div className="form-group col-sm-2 col-sm-push-1" key={`template${i}`}>
+                {this.fieldData.map(({ key, label, inputType, colWidth }, i) =>
+                    <div className={`form-group col-sm-${colWidth}`} key={key}>
                         <label className="form-label"
                             style={{height: "19px"}} >
-                            {this.labels[i]}
+                            {label}
                         </label>
                         <input
+                            type={inputType}
                             name={key}
                             className={`${key} form-control`}
                             ref={key} />
@@ -65,4 +143,4 @@ class TemplateCreator extends React.Component {
       </form>
         )
     }
-};
+}

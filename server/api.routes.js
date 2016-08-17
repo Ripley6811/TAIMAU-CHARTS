@@ -5,38 +5,17 @@
  * Reference: http://expressjs.com/en/4x/api.html#router.route
  */
 
-import { Router } from 'express';
-import ShipmentController from './controllers/shipment.controller';
-import ShipmentTemplateController from './controllers/shipmentTemplate.controller';
-const router = new Router();
+import { Router } from 'express'
+import BarrelShipmentController from './controllers/barrelShipment.controller'
+import BarrelTemplateController from './controllers/barrelTemplate.controller'
+import TankerShipmentController from './controllers/tankerShipment.controller'
+import TankerTemplateController from './controllers/tankerTemplate.controller'
 
-/**
- * SHIPMENTS collection api
- */
-router.route('/shipment')
-    .get(ShipmentController.getShipments)
-    .post(ShipmentController.addShipments)
-    .put(ShipmentController.updateSpecReport)
-    .delete(ShipmentController.deleteShipment);
+const router = new Router()
 
-router.route('/shipmentsPDF')
-    .get(ShipmentController.shipmentsPDF);
+router.use('/barrelShipment', BarrelShipmentController)
+router.use('/barrelTemplate', BarrelTemplateController)
+router.use('/tankerShipment', TankerShipmentController)
+router.use('/tankerTemplate', TankerTemplateController)
 
-router.route('/specReports')
-    .get(ShipmentController.specReports);
-
-/**
- * SHIPMENT TEMPLATES collection api
- */
-router.route('/shipmentTemplate')
-    .get(ShipmentTemplateController.getTemplates)
-    .post(ShipmentTemplateController.addTemplate)
-    .delete(ShipmentTemplateController.deleteTemplate);
-
-router.route('/department')
-    .get(ShipmentTemplateController.getDepartments);
-
-router.route('/product')
-    .get(ShipmentTemplateController.getProducts)
-
-export default router;
+export default router

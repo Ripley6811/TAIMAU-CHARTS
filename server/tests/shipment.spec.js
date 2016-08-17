@@ -5,7 +5,7 @@ import app from '../server';
 import chai from 'chai';
 import request from 'supertest';
 import mongoose from 'mongoose';
-import TestModel from '../models/shipment';
+import TestModel from '../models/tankerShipment.model';
 
 const expect = chai.expect,
       endpointURL = `/api/shipment`,

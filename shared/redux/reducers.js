@@ -8,13 +8,16 @@
     - Perform side effects like API calls and routing transitions;
     - Call non-pure functions, e.g. Date.now() or Math.random()
  */
-import { combineReducers } from 'redux';
+
+import { combineReducers } from 'redux'
 
 // Import Reducers
-import templates from '../modules/Template/redux/templates.reducer.js';
-import deptLinks from '../modules/Template/redux/deptLinks.reducer.js';
-import shipments from '../modules/Shipment/redux/shipments.reducer.js';
-import query from '../modules/AppSidebar/redux/query.reducer.js';
+import deptLinks from './state/deptLinks.redux'
+import barrelShipments from './state/barrelShipments.redux'
+import barrelTemplates from './state/barrelTemplates.redux'
+import tankerShipments from './state/tankerShipments.redux'
+import tankerTemplates from './state/tankerTemplates.redux'
+import query from './state/query.redux'
 
 
 // POLYFILL for TESTING: Object.assign (because testing will fail without this).
@@ -43,7 +46,9 @@ if (typeof Object.assign !== 'function') {
 // Combine all reducers into one root reducer
 export default combineReducers({
     deptLinks,
-    templates,
-    shipments,
+    barrelShipments,
+    barrelTemplates,
+    tankerShipments,
+    tankerTemplates,
     query,
-});
+})

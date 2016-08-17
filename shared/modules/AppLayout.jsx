@@ -9,13 +9,13 @@ import React, { Component, PropTypes } from 'react';
 import Helmet from 'react-helmet';
 import AppSidebar from './AppSidebar/AppSidebar';
 
-import { fetchDepartments } from './Template/redux/template.actions';
-import { fetchShipments } from './Shipment/redux/shipment.actions';
+import { fetchDepartments } from '../redux/state/deptLinks.redux';
+import { fetchTankerShipments } from '../redux/state/tankerShipments.redux';
 
 
 class AppLayout extends Component {
     // Server-side data retrieval (for server rendering).
-    static need = [fetchDepartments, fetchShipments]
+    static need = [fetchDepartments, fetchTankerShipments]
     
     static propTypes = {
         children: PropTypes.object.isRequired,

@@ -12,14 +12,11 @@ const INPUT_INNER_STYLE = {padding: "0px 3px", fontSize: "17px"};
 
 
 export default
-class ShipmentCreator extends Component {
+class BarrelShipmentCreator extends Component {
     static propTypes = {
         // Parent
         submitShipments: PropTypes.func.isRequired,
-        companyTemplates: PropTypes.array.isRequired,
-        company: PropTypes.string.isRequired,
-        year: PropTypes.number.isRequired,
-        month: PropTypes.number,
+        barrelShipments: PropTypes.array.isRequired,
     }
 
     state = {

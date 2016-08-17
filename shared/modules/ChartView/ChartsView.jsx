@@ -11,14 +11,14 @@ import { FA_CHEVRON_LEFT } from '../../components/FontAwesome';
 
 
 export default connect(
-    ({shipments, query}) => ({shipments, query})  // Pull items from store
+    ({tankerShipments, query}) => ({tankerShipments, query})  // Pull items from store
 )(class ChartsView extends Component {
     static propTypes = {
         query: PropTypes.shape({
                 year: PropTypes.number,
                 month: PropTypes.number,
         }).isRequired,
-        shipments: PropTypes.array.isRequired,
+        tankerShipments: PropTypes.array.isRequired,
     };
 
     get datesArray() {
@@ -47,7 +47,7 @@ export default connect(
     }
 
     getDataArrays = () => {
-        const { query, shipments } = this.props;
+        const { query, tankerShipments: shipments } = this.props;
         
 
         // Build arrays for display (aggregate shipment data).

@@ -115,8 +115,10 @@ app.use((req, res, next) => {
           // Important for initial server-side rendering
         const initialState = {
             deptLinks: [],
-            templates: [],
-            shipments: [],
+            barrelShipments: [],
+            barrelTemplates: [],
+            tankerShipments: [],
+            tankerTemplates: [],
             query: req.cookies.query ? JSON.parse(req.cookies.query) : {},
         };
 
