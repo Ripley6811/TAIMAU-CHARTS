@@ -39,7 +39,9 @@ export default connect(
     }
 
     deleteShipment = (shipment) => {
-        this.props.deleteShipmentRequest(shipment);
+        if (confirm('真的要把檔案刪除嗎?\nDo you want to delete this shipment?')) {
+            this.props.deleteShipmentRequest(shipment);
+        }
     }
 
     /**
