@@ -32,7 +32,7 @@ router.get('/', function getShipments(req, res) {
 
 router.get('/latest', function getLatest(req, res) {
     Shipment.find({}, { _id: 0, __v: 0, dateAdded: 0 })
-    .sort('-dateAdded')
+    .sort('-shipYear -shipMonth -shipDate -dateAdded')
     .limit(9)
     .exec((err, docs) => {
         if (err) {
