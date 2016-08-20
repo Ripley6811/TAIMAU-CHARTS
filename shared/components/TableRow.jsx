@@ -1,4 +1,5 @@
-import React from 'react';
+import React from 'react'
+import { FA_CHECK } from './FontAwesome'
 
 /**
  * Creates a table row.
@@ -12,9 +13,12 @@ export default function TableRow(props) {
     const rowStyle = props.data.hightlight ? {backgroundColor: "gold"} : {};
     return (
         <tr style={rowStyle}>
-            {props.keys.map((key, i) =>
-                <td key={`tablecol${i}`}>{props.data[key]}</td>
-            )}
+            {props.keys.map((key, i) => {
+                if (typeof props.data[key] === 'boolean') {
+                    return <td key={`tablecol${i}`}>{props.data[key] ? FA_CHECK : <span></span>}</td>
+                }
+                return <td key={`tablecol${i}`}>{props.data[key]}</td>
+            })}
             {props.children}
         </tr>
     );
