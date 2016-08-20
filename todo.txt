@@ -38,4 +38,5 @@
 - selectable shipments list for specialized reports
 + Fix z-index of refPage input boxes
 - Removed mongo "$sample", add in another form of randomization
+- Include Barrel Shipment Templates in constructor Department buttons, make sure Dept names are represented
 

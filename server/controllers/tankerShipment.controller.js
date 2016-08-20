@@ -160,8 +160,7 @@ router.put('/spec/:id', function (req, res) {
         if (err) {
             return res.status(500).send(err);
         }
-        console.log("report");
-        console.dir(report);
+        
         shipment.testReport = report;
         shipment.save((err, doc) => {
             if (err) {

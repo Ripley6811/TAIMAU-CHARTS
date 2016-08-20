@@ -5,11 +5,12 @@ import { trimString } from '../util/fieldTypeUtils'
 export const name = 'BarrelShipment'
 export const schema = new mongoose.Schema(
     {
-        product:    trimString(),
-        pn:         trimString(),
+        product:    trimString({ minlength: 1 }),
+        pn:         trimString({ minlength: 1 }),
+        company:    trimString({ minlength: 1 }),
         orderID:    trimString({ minlength: 10, maxlength: 10 }),
-        note:       trimString({ required: false, minlength: 0 }),
-        formID:     trimString({ required: false, minlength: 4 }),
+        note:       trimString({ required: false }),
+        formID:     trimString({ required: false }),
 
         makeYear:   { type: 'Number', required: false, min: 2000 },
         makeMonth:  { type: 'Number', required: false, min: 0, max: 11 },
@@ -29,8 +30,10 @@ export const schema = new mongoose.Schema(
         pkgQty:     { type: 'Number', required: true, min: 0 },
         shelfLife:  { type: 'Number', required: true, min: 6 },
 
-        barcode:    { type: 'Boolean', required: true },
-        datamatrix: { type: 'Boolean', required: true },
+        barcode:    { type: 'Boolean', required: true, default: false },
+        datamatrix: { type: 'Boolean', required: true, default: false },
+
+        dateAdded:  { type: 'Date', required: true, default: Date.now },
     },
     { collection: 'barrelShipments' }
 )

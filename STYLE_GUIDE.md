@@ -35,3 +35,8 @@
     - Libraries
     - Components
     - Constants
+
+
+### PropTypes validation
+
+- Include all props from store and parent, but NOT bound dispatch functions.

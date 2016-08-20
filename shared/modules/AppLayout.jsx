@@ -10,13 +10,18 @@ import Helmet from 'react-helmet';
 import AppSidebar from './AppSidebar/AppSidebar';
 
 import { fetchDepartments } from '../redux/state/deptLinks.redux';
+import { fetchTankerTemplates } from '../redux/state/tankerTemplates.redux';
+import { fetchTemplates as fetchBarrelTemplates } from '../redux/state/barrelTemplates.redux';
+import { fetchBarrelShipments } from '../redux/state/barrelShipments.redux';
 import { fetchTankerShipments } from '../redux/state/tankerShipments.redux';
 
 
 class AppLayout extends Component {
     // Server-side data retrieval (for server rendering).
-    static need = [fetchDepartments, fetchTankerShipments]
-    
+    static need = [fetchDepartments, 
+                   fetchBarrelTemplates, fetchTankerTemplates, 
+                   fetchBarrelShipments, fetchTankerShipments]
+
     static propTypes = {
         children: PropTypes.object.isRequired,
     }
@@ -46,7 +51,7 @@ class AppLayout extends Component {
           ]}
         />
         <AppSidebar width={this.sidebarWidth} />
-        
+
         <div id="main-window" style={{paddingLeft: this.sidebarWidth}} >
             { this.props.children }
         </div>

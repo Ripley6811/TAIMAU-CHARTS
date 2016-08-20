@@ -7,7 +7,6 @@
 export function trimString(obj = {}) {
     const newObj = {
         type: 'String',
-        minlength: 1,
         trim: true,
         required: true,
     };

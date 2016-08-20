@@ -16,7 +16,7 @@ class ShipmentCreator extends Component {
     static propTypes = {
         // Parent
         submitShipments: PropTypes.func.isRequired,
-        companyTemplates: PropTypes.array.isRequired,
+        templates: PropTypes.array.isRequired,
         company: PropTypes.string.isRequired,
         year: PropTypes.number.isRequired,
         month: PropTypes.number,
@@ -37,18 +37,11 @@ class ShipmentCreator extends Component {
     }
 
     /**
-     * Returns company templates.
-     */
-    get templates() {
-        return this.props.companyTemplates;
-    }
-
-    /**
      * Creates a "Set" of products and returns an array of "option" components.
      */
     get productSelectOptions() {
         const { company } = this.props,
-              optionsArray = [...new Set(this.templates.map(temp => temp.product))];
+              optionsArray = [...new Set(this.props.templates.map(temp => temp.product))];
 
         return optionsArray.map((product, i) =>
             <option key={`${company}${i}${product}`} value={product}>
@@ -74,7 +67,7 @@ class ShipmentCreator extends Component {
      * Returns a subset of templates matching product.
      */
     getProductTemplates = (product) => {
-        return this.templates.filter(
+        return this.props.templates.filter(
             each => each.product === product
         );
     }
@@ -93,7 +86,7 @@ class ShipmentCreator extends Component {
     }
 
     addRow = () => {
-        const { product, pn, dept, unit, company } = this.templates[0];
+        const { product, pn, dept, unit, company } = this.props.templates[0];
 
         this.setState({
             newShipments: [...this.state.newShipments,
@@ -225,7 +218,9 @@ class ShipmentCreator extends Component {
             alert("Check dates column. 一個多日期不好.");
         } else if (datesAreGood && amountsAreGood &&
                    !!refPageA.value && !!refPageB.value) {
-            const outShipments = newShipments.map(e => Object.assign({},e));
+            const outShipments = newShipments.map(e => 
+                Object.assign({}, e, {product: e.product.split("(")[0]})
+            );
             for (let i in outShipments) outShipments[i].refPageSeq = +i;
             submitShipments(outShipments);
             this.clearAllTextInputs();

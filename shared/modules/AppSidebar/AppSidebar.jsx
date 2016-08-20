@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { browserHistory } from 'react-router'
 // Actions
 import { updateSavedQuery } from '../../redux/state/query.redux';
+import { fetchBarrelShipments } from '../../redux/state/barrelShipments.redux';
 import { fetchTankerShipments } from '../../redux/state/tankerShipments.redux';
 // Components
 import CompanyColumn from './components/CompanyColumn';
@@ -28,14 +29,17 @@ const BTN_CLASS_STRING = "btn form-control btn-properties",
       FA_SPINNING_COG = FontAwesome("cog", "fa-2x slow-spin"),
       PAGE_NAV_BTNS = [
           {text: "ChartView | 數量圖表", route: "/"},
-          {text: "Shipments | 出貨紀錄", route: "/shipments"},
+          {text: "Shipments | 槽車紀錄", route: "/shipments"},
+          {text: "In Barrels | 桶裝紀錄", route: "/barrels"},
           {text: "Templates | 記錄模板", route: "/templates"},
       ];
 
 
 export default connect(
-    ({deptLinks, query}) => ({deptLinks, query}),  // Pull items from store
-    { updateSavedQuery, fetchTankerShipments }  // Bind actions with dispatch
+     // Pull items from store
+    ({deptLinks, query}) => ({deptLinks, query}),
+    // Bind actions with dispatch
+    { updateSavedQuery, fetchTankerShipments, fetchBarrelShipments }
 )(class AppSidebar extends Component {
     /**
      * Validates incoming props.
@@ -50,9 +54,6 @@ export default connect(
                 departments: PropTypes.array,
             })
         ).isRequired,
-        // Dispatch actions
-        updateSavedQuery: PropTypes.func.isRequired,
-        fetchTankerShipments: PropTypes.func.isRequired,
     }
 
     /**
@@ -101,6 +102,7 @@ export default connect(
         document.cookie = COOKIE_QUERY_KEY + "=" + JSON.stringify(this.state);
         this.props.updateSavedQuery(this.state);
         this.props.fetchTankerShipments(this.state);
+        this.props.fetchBarrelShipments(this.state);
         this.forceUpdate();
     }
 

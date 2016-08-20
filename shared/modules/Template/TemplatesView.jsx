@@ -47,15 +47,6 @@ export default connect(
         })).isRequired,
     }
 
-    // Ensure required data is loaded.
-    componentWillMount = () => {
-        console.dir(this.props.barrelTemplates);
-        if (this.props.tankerTemplates.length === 0)
-            this.props.fetchTankerTemplates();
-        if (this.props.barrelTemplates.length === 0)
-            this.props.fetchBarrelTemplates();
-    }
-
     deleteTankerTemplate = (template) => {  // ES7 class function binding
         // WARNING: Might have "race" problem between dispatches.
         if (confirm('真的要把檔案刪除嗎?\nDo you want to delete this template?')) {
@@ -93,21 +84,26 @@ export default connect(
             this.props.fetchDepartments();
         }, 300);
     }
-
-    filteredTemplates = () => {
-        const { company, dept } = this.props.query,
-              { tankerTemplates: templates } = this.props;
-
-        return templates.filter(each => {
-            if (!!dept) {
-                return each.company === company &&
-                       each.dept === dept;
-            } else if (!!company) {
-                return each.company === company;
-            }
-
-            return false;
-        });
+    
+    tankerFilter = (template) => {
+        const { company, dept } = this.props.query;
+        
+        if (!!company && !!dept) {
+            return template.company === company &&
+                   template.dept === dept;
+        } else if (!!company) {
+            return template.company === company;
+        }
+        return false;
+    }
+    
+    barrelFilter = (template) => {
+        const { company } = this.props.query;
+        
+        if (!!company) {
+            return template.company === company;
+        }
+        return false;
     }
 
     componentDidMount = () => {
@@ -117,14 +113,18 @@ export default connect(
     }
 
     render() {
+        const { barrelTemplates, tankerTemplates } = this.props;
         const tankerTableHeaders = ["公司", "Dept", "Unit", "材料名稱", "料號", "除"];
         const tankerTableKeys = ["company", "dept", "unit", "product", "pn"];
-        const barrelTableHeaders = ["公司", "rtCode", "材料名稱", "料號", "pkgQty", "shelfLife", "barcode", "datamatrix", "除"];
+        const barrelTableHeaders = ["公司", "RT Code", "材料名稱", "料號", "容量", "保質期", "barcode", "datamatrix", "除"];
         const barrelTableKeys = ["company", "rtCode", "product", "pn", "pkgQty", "shelfLife", "barcode", "datamatrix"];
+        
+        const filteredBarrelTemplates = barrelTemplates.filter(this.barrelFilter);
+        const filteredTankerTemplates = tankerTemplates.filter(this.tankerFilter);
 
         return (
             <div className="container"
-                 style={{maxWidth: '900px', margin: 'auto'}}>
+                 >
                 <TemplateCreator
                     createBarrelTemplate={this.createBarrelTemplate}
                     createTankerTemplate={this.createTankerTemplate} />
@@ -132,13 +132,13 @@ export default connect(
                 <Table
                     tableHeaders={tankerTableHeaders}
                     tableKeys={tankerTableKeys}
-                    tableRows={this.filteredTemplates()}
+                    tableRows={filteredTankerTemplates}
                     onDelete={this.deleteTankerTemplate} />
                 <legend>Barrel Shipment Templates</legend>
                 <Table
                     tableHeaders={barrelTableHeaders}
                     tableKeys={barrelTableKeys}
-                    tableRows={this.props.barrelTemplates}
+                    tableRows={filteredBarrelTemplates}
                     onDelete={this.deleteBarrelTemplate} />
             </div>
         )

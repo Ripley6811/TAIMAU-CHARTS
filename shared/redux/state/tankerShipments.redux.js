@@ -98,7 +98,7 @@ export function fetchTankerShipments(query, store) {
 export function deleteShipmentRequest(shipment) {
     return (dispatch) => {
         callApi(SHIPMENT_URL, DELETE, {_id: shipment._id})
-        .then(() => dispatch({ shipment, type: DELETE_SHIPMENT }));
+        .then(() => dispatch({ doc: shipment, type: DELETE_SHIPMENT }));
     };
 }
 
@@ -106,29 +106,27 @@ export function deleteShipmentRequest(shipment) {
 export function updateSpecRequest(id, report) {
     return (dispatch) => {
         callApi(`${SHIPMENT_URL}/spec/${id}`, PUT, {report})
-        .then(shipment => {
-            return dispatch({ shipment, type: UPDATE_SHIPMENT });
-        });
+        .then(doc => dispatch({ doc, type: UPDATE_SHIPMENT }));
     }
 }
 
 
 /************** REDUCER **************/
 
-export default function reducer(state = [], action) {
-    switch (action.type) {
+export default function reducer(state = [], {type, doc, docs}) {
+    switch (type) {
 
         case ADD_SHIPMENTS :
-            return [...action.docs, ...state];
+            return [...docs, ...state];
 
         case LOAD_SHIPMENTS :
-            return action.docs;
+            return docs;
 
         case UPDATE_SHIPMENT :
-            return state.map( s => s._id === action.shipment._id ? action.shipment : s );
+            return state.map( s => s._id === doc._id ? doc : s );
 
         case DELETE_SHIPMENT :
-            return state.filter( s => s._id !== action.shipment._id );
+            return state.filter( s => s._id !== doc._id );
 
         default:
             return state; // Nothing changes for unknown actions.

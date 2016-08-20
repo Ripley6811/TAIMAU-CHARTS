@@ -21,6 +21,7 @@ router.get('/', function (req, res) {
     });
 })
 
+
 router.post('/', function (req, res) {
     // Each option should be unique
     new Template(req.body).save((err, savedRec) => {
@@ -31,6 +32,21 @@ router.post('/', function (req, res) {
         }
 
         return res.json(savedRec);
+    });
+})
+
+
+router.delete('/', function (req, res) {
+    const { _id } = req.body;
+    Template.findById(_id).exec((err, doc) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err);
+        }
+
+        doc.remove(() => {
+            res.status(204).end();
+        });
     });
 })
 
