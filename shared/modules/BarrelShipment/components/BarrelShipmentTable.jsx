@@ -12,14 +12,14 @@ import { FA_TRASH, FA_LEVEL_UP, FA_PENCIL } from '../../../components/FontAwesom
 
 const tableFields = [
     { key: 'formID',    label: '出貨編號' },
-    { key: 'makeMMDD',  label: '製造日期' },
-    { key: 'product',   label: '材料名稱' },
     { key: 'shipMMDD',  label: '出貨日期' },
+    { key: 'product',   label: '材料名稱' },
+    { key: 'makeMMDD',  label: '製造日期' },
 //    { key: 'pkgQty',    label: '桶子容量' },
 //    { key: 'lotID',     label: '批號' },
     { key: 'lotSET',    label: '批號範圍' },
     { key: 'rtFULL',    label: '路由編號' },
-//    { key: 'note',      label: '備註' },
+    { key: 'note',      label: '備註' },
     { key: 'orderID',   label: '訂單編號' },
 ]
 const buttonCellStyle = {
