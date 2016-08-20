@@ -10,20 +10,21 @@ const INPUT_INNER_STYLE = {padding: "0px 3px", fontSize: "17px"}
 
 
 const inputFields = [
-//    { key: "company",     type: "text",    label: "公司" },
     { key: "formID",      type: "text",    label: "出貨編號" },
     { key: "ship",        type: "date",    required: true,  label: "出貨日期" },
     { key: "orderID",     type: "text",    required: true,  label: "訂單編號" },
     { key: "orderTotal",  type: "number",  label: "訂單數量" },
-//    { key: "product",     type: "text",    label: "材料名稱" },
-//    { key: "pn",          type: "text",    label: "料號" },
-//    { key: "rtCode",      type: "text",    label: "RT Code" },
     { key: "rtSeq",       type: "number",  required: true,  label: "RT 序列號" },
     { key: "make",        type: "date",    label: "製造日期" },
     { key: "lotID",       type: "text",    required: true,  label: "批號" },
     { key: "start",       type: "number",  required: true,  label: "開始數" },
     { key: "count",       type: "number",  required: true,  label: "數量" },
     { key: "note",        type: "text",    label: "備註" },
+    // The following are provided by the selected template.
+//    { key: "company",     type: "text",    label: "公司" },
+//    { key: "product",     type: "text",    label: "材料名稱" },
+//    { key: "pn",          type: "text",    label: "料號" },
+//    { key: "rtCode",      type: "text",    label: "RT Code" },
 //    { key: "pkgQty",      type: "number",  label: "桶子容量" },
 //    { key: "shelfLife",   type: "number",  label: "保質期" },
 //    { key: "barcode",     type: "radio",   label: "barcode" },
