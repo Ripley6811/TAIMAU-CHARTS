@@ -35,9 +35,9 @@ export function getRoute(shipment) {
  * @param   {number} value Number or String of a number to pad.
  * @returns {string} String with length of four.
  */
-export function zeroPad(value) {
+export function zeroPad(value, finalLength) {
     const numLen = value.toString().length;
-    return '0000'.slice(0, 4-numLen) + value;
+    return ('0000'.slice(0, finalLength-numLen) + value).slice(0, finalLength);
 }
 
 
@@ -47,5 +47,17 @@ export function zeroPad(value) {
  * @returns {string} String of lot number and serial number set
  */
 export function getLotSet(shipment) {
-    return shipment.lotID + zeroPad(shipment.start) + '-' + zeroPad(shipment.start + shipment.count-1)
+    return shipment.lotID + zeroPad(shipment.start, 4) + '-' + zeroPad(shipment.start + shipment.count-1, 4)
+}
+
+
+/**
+ * Returns a six-digit string version of date. e.g. "160128"
+ * @param   {number} year  Year
+ * @param   {number} month Month
+ * @param   {number} date  Date
+ * @returns {string} Six-digit string
+ */
+export function sixDigitDate(year, month, date) {
+    return year.toString().slice(2) + zeroPad(month+1, 2) + zeroPad(date, 2);
 }

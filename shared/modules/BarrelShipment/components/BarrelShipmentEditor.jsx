@@ -88,6 +88,14 @@ class BarrelShipmentEditor extends Component {
                     });
             }
         });
+        
+        const sixDigitDate = utils.sixDigitDate(
+            Number(this.refs.make.value.split('-')[0]),
+            Number(this.refs.make.value.split('-')[1])-1,
+            Number(this.refs.make.value.split('-')[2])
+        );
+        keyValues.lotID = keyValues.lotID.slice(0,1) + sixDigitDate + keyValues.lotID.slice(7);
+        
         this.props.setFields(keyValues);
     }
 

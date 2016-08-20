@@ -8,7 +8,7 @@ export const schema = new mongoose.Schema(
         product:    trimString({ minlength: 1 }),
         pn:         trimString({ minlength: 1 }),
         company:    trimString({ minlength: 1 }),
-        orderID:    trimString({ minlength: 10, maxlength: 10 }),
+        orderID:    trimString({ minlength: 8, maxlength: 10 }),
         note:       trimString({ required: false }),
         formID:     trimString({ required: false }),
 
