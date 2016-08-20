@@ -9,8 +9,8 @@ export const schema = new mongoose.Schema(
         pn:         trimString({ minlength: 1 }),
         company:    trimString({ minlength: 1 }),
         orderID:    trimString({ minlength: 8, maxlength: 10 }),
-        note:       trimString({ required: false }),
-        formID:     trimString({ required: false }),
+        note:       trimString({ required: false, default: '' }),
+        formID:     trimString({ required: false, default: '' }),
 
         makeYear:   { type: 'Number', required: false, min: 2000 },
         makeMonth:  { type: 'Number', required: false, min: 0, max: 11 },
