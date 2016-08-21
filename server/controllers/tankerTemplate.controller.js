@@ -23,15 +23,15 @@ router.get('/', function (req, res) {
                 // Ensure sorted after trimming whitespace
                 if (a.company.trim() < b.company.trim()) return -1;
                 if (a.company.trim() > b.company.trim()) return 1;
-                const aUnit = a.unit.trim().split("-")[0],
-                      bUnit = b.unit.trim().split("-")[0];
-                if (aUnit < bUnit) return 1;
-                if (aUnit > bUnit) return -1;
                 const aNo = Number(a.dept.match(/\d+/)[0]),
                       bNo = Number(b.dept.match(/\d+/)[0]);
                 if (aNo !== bNo) return aNo - bNo;
                 if (a.dept.trim() < b.dept.trim()) return -1;
                 if (a.dept.trim() > b.dept.trim()) return 1;
+                const aUnit = a.unit.trim().split("-")[0],
+                      bUnit = b.unit.trim().split("-")[0];
+                if (aUnit < bUnit) return 1;
+                if (aUnit > bUnit) return -1;
                 return 0;
             });
 
