@@ -30,9 +30,32 @@ router.get('/', function getShipments(req, res) {
 })
 
 
+router.get('/companies', function getCompanyList(req, res) {
+    Shipment.aggregate([
+        { $match: {
+            company: {
+                $ne: null
+            }
+        } },
+        { $group: {
+            _id: '$company'
+        } },
+    ])
+    .exec((err, docs) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err);
+        }
+
+        res.json(docs.map(ea => ea._id));
+    })
+})
+
+
 router.get('/latest/:company/:limit', function getLatest(req, res) {
     const company = req.params.company;
     const limit = Number(req.params.limit);
+    
     Shipment.find({ company }, { _id: 0, __v: 0, dateAdded: 0 })
     .sort('-shipYear -shipMonth -shipDate -dateAdded')
     .limit(limit)
