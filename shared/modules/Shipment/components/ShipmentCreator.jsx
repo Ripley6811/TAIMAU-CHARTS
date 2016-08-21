@@ -56,16 +56,19 @@ class ShipmentCreator extends Component {
     deptRadioButtons = (row, product) => {
         const { dept: currDept } = this.state.newShipments[row];
         const optionsArray = Array(...new Set(this.getProductTemplates(product).map(ea => ea.dept)));
-        const selectedStyle = {backgroundColor: 'springgreen'};
+        const regularStyle = { paddingLeft: "4px", paddingRight: "4px", backgroundColor: '#EFE' };
+        const selectedStyle = { paddingLeft: "4px", paddingRight: "4px", backgroundColor: 'springgreen' };
 
-        return optionsArray.map((dept, i) =>
-            <button className="btn btn-default"
+        return <span className="btn-group" role="group" style={{marginRight: "4px"}}>
+            { optionsArray.map((dept, i) =>
+            <button className="btn btn-default" type="button"
                 key={`${i}-${row}-${product}`}
-                style={dept === currDept ? selectedStyle : {}}
+                style={dept === currDept ? selectedStyle : regularStyle}
                 onClick={() => this.setDeptUnitPn(row, dept)} >
-                {dept}
+                <strong>{dept}</strong>
             </button>
-        );
+            ) }
+        </span>;
     }
 
     /**
@@ -74,17 +77,19 @@ class ShipmentCreator extends Component {
     unitRadioButtons = (row, product, dept) => {
         const { unit: currUnit } = this.state.newShipments[row];
         const optionsArray = Array(...new Set(this.getProductTemplates(product).filter(ea => (ea.dept === dept && ea.product === product)).map(ea => ea.unit)));
-        const regularStyle = {}
-        const selectedStyle = { backgroundColor: 'gold'};
+        const regularStyle = { paddingLeft: "4px", paddingRight: "4px", backgroundColor: '#FFE' }
+        const selectedStyle = { paddingLeft: "4px", paddingRight: "4px", backgroundColor: 'gold' };
 
-        return optionsArray.map((unit, i) =>
-            <button className="btn btn-default"
+        return <span className="btn-group" role="group">
+            { optionsArray.map((unit, i) =>
+            <button className="btn btn-default" type="button"
                 key={`${i}-${row}-${product}`}
                 style={unit === currUnit ? selectedStyle : regularStyle}
                 onClick={() => this.setUnitPn(row, unit)} >
-                {unit}
+                <strong>{unit}</strong>
             </button>
-        );
+            ) }
+        </span>
     }
 
     /**
