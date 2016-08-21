@@ -30,10 +30,12 @@ router.get('/', function getShipments(req, res) {
 })
 
 
-router.get('/latest', function getLatest(req, res) {
-    Shipment.find({}, { _id: 0, __v: 0, dateAdded: 0 })
+router.get('/latest/:company/:limit', function getLatest(req, res) {
+    const company = req.params.company;
+    const limit = Number(req.params.limit);
+    Shipment.find({ company }, { _id: 0, __v: 0, dateAdded: 0 })
     .sort('-shipYear -shipMonth -shipDate -dateAdded')
-    .limit(9)
+    .limit(limit)
     .exec((err, docs) => {
         if (err) {
             console.log(err);
