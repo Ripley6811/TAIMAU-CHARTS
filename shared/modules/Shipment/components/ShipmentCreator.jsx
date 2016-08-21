@@ -53,13 +53,37 @@ class ShipmentCreator extends Component {
     /**
      * Creates an array of dept-unit "option" components given a product.
      */
-    deptSelectOptions = (product) => {
-        const optionsArray = this.getProductTemplates(product);
+    deptRadioButtons = (row, product) => {
+        const { dept: currDept } = this.state.newShipments[row];
+        const optionsArray = Array(...new Set(this.getProductTemplates(product).map(ea => ea.dept)));
+        const selectedStyle = {backgroundColor: 'springgreen'};
 
-        return optionsArray.map((temp, i) =>
-            <option key={`${temp.dept}${temp.unit}${temp.pn}${i}`} value={i}>
-                {temp.dept} &nbsp; &nbsp; {temp.unit}
-            </option>
+        return optionsArray.map((dept, i) =>
+            <button className="btn btn-default"
+                key={`${i}-${row}-${product}`}
+                style={dept === currDept ? selectedStyle : {}}
+                onClick={() => this.setDeptUnitPn(row, dept)} >
+                {dept}
+            </button>
+        );
+    }
+
+    /**
+     * Creates an array of dept-unit "option" components given a product.
+     */
+    unitRadioButtons = (row, product, dept) => {
+        const { unit: currUnit } = this.state.newShipments[row];
+        const optionsArray = Array(...new Set(this.getProductTemplates(product).filter(ea => (ea.dept === dept && ea.product === product)).map(ea => ea.unit)));
+        const regularStyle = {float: 'right'}
+        const selectedStyle = {float: 'right', backgroundColor: 'gold'};
+
+        return optionsArray.map((unit, i) =>
+            <button className="btn btn-default"
+                key={`${i}-${row}-${product}`}
+                style={unit === currUnit ? selectedStyle : regularStyle}
+                onClick={() => this.setUnitPn(row, unit)} >
+                {unit}
+            </button>
         );
     }
 
@@ -86,6 +110,10 @@ class ShipmentCreator extends Component {
     }
 
     addRow = () => {
+        if (this.props.templates.length < 1) {
+            alert("No templates found");
+            return;
+        }
         const { product, pn, dept, unit, company } = this.props.templates[0];
 
         this.setState({
@@ -117,7 +145,7 @@ class ShipmentCreator extends Component {
         return `${year}-${mm}-${dd}`;
     }
 
-    setProperty = (i, key, value) => {
+    setProperty = (row, key, value) => {
         const { state: { newShipments } } = this;
 
         if (key === "date") {
@@ -130,9 +158,9 @@ class ShipmentCreator extends Component {
             }
         }
         this.setState({
-            newShipments: [...newShipments.slice(0,i),
-                           Object.assign({}, newShipments[i], { [key]: value }),
-                           ...newShipments.slice(i+1)]
+            newShipments: [...newShipments.slice(0,row),
+                           Object.assign({}, newShipments[row], { [key]: value }),
+                           ...newShipments.slice(row+1)]
         });
     }
 
@@ -165,17 +193,41 @@ class ShipmentCreator extends Component {
     }
 
     /**
-     * @param {object} event Select list event
-     * @param {number} i     New shipments list index
+     * Sets unit and pn based on Unit-button click
      */
-    setDeptUnit = (event, row) => {
+    setDeptUnitPn = (row, dept) => {
         const { getProductTemplates: getTemplates, state: { newShipments } } = this,
-              productTemplatesIndex = event.target.value,
-              template = getTemplates(newShipments[row].product)[productTemplatesIndex];
+              { product } = newShipments[row],
+              templatesArr = getTemplates(product).filter(ea => (ea.dept === dept)),
+              template = templatesArr[0];
+        // Assert at least one match
+        if (templatesArr.length < 1) throw "No templates found in 'setDeptUnit'";
+
         this.setState({
             newShipments: [...newShipments.slice(0,row),
                            Object.assign({}, newShipments[row], {
                                dept: template.dept,
+                               unit: template.unit,
+                               pn: template.pn,
+                           }),
+                           ...newShipments.slice(row+1)]
+        });
+    }
+
+    /**
+     * Sets unit and pn based on Unit-button click
+     */
+    setUnitPn = (row, unit) => {
+        const { getProductTemplates: getTemplates, state: { newShipments } } = this,
+              { product, dept } = newShipments[row],
+              templatesArr = getTemplates(product).filter(ea => (ea.dept === dept && ea.unit === unit)),
+              template = templatesArr[0];
+        // Assert single match
+        if (templatesArr.length !== 1) throw "Multiple or no templates found in 'setDeptUnit'";
+
+        this.setState({
+            newShipments: [...newShipments.slice(0,row),
+                           Object.assign({}, newShipments[row], {
                                unit: template.unit,
                                pn: template.pn,
                            }),
@@ -218,7 +270,7 @@ class ShipmentCreator extends Component {
             alert("Check dates column. 一個多日期不好.");
         } else if (datesAreGood && amountsAreGood &&
                    !!refPageA.value && !!refPageB.value) {
-            const outShipments = newShipments.map(e => 
+            const outShipments = newShipments.map(e =>
                 Object.assign({}, e, {product: e.product.split("(")[0]})
             );
             for (let i in outShipments) outShipments[i].refPageSeq = +i;
@@ -340,14 +392,12 @@ class ShipmentCreator extends Component {
                            onChange={e => this.setProperty(row, "amount", e.target.value)}></input>
                 </div>
                 { /** DEPT-UNIT SELECTION LIST */ }
-                <div className="col-xs-2" style={INPUT_DIV_STYLE}>
-                    <select className="form-control" style={INPUT_INNER_STYLE}
-                            onChange={e => this.setDeptUnit(e, row)}>
-                        { this.deptSelectOptions(each.product) }
-                    </select>
+                <div className="col-xs-3" style={INPUT_DIV_STYLE}>
+                    { this.deptRadioButtons(row, each.product) }
+                    { this.unitRadioButtons(row, each.product, each.dept) }
                 </div>
                 { /** NOTE INPUT */ }
-                <div className="col-xs-3" style={INPUT_DIV_STYLE}>
+                <div className="col-xs-2" style={INPUT_DIV_STYLE}>
                     <input className="form-control" type="text"
                            style={INPUT_INNER_STYLE}
                            placeholder="備註"
