@@ -74,8 +74,8 @@ class ShipmentCreator extends Component {
     unitRadioButtons = (row, product, dept) => {
         const { unit: currUnit } = this.state.newShipments[row];
         const optionsArray = Array(...new Set(this.getProductTemplates(product).filter(ea => (ea.dept === dept && ea.product === product)).map(ea => ea.unit)));
-        const regularStyle = {float: 'right'}
-        const selectedStyle = {float: 'right', backgroundColor: 'gold'};
+        const regularStyle = {}
+        const selectedStyle = { backgroundColor: 'gold'};
 
         return optionsArray.map((unit, i) =>
             <button className="btn btn-default"
@@ -384,7 +384,7 @@ class ShipmentCreator extends Component {
                     </select>
                 </div>
                 { /** AMOUNT INPUT */ }
-                <div className="col-xs-2" style={INPUT_DIV_STYLE}>
+                <div className="col-xs-1" style={INPUT_DIV_STYLE}>
                     <input className="form-control" type="text"
                            style={INPUT_INNER_STYLE}
                            placeholder="需求量"
@@ -392,12 +392,12 @@ class ShipmentCreator extends Component {
                            onChange={e => this.setProperty(row, "amount", e.target.value)}></input>
                 </div>
                 { /** DEPT-UNIT SELECTION LIST */ }
-                <div className="col-xs-3" style={INPUT_DIV_STYLE}>
+                <div className="col-xs-5" style={INPUT_DIV_STYLE}>
                     { this.deptRadioButtons(row, each.product) }
                     { this.unitRadioButtons(row, each.product, each.dept) }
                 </div>
                 { /** NOTE INPUT */ }
-                <div className="col-xs-2" style={INPUT_DIV_STYLE}>
+                <div className="col-xs-1" style={INPUT_DIV_STYLE}>
                     <input className="form-control" type="text"
                            style={INPUT_INNER_STYLE}
                            placeholder="備註"
