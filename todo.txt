@@ -39,4 +39,6 @@
 + Fix z-index of refPage input boxes
 - Removed mongo "$sample", add in another form of randomization
 - Include Barrel Shipment Templates in constructor Department buttons, make sure Dept names are represented
+- Alternate tanker shipment entry to type K number and radiobuttons for feishui/chunshui
+- Add select company before barrel shipments and extend list
 

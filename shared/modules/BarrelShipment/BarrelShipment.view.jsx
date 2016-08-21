@@ -88,18 +88,18 @@ export default connect(
 
     saveShipment = () => {
         const { editMode, shipment } = this.state;
+        
         if (!shipment.product || !shipment.rtSeq || !shipment.count || !shipment.orderID) {
             alert('Check that all required fields are filled.');
             return;
         }
-        for (let key in shipment) {
-            if (!shipment[key]) delete shipment[key];
-        }
+        
         if (editMode && !!shipment._id) {
             this.props.updateShipmentRequest(shipment);
         } else if (!editMode && !shipment._id) {
             this.props.addShipmentRequest(shipment);
         }
+        
         this.resetState();
     }
 
