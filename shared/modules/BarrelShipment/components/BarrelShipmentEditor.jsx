@@ -196,7 +196,7 @@ class BarrelShipmentEditor extends Component {
                     <label className="form-label">{label}</label>
                     <input className="form-control"
                         onChange={this.setFields}
-                        type={type} ref={key} value={shipment[key] || ''} />
+                        type={type} ref={key} value={shipment[key] === 0 ? shipment[key] : (shipment[key] || '')} />
                 </div>
                 ) }
             </div>

@@ -39,6 +39,7 @@ class BarrelShipmentsView extends Component {
         barrelShipments: PropTypes.array.isRequired,
         deleteShipment: PropTypes.func.isRequired,
         prefillNewShipment: PropTypes.func.isRequired,
+        editShipment: PropTypes.func.isRequired,
     }
 
     get tableHeaders() {
