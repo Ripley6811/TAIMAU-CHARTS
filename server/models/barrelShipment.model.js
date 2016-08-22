@@ -28,8 +28,8 @@ export const schema = new mongoose.Schema(
         rtSeq:      { type: 'Number', required: true, min: 0 },
         orderTotal: { type: 'Number', required: false, min: 0 },
 
-        pkgQty:     { type: 'Number', required: true, min: 0 },
-        shelfLife:  { type: 'Number', required: true, min: 6 },
+        pkgQty:     trimString(),
+        shelfLife:  { type: 'Number', required: false, min: 6 },
 
         barcode:    { type: 'Boolean', required: true, default: false },
         datamatrix: { type: 'Boolean', required: true, default: false },

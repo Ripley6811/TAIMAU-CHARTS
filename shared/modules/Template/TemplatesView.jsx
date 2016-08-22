@@ -4,21 +4,22 @@
  * the destination, product and product number (pn).
  * Excluded are amounts, dates, and notes.
  */
-import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
+import React, { PropTypes } from 'react'
+import { connect } from 'react-redux'
 // Actions
 import { fetchTankerTemplates,
          deleteTemplateRequest as deleteTankerTemplate,
-         addTemplateRequest as addTankerTemplate } from '../../redux/state/tankerTemplates.redux';
+         addTemplateRequest as addTankerTemplate } from '../../redux/state/tankerTemplates.redux'
 import { fetchTemplates as fetchBarrelTemplates,
          deleteTemplateRequest as deleteBarrelTemplate,
-         addTemplateRequest as addBarrelTemplate } from '../../redux/state/barrelTemplates.redux';
-import { fetchDepartments } from '../../redux/state/deptLinks.redux';
+         addTemplateRequest as addBarrelTemplate } from '../../redux/state/barrelTemplates.redux'
+import { fetchDepartments } from '../../redux/state/deptLinks.redux'
 // Components
-import Table from '../../components/Table';
-import TemplateCreator from './components/TemplateCreator';
+import { FA_TRUCK, FA_CUBES } from '../../components/FontAwesome'
+import Table from '../../components/Table'
+import TemplateCreator from './components/TemplateCreator'
 // Test suite
-import Tests from './tests/templates.spec';
+import Tests from './tests/templates.spec'
 
 
 export default connect(
@@ -116,7 +117,7 @@ export default connect(
         const { barrelTemplates, tankerTemplates } = this.props;
         const tankerTableHeaders = ["公司", "Dept", "Unit", "材料名稱", "料號", "除"];
         const tankerTableKeys = ["company", "dept", "unit", "product", "pn"];
-        const barrelTableHeaders = ["公司", "批次字首", "RT Code", "材料名稱", "料號", "容量", "保質期", "barcode", "datamatrix", "除"];
+        const barrelTableHeaders = ["公司", "批次字首", "RT Code", "材料名稱", "料號", "容量", "保存期間", "barcode", "datamatrix", "除"];
         const barrelTableKeys = ["company", "lotPrefix", "rtCode", "product", "pn", "pkgQty", "shelfLife", "barcode", "datamatrix"];
 
         const filteredBarrelTemplates = barrelTemplates.filter(this.barrelFilter);
@@ -128,19 +129,27 @@ export default connect(
                 <TemplateCreator
                     createBarrelTemplate={this.createBarrelTemplate}
                     createTankerTemplate={this.createTankerTemplate} />
-                <legend>Tanker Shipment Templates</legend>
-                <Table
-                    tableHeaders={tankerTableHeaders}
-                    tableKeys={tankerTableKeys}
-                    tableRows={filteredTankerTemplates}
-                    onDelete={this.deleteTankerTemplate} />
-                <legend>Barrel Shipment Templates</legend>
-                <Table
-                    tableHeaders={barrelTableHeaders}
-                    tableKeys={barrelTableKeys}
-                    tableRows={filteredBarrelTemplates}
-                    onDelete={this.deleteBarrelTemplate} />
+                { this.props.query.dept ? <span></span> :
+                <div>
+                    <legend>桶裝 &nbsp; <img alt="jerrycan" src="/img/jerrycan.svg" height="20" /><img alt="jerrycan" src="/img/jerrycan.svg" height="20" /> &nbsp;
+                        Barrel Shipment Templates</legend>
+                    <Table
+                        tableHeaders={barrelTableHeaders}
+                        tableKeys={barrelTableKeys}
+                        tableRows={filteredBarrelTemplates}
+                        onDelete={this.deleteBarrelTemplate} />
+                </div>
+                }
+                <div>
+                    <legend>槽車 &nbsp; <img alt="tanker" src="/img/tanker.svg" height="35" /> &nbsp;
+                        Tanker Shipment Templates</legend>
+                    <Table
+                        tableHeaders={tankerTableHeaders}
+                        tableKeys={tankerTableKeys}
+                        tableRows={filteredTankerTemplates}
+                        onDelete={this.deleteTankerTemplate} />
+                </div>
             </div>
         )
     }
-});
+})

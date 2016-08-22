@@ -18,7 +18,7 @@ const tableFields = [
 //    { key: 'pkgQty',    label: '桶子容量' },
 //    { key: 'lotID',     label: '批號' },
     { key: 'lotSET',    label: '批號範圍' },
-    { key: 'rtFULL',    label: '路由編號' },
+    { key: 'rtFULL',    label: 'RT' },
     { key: 'note',      label: '備註' },
     { key: 'orderID',   label: '訂單編號' },
 ]

@@ -32,5 +32,7 @@ export const FA_CHECK = create('check')
 export const FA_LEVEL_UP = create('level-up')
 export const FA_ARROW_UP = create('arrow-up')
 export const FA_PENCIL = create('pencil')
+export const FA_CUBES = create('cubes')
+export const FA_TRUCK = create('truck')
 export const FA_FILE_TEXT = create('file-text')  // Black doc with three lines
 export const FA_FILE_O = create('file-o')  // White empty doc

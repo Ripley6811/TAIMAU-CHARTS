@@ -17,7 +17,7 @@ class TemplateCreator extends React.Component {
         const checked = key => this.refs[key].checked;
 
         if (!!valueOf('rtCode') || !!valueOf('pkgQty')) {
-            const requiredKeys = ['company','product','pn','lotPrefix','rtCode','pkgQty','shelfLife'];
+            const requiredKeys = ['company','product','pn','lotPrefix','rtCode','pkgQty'];
             const keysSatisfied = requiredKeys.every(key => valueOf(key));
             if (!keysSatisfied) {
                 alert("A required field is missing a value.");
@@ -47,8 +47,8 @@ class TemplateCreator extends React.Component {
               newTemplate = {};
         if (!templateType) return;
 
-        this.fieldData.forEach(({key, inputType}) => {
-            switch (inputType) {
+        this.fieldData.forEach(({key, type}) => {
+            switch (type) {
                 case 'text':
                     if (templateType === BARREL_TYPE && key === 'dept') break;
                     if (templateType === BARREL_TYPE && key === 'unit') break;
@@ -67,6 +67,8 @@ class TemplateCreator extends React.Component {
             }
         });
 
+        if (newTemplate.shelfLife === 0) delete newTemplate.shelfLife;
+
         switch (templateType) {
             case TANKER_TYPE:
                 this.props.createTankerTemplate(newTemplate);
@@ -80,7 +82,7 @@ class TemplateCreator extends React.Component {
     }
 
     clearForm = () => {
-        this.fieldData.forEach(({key, inputType: type}) => {
+        this.fieldData.forEach(({key, type: type}) => {
             if (type === 'text' || type === 'number') {
                 this.refs[key].value = "";
             }
@@ -89,17 +91,17 @@ class TemplateCreator extends React.Component {
 
     get fieldData() {
         return [
-            { key: "company",    inputType: "text",     colWidth: 2, label: "公司" },
-            { key: "dept",       inputType: "text",     colWidth: 2, label: "Dept (K#)" },
-            { key: "unit",       inputType: "text",     colWidth: 2, label: "Unit (純水,廢水)" },
-            { key: "product",    inputType: "text",     colWidth: 2, label: "材料名稱" },
-            { key: "pn",         inputType: "text",     colWidth: 4, label: "料號" },
-            { key: "lotPrefix",  inputType: "text",     colWidth: 2, label: "批次字首 (P,B,M)" },
-            { key: "rtCode",     inputType: "text",     colWidth: 2, label: "RT Code (四個字)" },
-            { key: "pkgQty",     inputType: "number",   colWidth: 2, label: "桶子容量 (kg)" },
-            { key: "shelfLife",  inputType: "number",   colWidth: 2, label: "保存期間 (月)" },
-            { key: "barcode",    inputType: "checkbox", colWidth: 2, label: "barcode" },
-            { key: "datamatrix", inputType: "checkbox", colWidth: 2, label: "datamatrix" },
+            { key: "company",    type: "text",     colWidth: 2, label: "公司" },
+            { key: "dept",       type: "text",     colWidth: 2, label: "Dept", placeholder: "K#" },
+            { key: "unit",       type: "text",     colWidth: 2, label: "Unit", placeholder: "純水, 廢水, etc." },
+            { key: "product",    type: "text",     colWidth: 2, label: "材料名稱" },
+            { key: "pn",         type: "text",     colWidth: 4, label: "料號" },
+            { key: "lotPrefix",  type: "text",     colWidth: 2, label: "批次字首", placeholder: "P, B, M, etc." },
+            { key: "rtCode",     type: "text",     colWidth: 2, label: "RT Code (四個字)", placeholder: "xxxx ⇐ 6A05xxxx01" },
+            { key: "pkgQty",     type: "text",     colWidth: 2, label: "容量", placeholder: '"25 kg", "10 包", etc.' },
+            { key: "shelfLife",  type: "number",   colWidth: 2, label: "保存期間", placeholder: "#月" },
+            { key: "barcode",    type: "checkbox", colWidth: 2, label: "barcode" },
+            { key: "datamatrix", type: "checkbox", colWidth: 2, label: "datamatrix" },
         ]
     }
 
@@ -118,16 +120,17 @@ class TemplateCreator extends React.Component {
             <legend>Create New Template</legend>
 
             <div className="row">
-                {this.fieldData.map(({ key, label, inputType, colWidth }, i) =>
+                {this.fieldData.map(({ key, label, type, colWidth, placeholder }, i) =>
                     <div className={`form-group col-sm-${colWidth}`} key={key}>
                         <label className="form-label"
                             style={{height: "19px"}} >
                             {label}
                         </label>
                         <input
-                            type={inputType}
+                            type={type}
                             name={key}
                             className={`${key} form-control`}
+                            placeholder={placeholder || ''}
                             ref={key} />
                     </div>
                 )}

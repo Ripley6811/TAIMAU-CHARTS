@@ -2,6 +2,7 @@
  * Uses Mongoose Models for db operations.
  */
 import Template from '../models/tankerTemplate.model';
+import BarrelTemplate from '../models/barrelTemplate.model';
 import sanitizeHtml from 'sanitize-html';
 import { Router } from 'express'
 
@@ -82,7 +83,29 @@ router.get('/departments', function (req, res) {
                 });
             }
 
-            res.json(recs);
+            const coList = recs.map(ea => ea.company);
+
+            BarrelTemplate.aggregate([
+                { $match: {
+                    company: {
+                        $ne: null
+                    }
+                } },
+                { $group: {
+                    _id: '$company'
+                } },
+            ])
+            .exec((err, barreldocs) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).send(err);
+                }
+
+                barreldocs.forEach(co => {
+                    if (coList.indexOf(co._id) < 0) recs.unshift({company: co._id, departments: []});
+                })
+                res.json(recs);
+            })
         });
 })
 
