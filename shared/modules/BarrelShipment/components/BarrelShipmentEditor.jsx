@@ -17,8 +17,8 @@ const inputFields = [
     { key: "rtSeq",       type: "number",  required: true,  label: "RT 序列號" },
     { key: "make",        type: "date",    label: "製造日期" },
     { key: "lotID",       type: "text",    required: true,  label: "批號" },
-    { key: "start",       type: "number",  required: true,  label: "開始數" },
-    { key: "count",       type: "number",  required: true,  label: "數量" },
+    { key: "start",       type: "number",  required: true,  label: "流水起始號" },
+    { key: "count",       type: "number",  required: true,  label: "桶數" },
     { key: "note",        type: "text",    label: "備註" },
     // The following are provided by the selected template.
 //    { key: "company",     type: "text",    label: "公司" },
