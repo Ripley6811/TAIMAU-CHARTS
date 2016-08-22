@@ -14,7 +14,7 @@ const inputFields = [
     { key: "ship",        type: "date",    required: true,  label: "出貨日期" },
     { key: "orderID",     type: "text",    required: true,  label: "訂單編號" },
     { key: "orderTotal",  type: "number",  label: "訂單數量" },
-    { key: "rtSeq",       type: "number",  required: true,  label: "RT 序列號" },
+    { key: "rtSeq",       type: "text",    required: true,  label: "RT 序列號" },
     { key: "make",        type: "date",    label: "製造日期" },
     { key: "lotID",       type: "text",    required: true,  label: "批號" },
     { key: "start",       type: "number",  required: true,  label: "流水起始號" },
@@ -52,24 +52,51 @@ class BarrelShipmentEditor extends Component {
         this.validateInputs();
     }
 
+    /**
+     * Basic validation for required fields and sets background color.
+     */
     validateInputs = () => {
         let allPassed = true;
-        for (let { key, required } of inputFields) {
-            let passed = true;
 
-            if (required && !this.refs[key].value) {
-                passed = false;
-                allPassed = false;
+        inputFields.forEach(({ key, type, required }) => {
+            const element = this.refs[key];
+            switch (type) {
+                case 'text':
+                    if (required && element.value.trim().length === 0) {
+                        allPassed = false;
+                        element.style.backgroundColor = 'pink';
+                    } else {
+                        element.style.backgroundColor = '';
+                    }
+                    break;
+                case 'number':
+                    if (required && Number(element.value) <= 0) {
+                        allPassed = false;
+                        element.style.backgroundColor = 'pink';
+                    } else {
+                        element.style.backgroundColor = '';
+                    }
+                    break;
+                case 'radio':
+                    break;
+                case 'date':
+                    if (required && !element.value) {
+                        allPassed = false;
+                        element.style.backgroundColor = 'pink';
+                    } else {
+                        element.style.backgroundColor = '';
+                    }
+                    break;
             }
+        });
 
-            this.refs[key].style.backgroundColor = passed ? '' : 'pink';
-        }
         return allPassed;
     }
 
     setFields = () => {
         const keyValues = {};
-        inputFields.forEach(({ key, type }) => {
+
+        inputFields.forEach(({ key, type, required }) => {
             switch (type) {
                 case 'text':
                     Object.assign(keyValues, {[key]: this.refs[key].value.trim()});
@@ -89,14 +116,20 @@ class BarrelShipmentEditor extends Component {
                     });
             }
         });
-        
+
+        if (this.validateInputs()) {
+            this.refs['saveBtn'].disabled = false;
+        } else {
+            this.refs['saveBtn'].disabled = true;
+        }
+
         const sixDigitDate = utils.sixDigitDate(
             Number(this.refs.make.value.split('-')[0]),
             Number(this.refs.make.value.split('-')[1])-1,
             Number(this.refs.make.value.split('-')[2])
         );
-        keyValues.lotID = keyValues.lotID.slice(0,1) + sixDigitDate + keyValues.lotID.slice(7);
-        
+        keyValues.lotID = this.props.shipment.lotPrefix + sixDigitDate + keyValues.lotID.slice(7);
+
         this.props.setFields(keyValues);
     }
 
@@ -105,10 +138,10 @@ class BarrelShipmentEditor extends Component {
     }
 
     useTemplate = (templateIndex) => {
-        const { company, product, pn, rtCode, pkgQty, shelfLife,
+        const { company, product, pn, lotPrefix, rtCode, pkgQty, shelfLife,
                 barcode, datamatrix } = this.props.templates[templateIndex];
         this.props.setFields({
-            company, product, pn, rtCode, pkgQty, shelfLife, barcode, datamatrix
+            company, product, pn, lotPrefix, rtCode, pkgQty, shelfLife, barcode, datamatrix
         });
     }
 
@@ -169,7 +202,7 @@ class BarrelShipmentEditor extends Component {
             <br />
             <div className="row">
                 <div className="col-sm-4" style={INPUT_DIV_STYLE}>
-                    路由編號: {utils.getRoute(shipment)}
+                    RT: {utils.getRoute(shipment)}
                 </div>
                 <div className="col-sm-4" style={INPUT_DIV_STYLE}>
                     批次序列號: {utils.getLotSet(shipment)}
@@ -177,7 +210,7 @@ class BarrelShipmentEditor extends Component {
             </div>
             <br />
             <div className="row">
-                <button className="btn btn-warning" onClick={this.props.saveShipment} >
+                <button className="btn btn-warning" ref='saveBtn' onClick={this.props.saveShipment} >
                     { this.props.editMode ? "Save Updates" : "Save New Record" }
                 </button>
                 &nbsp;

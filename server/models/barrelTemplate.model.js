@@ -9,6 +9,7 @@ export const schema = new mongoose.Schema(
         product:    trimString(),
         pn:         trimString({ uppercase: true }),
         rtCode:     trimString({ minlength: 4, maxlength: 4, uppercase: true }),
+        lotPrefix:  trimString({ minlength: 1, maxlength: 1, uppercase: true }),
         pkgQty:     { type: 'Number',  required: true, min: 0 },
         shelfLife:  { type: 'Number',  required: true, min: 6 },
         barcode:    { type: 'Boolean', required: true },

@@ -84,10 +84,10 @@ export default connect(
             this.props.fetchDepartments();
         }, 300);
     }
-    
+
     tankerFilter = (template) => {
         const { company, dept } = this.props.query;
-        
+
         if (!!company && !!dept) {
             return template.company === company &&
                    template.dept === dept;
@@ -96,10 +96,10 @@ export default connect(
         }
         return false;
     }
-    
+
     barrelFilter = (template) => {
         const { company } = this.props.query;
-        
+
         if (!!company) {
             return template.company === company;
         }
@@ -116,9 +116,9 @@ export default connect(
         const { barrelTemplates, tankerTemplates } = this.props;
         const tankerTableHeaders = ["公司", "Dept", "Unit", "材料名稱", "料號", "除"];
         const tankerTableKeys = ["company", "dept", "unit", "product", "pn"];
-        const barrelTableHeaders = ["公司", "RT Code", "材料名稱", "料號", "容量", "保質期", "barcode", "datamatrix", "除"];
-        const barrelTableKeys = ["company", "rtCode", "product", "pn", "pkgQty", "shelfLife", "barcode", "datamatrix"];
-        
+        const barrelTableHeaders = ["公司", "批次字首", "RT Code", "材料名稱", "料號", "容量", "保質期", "barcode", "datamatrix", "除"];
+        const barrelTableKeys = ["company", "lotPrefix", "rtCode", "product", "pn", "pkgQty", "shelfLife", "barcode", "datamatrix"];
+
         const filteredBarrelTemplates = barrelTemplates.filter(this.barrelFilter);
         const filteredTankerTemplates = tankerTemplates.filter(this.tankerFilter);
 

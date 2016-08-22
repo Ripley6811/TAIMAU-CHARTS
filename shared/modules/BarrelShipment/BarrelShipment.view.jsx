@@ -48,14 +48,14 @@ export default connect(
      * Sets "shipment" fields with data from previous shipment.
      */
     prefillNewShipment = (shipment) => {
-        const { product, pn, company, lotID, orderID, note, count,
+        const { product, lotPrefix, pn, company, lotID, orderID, note, count,
                 rtCode, orderTotal, pkgQty, shelfLife, barcode, datamatrix,
                 start, makeYear, makeMonth, makeDate, rtSeq } = shipment;
         const today = new Date();
         this.setState({
             editMode: false,
             shipment: {
-                product, pn, company, lotID, orderID, note, count,
+                product, lotPrefix, pn, company, lotID, orderID, note, count,
                 rtCode, orderTotal, pkgQty, shelfLife, barcode, datamatrix,
                 makeYear, makeMonth, makeDate,
                 start: start+count,
@@ -88,18 +88,13 @@ export default connect(
 
     saveShipment = () => {
         const { editMode, shipment } = this.state;
-        
-        if (!shipment.product || !shipment.rtSeq || !shipment.count || !shipment.orderID) {
-            alert('Check that all required fields are filled.');
-            return;
-        }
-        
+
         if (editMode && !!shipment._id) {
             this.props.updateShipmentRequest(shipment);
         } else if (!editMode && !shipment._id) {
             this.props.addShipmentRequest(shipment);
         }
-        
+
         this.resetState();
     }
 
@@ -114,6 +109,7 @@ export default connect(
             editMode: false,
             shipment: {
                 company: this.props.query.company,
+                lotPrefix: `P`,
                 lotID: `P${YYYY.substr(2)}${MM}${DD}01`,
                 start: 1,
                 shipYear: today.getFullYear(),

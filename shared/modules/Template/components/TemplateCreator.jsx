@@ -17,7 +17,7 @@ class TemplateCreator extends React.Component {
         const checked = key => this.refs[key].checked;
 
         if (!!valueOf('rtCode') || !!valueOf('pkgQty')) {
-            const requiredKeys = ['company','product','pn','rtCode','pkgQty','shelfLife'];
+            const requiredKeys = ['company','product','pn','lotPrefix','rtCode','pkgQty','shelfLife'];
             const keysSatisfied = requiredKeys.every(key => valueOf(key));
             if (!keysSatisfied) {
                 alert("A required field is missing a value.");
@@ -66,7 +66,7 @@ class TemplateCreator extends React.Component {
                     alert(`Key-value not saved for ${key}!`);
             }
         });
-        
+
         switch (templateType) {
             case TANKER_TYPE:
                 this.props.createTankerTemplate(newTemplate);
@@ -75,7 +75,7 @@ class TemplateCreator extends React.Component {
                 this.props.createBarrelTemplate(newTemplate);
                 break;
         }
-        
+
         this.clearForm();
     }
 

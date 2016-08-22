@@ -19,12 +19,13 @@ export const schema = new mongoose.Schema(
         shipMonth:  { type: 'Number', required: true, min: 0, max: 11 },
         shipDate:   { type: 'Number', required: true, min: 1, max: 31 },
 
+        lotPrefix:  trimString({ minlength: 1, maxlength: 1, uppercase: true }),
         lotID:      trimString({ minlength: 9, maxlength: 9, uppercase: true }),
         start:      { type: 'Number', required: true, min: 1 },
         count:      { type: 'Number', required: true, min: 1 },
         // "4219JMMS01" -> routeCode = "JMMS", routeSeq = "01", First part is ship date
         rtCode:     trimString({ minlength: 4, maxlength: 4, uppercase: true }),
-        rtSeq:      { type: 'Number', required: true, min: 1 },
+        rtSeq:      { type: 'Number', required: true, min: 0 },
         orderTotal: { type: 'Number', required: false, min: 0 },
 
         pkgQty:     { type: 'Number', required: true, min: 0 },
