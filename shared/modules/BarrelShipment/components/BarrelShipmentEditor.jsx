@@ -141,7 +141,8 @@ class BarrelShipmentEditor extends Component {
         const { company, product, pn, lotPrefix, rtCode, pkgQty, shelfLife,
                 barcode, datamatrix } = this.props.templates[templateIndex];
         this.props.setFields({
-            company, product, pn, lotPrefix, rtCode, pkgQty, shelfLife, barcode, datamatrix
+            company, product, pn, lotPrefix, rtCode, pkgQty, shelfLife, barcode, datamatrix,
+            lotID: lotPrefix + this.refs['lotID'].value.slice(1),
         });
     }
 
