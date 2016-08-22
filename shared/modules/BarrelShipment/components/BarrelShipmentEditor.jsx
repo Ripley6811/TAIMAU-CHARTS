@@ -14,7 +14,7 @@ const inputFields = [
     { key: "ship",        type: "date",    required: true,  label: "出貨日期" },
     { key: "orderID",     type: "text",    required: true,  label: "訂單編號" },
     { key: "orderTotal",  type: "number",  label: "訂單數量" },
-    { key: "rtSeq",       type: "text",    required: true,  label: "RT 序列號" },
+    { key: "rtSeq",       type: "text",    label: "RT 序列號" },
     { key: "make",        type: "date",    label: "製造日期" },
     { key: "lotID",       type: "text",    required: true,  label: "批號" },
     { key: "start",       type: "number",  required: true,  label: "流水起始號" },
@@ -90,11 +90,25 @@ class BarrelShipmentEditor extends Component {
             }
         });
 
+        const { rtCode } = this.props.shipment,
+              { rtSeq } = this.refs;
+        if (rtCode && rtCode.length === 4 && rtSeq.value.trim().length === 0) {
+            allPassed = false;
+        }
+
+        if (allPassed) {
+            this.refs['saveBtn'].disabled = false;
+        } else {
+            this.refs['saveBtn'].disabled = true;
+        }
+
         return allPassed;
     }
 
     setFields = () => {
         const keyValues = {};
+
+        this.validateInputs();
 
         inputFields.forEach(({ key, type, required }) => {
             switch (type) {
@@ -117,11 +131,6 @@ class BarrelShipmentEditor extends Component {
             }
         });
 
-        if (this.validateInputs()) {
-            this.refs['saveBtn'].disabled = false;
-        } else {
-            this.refs['saveBtn'].disabled = true;
-        }
 
         const sixDigitDate = utils.sixDigitDate(
             Number(this.refs.make.value.split('-')[0]),
@@ -173,7 +182,7 @@ class BarrelShipmentEditor extends Component {
                         </option>
                         { templates.map((tp, i) =>
                         <option key={tp.pn + i} value={i}>
-                            {tp.product} &nbsp; &nbsp; {tp.pn} &nbsp; &nbsp; (容量:{tp.pkgQty}{tp.shelfLife ? `, 保存:${tp.shelfLife}月` : ''})
+                            {tp.product} &nbsp; &nbsp; {tp.pn || ''} &nbsp; &nbsp; (容量:{tp.pkgQty}{tp.shelfLife ? `, 保存:${tp.shelfLife}月` : ''})
                         </option>
                         ) }
                     </select>
@@ -203,7 +212,7 @@ class BarrelShipmentEditor extends Component {
             <br />
             <div className="row">
                 <div className="col-sm-4" style={INPUT_DIV_STYLE}>
-                    RT: {utils.getRoute(shipment)}
+                    RT: {shipment.rtCode ? utils.getRoute(shipment) : 'NA'}
                 </div>
                 <div className="col-sm-4" style={INPUT_DIV_STYLE}>
                     批次序列號: {utils.getLotSet(shipment)}

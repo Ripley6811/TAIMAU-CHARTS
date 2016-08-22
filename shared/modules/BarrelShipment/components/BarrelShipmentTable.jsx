@@ -58,7 +58,7 @@ class BarrelShipmentsView extends Component {
                 makeMMDD: `${1+shipment.makeMonth || ''} / ${shipment.makeDate || ''}`,
                 shipMMDD: `${1+shipment.shipMonth} / ${shipment.shipDate}`,
                 lotSET: utils.getLotSet(shipment),
-                rtFULL: utils.getRoute(shipment),
+                rtFULL: shipment.rtCode ? utils.getRoute(shipment) : '',
             })
         );
 

@@ -6,9 +6,9 @@ export const name = 'BarrelShipment'
 export const schema = new mongoose.Schema(
     {
         product:    trimString({ minlength: 1 }),
-        pn:         trimString({ minlength: 1 }),
+        pn:         trimString({ required: false, minlength: 1 }),
         company:    trimString({ minlength: 1 }),
-        orderID:    trimString({ minlength: 8, maxlength: 10 }),
+        orderID:    trimString({ minlength: 6, maxlength: 10 }),
         note:       trimString({ required: false, default: '' }),
         formID:     trimString({ required: false, default: '' }),
 
@@ -24,8 +24,8 @@ export const schema = new mongoose.Schema(
         start:      { type: 'Number', required: true, min: 1 },
         count:      { type: 'Number', required: true, min: 1 },
         // "4219JMMS01" -> routeCode = "JMMS", routeSeq = "01", First part is ship date
-        rtCode:     trimString({ minlength: 4, maxlength: 4, uppercase: true }),
-        rtSeq:      { type: 'Number', required: true, min: 0 },
+        rtCode:     trimString({ required: false, uppercase: true }),
+        rtSeq:      { type: 'Number', required: false, min: 0 },
         orderTotal: { type: 'Number', required: false, min: 0 },
 
         pkgQty:     trimString(),

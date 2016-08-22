@@ -16,15 +16,15 @@ class TemplateCreator extends React.Component {
         const valueOf = key => this.refs[key].value;
         const checked = key => this.refs[key].checked;
 
-        if (!!valueOf('rtCode') || !!valueOf('pkgQty')) {
-            const requiredKeys = ['company','product','pn','lotPrefix','rtCode','pkgQty'];
+        if (!!valueOf('lotPrefix') || !!valueOf('pkgQty') || checked('barcode')) {
+            const requiredKeys = ['company','product','lotPrefix','pkgQty'];
             const keysSatisfied = requiredKeys.every(key => valueOf(key));
             if (!keysSatisfied) {
                 alert("A required field is missing a value.");
                 return false;
             }
 
-            if (!!checked('barcode') === !!checked('datamatrix')) {
+            if (!checked('barcode') && !checked('datamatrix')) {
                 alert("Either 'barcode' or 'datamatrix' must be selected.");
                 return false;
             }
@@ -68,6 +68,8 @@ class TemplateCreator extends React.Component {
         });
 
         if (newTemplate.shelfLife === 0) delete newTemplate.shelfLife;
+        if (newTemplate.rtCode.length === 0) delete newTemplate.rtCode;
+        if (newTemplate.pn.length === 0) delete newTemplate.pn;
 
         switch (templateType) {
             case TANKER_TYPE:

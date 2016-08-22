@@ -7,8 +7,8 @@ export const schema = new mongoose.Schema(
     {
         company:    trimString(),
         product:    trimString(),
-        pn:         trimString({ uppercase: true }),
-        rtCode:     trimString({ minlength: 4, maxlength: 4, uppercase: true }),
+        pn:         trimString({ required: false, uppercase: true }),
+        rtCode:     trimString({ required: false, uppercase: true }),
         lotPrefix:  trimString({ minlength: 1, maxlength: 1, uppercase: true }),
         pkgQty:     trimString(),
         shelfLife:  { type: 'Number',  required: false, min: 6 },
