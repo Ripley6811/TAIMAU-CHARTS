@@ -89,16 +89,17 @@ class TemplateCreator extends React.Component {
 
     get fieldData() {
         return [
-            { key: "company",    inputType: "text",     colWidth: 1, label: "公司" },
-            { key: "dept",       inputType: "text",     colWidth: 1, label: "Dept" },
-            { key: "unit",       inputType: "text",     colWidth: 1, label: "Unit" },
+            { key: "company",    inputType: "text",     colWidth: 2, label: "公司" },
+            { key: "dept",       inputType: "text",     colWidth: 2, label: "Dept (K#)" },
+            { key: "unit",       inputType: "text",     colWidth: 2, label: "Unit (純水,廢水)" },
             { key: "product",    inputType: "text",     colWidth: 2, label: "材料名稱" },
-            { key: "pn",         inputType: "text",     colWidth: 2, label: "料號" },
-            { key: "rtCode",     inputType: "text",     colWidth: 1, label: "RT Code" },
-            { key: "pkgQty",     inputType: "number",   colWidth: 1, label: "容量" },
-            { key: "shelfLife",  inputType: "number",   colWidth: 1, label: "保質期" },
-            { key: "barcode",    inputType: "checkbox", colWidth: 1, label: "barcode" },
-            { key: "datamatrix", inputType: "checkbox", colWidth: 1, label: "datamatrix" },
+            { key: "pn",         inputType: "text",     colWidth: 4, label: "料號" },
+            { key: "lotPrefix",  inputType: "text",     colWidth: 2, label: "批次字首 (P,B,M)" },
+            { key: "rtCode",     inputType: "text",     colWidth: 2, label: "RT Code (四個字)" },
+            { key: "pkgQty",     inputType: "number",   colWidth: 2, label: "桶子容量 (kg)" },
+            { key: "shelfLife",  inputType: "number",   colWidth: 2, label: "保存期間 (月)" },
+            { key: "barcode",    inputType: "checkbox", colWidth: 2, label: "barcode" },
+            { key: "datamatrix", inputType: "checkbox", colWidth: 2, label: "datamatrix" },
         ]
     }
 
