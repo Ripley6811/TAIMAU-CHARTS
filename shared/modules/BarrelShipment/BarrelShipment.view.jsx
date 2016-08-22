@@ -62,7 +62,7 @@ export default connect(
                 shipYear: today.getFullYear(),
                 shipMonth: today.getMonth(),
                 shipDate: today.getDate(),
-                rtSeq: rtSeq+1,
+                rtSeq: '',
             },
         });
     }
