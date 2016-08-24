@@ -92,11 +92,15 @@ export default connect(
             template: Object.assign({}, this.state.template, obj)
         });
     }
-
-    deleteTankerTemplate = (template) => {  // ES7 class function binding
+    
+    deleteTemplate = (type, template) => {
         // WARNING: Might have "race" problem between dispatches.
         if (confirm('真的要把檔案刪除嗎?\nDo you want to delete this template?')) {
-            this.props.deleteTankerTemplate(template);
+            if (type === BARREL_TYPE) {
+                this.props.deleteBarrelTemplate(template);
+            } else if (type === TANKER_TYPE) {
+                this.props.deleteTankerTemplate(template);
+            }
             // Wait then dispatch update for sidebar
             setTimeout(() => {
                 this.props.fetchDepartments();
@@ -104,15 +108,12 @@ export default connect(
         }
     }
 
-    deleteBarrelTemplate = (template) => {  // ES7 class function binding
-        // WARNING: Might have "race" problem between dispatches.
-        if (confirm('真的要把檔案刪除嗎?\nDo you want to delete this template?')) {
-            this.props.deleteBarrelTemplate(template);
-            // Wait then dispatch update for sidebar
-            setTimeout(() => {
-                this.props.fetchDepartments();
-            }, 300);
-        }
+    deleteTankerTemplate = (template) => { 
+        this.deleteTemplate(TANKER_TYPE, template);
+    }
+
+    deleteBarrelTemplate = (template) => { 
+        this.deleteTemplate(BARREL_TYPE, template);
     }
 
     tankerFilter = (template) => {
