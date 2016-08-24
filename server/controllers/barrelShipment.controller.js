@@ -66,7 +66,7 @@ router.get('/latest/:company/:limit', function getLatest(req, res) {
         }
 
         docs.map(each => {
-            each.rtCode = utils.getRoute(each);
+            each.rtCode = each.rtCode ? utils.getRoute(each) : undefined;
             each.rtSeq = undefined;
         })
 
