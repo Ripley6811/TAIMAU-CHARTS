@@ -181,7 +181,7 @@ class BarrelShipmentEditor extends Component {
                             選材料
                         </option>
                         { templates.map((tp, i) =>
-                        <option key={tp.pn + i} value={i}>
+                        <option key={tp.product + i} value={i}>
                             {tp.product} &nbsp; &nbsp; {tp.pn || ''} &nbsp; &nbsp; (容量:{tp.pkgQty}{tp.shelfLife ? `, 保存:${tp.shelfLife}月` : ''})
                         </option>
                         ) }
