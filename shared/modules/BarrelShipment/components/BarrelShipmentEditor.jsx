@@ -21,14 +21,14 @@ const inputFields = [
     { key: "count",       type: "number",  required: true,  label: "桶數" },
     { key: "note",        type: "text",    label: "備註" },
     // The following are provided by the selected template.
-//    { key: "company",     type: "text",    label: "公司" },
-//    { key: "product",     type: "text",    label: "材料名稱" },
-//    { key: "pn",          type: "text",    label: "料號" },
-//    { key: "rtCode",      type: "text",    label: "RT Code" },
-//    { key: "pkgQty",      type: "number",  label: "桶子容量" },
-//    { key: "shelfLife",   type: "number",  label: "保質期" },
-//    { key: "barcode",     type: "radio",   label: "barcode" },
-//    { key: "datamatrix",  type: "radio",   label: "datamatrix" },
+//    { key: "company" },
+//    { key: "product" },
+//    { key: "pn" },
+//    { key: "rtCode" },
+//    { key: "pkgQty" },
+//    { key: "shelfLife" },
+//    { key: "barcode" },
+//    { key: "datamatrix" },
 ]
 
 
@@ -118,9 +118,6 @@ class BarrelShipmentEditor extends Component {
                 case 'number':
                     Object.assign(keyValues, {[key]: Number(this.refs[key].value)});
                     break;
-                case 'radio':
-                    Object.assign(keyValues, {[key]: this.refs[key].checked});
-                    break;
                 case 'date':
                     if (!this.refs[key].value) break;
                     Object.assign(keyValues, {
@@ -140,10 +137,6 @@ class BarrelShipmentEditor extends Component {
         keyValues.lotID = this.props.shipment.lotPrefix + sixDigitDate + keyValues.lotID.slice(7);
 
         this.props.setFields(keyValues);
-    }
-
-    get inputKeys() {
-        return inputFields.map(f => f.key);
     }
 
     useTemplate = (templateIndex) => {

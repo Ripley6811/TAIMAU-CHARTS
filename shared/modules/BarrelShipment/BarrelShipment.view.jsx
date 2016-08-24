@@ -78,7 +78,7 @@ export default connect(
     }
 
     /**
-     * Sets a single field in shipment object.
+     * Sets fields in shipment object.
      */
     setShipmentFields = (obj) => {
         this.setState({

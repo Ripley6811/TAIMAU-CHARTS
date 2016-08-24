@@ -24,9 +24,11 @@ router.get('/', function (req, res) {
                 // Ensure sorted after trimming whitespace
                 if (a.company.trim() < b.company.trim()) return -1;
                 if (a.company.trim() > b.company.trim()) return 1;
-                const aNo = Number(a.dept.match(/\d+/)[0]),
-                      bNo = Number(b.dept.match(/\d+/)[0]);
-                if (aNo !== bNo) return aNo - bNo;
+                try {
+                    const aNo = Number(a.dept.match(/\d+/)[0]),
+                          bNo = Number(b.dept.match(/\d+/)[0]);
+                    if (aNo !== bNo) return aNo - bNo;
+                } catch(err) {}
                 if (a.dept.trim() < b.dept.trim()) return -1;
                 if (a.dept.trim() > b.dept.trim()) return 1;
                 const aUnit = a.unit.trim().split("-")[0],
@@ -39,6 +41,7 @@ router.get('/', function (req, res) {
             res.json(docs);
         });
 })
+
 
 /**
  * Returns a list of companies and their respective depts sorted.
@@ -74,9 +77,11 @@ router.get('/departments', function (req, res) {
             // Sort each set of departments
             for (let co of recs) {
                 co.departments.sort((a, b) => {
-                    const aNo = +a.match(/\d+/)[0],
-                          bNo = +b.match(/\d+/)[0];
-                    if (aNo !== bNo) return aNo - bNo;
+                    try {
+                        const aNo = +a.match(/\d+/)[0],
+                              bNo = +b.match(/\d+/)[0];
+                        if (aNo !== bNo) return aNo - bNo;
+                    } catch(err) {}
                     if (a.trim() < b.trim()) return -1;
                     if (a.trim() > b.trim()) return 1;
                     return 0;
@@ -104,10 +109,12 @@ router.get('/departments', function (req, res) {
                 barreldocs.forEach(co => {
                     if (coList.indexOf(co._id) < 0) recs.unshift({company: co._id, departments: []});
                 })
+
                 res.json(recs);
             })
         });
 })
+
 
 router.post('/', function (req, res) {
     const newTemplate = {
@@ -137,6 +144,7 @@ router.post('/', function (req, res) {
     });
 })
 
+
 router.delete('/', function (req, res) {
     const _id = req.body._id;
 
@@ -151,6 +159,7 @@ router.delete('/', function (req, res) {
         });
     });
 })
+
 
 /**
  * Returns an array of unique product-pn pairs.
@@ -179,6 +188,26 @@ router.get('/products', function (req, res) {
 
             res.json(recs);
         });
+})
+
+
+router.put('/', function (req, res) {
+    const { template } = req.body;
+    Template.findById(template._id).exec((err, doc) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err);
+        }
+
+        Object.assign(doc, template);
+        doc.save((err, doc) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).send(err);
+            }
+            res.json(doc);
+        })
+    });
 })
 
 export default router

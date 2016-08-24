@@ -12,68 +12,69 @@ import callApi from '../../utils/apiCaller'
 
 /************** CONSTANTS **************/
 
+const URL = `tankerTemplate`
+const [ GET, PUT, POST, DELETE ] = [ "get", "put", "post", "delete" ]
 export const ADD_TEMPLATE    = Symbol("ADD_TEMPLATE")
 export const LOAD_TEMPLATES  = Symbol("LOAD_TEMPLATES")
 export const DELETE_TEMPLATE = Symbol("DELETE_TEMPLATE")
-const SHIPMENT_TEMPLATE_URL = `tankerTemplate`
-const [ GET, POST, DELETE ] = [ "get", "post", "delete" ]
+export const UPDATE_TEMPLATE = Symbol("UPDATE_TEMPLATE")
 
 
 /************** ACTIONS **************/
 
+export function fetchTemplates() {
+    // If used in "need" list then requires "return" with "callApi" (?)
+    return (dispatch) => {
+        return callApi(URL, GET)
+        .then(docs => dispatch({ docs, type: LOAD_TEMPLATES }));
+    };
+}
+
+
 export function addTemplateRequest(template) {
     return (dispatch) => {
-        callApi(SHIPMENT_TEMPLATE_URL, POST, template)
+        return callApi(URL, POST, template)
         .then(doc => {
             if (!!doc.errmsg) return null;
 
-            dispatch({
-                type: ADD_TEMPLATE,
-                template: doc
-            })
+            dispatch({ doc, type: ADD_TEMPLATE })
         });
     };
 }
 
 
-export function fetchTankerTemplates() {
+export function updateTemplateRequest(template) {
     return (dispatch) => {
-        // If used in "need" list then requires "return" keyword below (?)
-        return callApi(SHIPMENT_TEMPLATE_URL)
-        .then(docs => dispatch({
-            type: LOAD_TEMPLATES,
-            templates: docs
-        }));
+        return callApi(URL, PUT, { template })
+        .then(doc => dispatch({ doc, type: UPDATE_TEMPLATE }));
     };
 }
 
 
-export function deleteTemplateRequest(template) {
+export function deleteTemplateRequest(doc) {
     return (dispatch) => {
-        callApi(SHIPMENT_TEMPLATE_URL, DELETE, {
-             _id: template._id,
-        })
-        .then(() => dispatch({
-            type: DELETE_TEMPLATE,
-            deleteID: template._id
-        }));
+        return callApi(URL, DELETE, {_id: doc._id})
+        .then(() => dispatch({ doc, type: DELETE_TEMPLATE }));
     };
 }
 
 
 /************** REDUCER **************/
 
-export default function reducer(state = [], action) {
-    switch (action.type) {
-
-        case DELETE_TEMPLATE :
-            return state.filter( t => t._id !== action.deleteID );
+export default function reducer(state = [], {type, doc, docs}) {
+    switch (type) {
 
         case LOAD_TEMPLATES :
-            return action.templates;
+            return docs;
 
         case ADD_TEMPLATE :
-            return [action.template, ...state];
+            return [doc, ...state];
+
+        case DELETE_TEMPLATE :
+            return state.filter( each => each._id !== doc._id );
+
+        case UPDATE_TEMPLATE:
+            return state.map( each => each._id === doc._id ? doc : each );
 
         default:
             return state; // Nothing changes for unknown actions.

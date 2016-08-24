@@ -3,7 +3,7 @@ import React from 'react';
 // COMPONENTS
 import TableHead from './TableHead';
 import TableRow from './TableRow';
-import { FA_TRASH } from './FontAwesome';
+import { FA_TRASH, FA_PENCIL } from './FontAwesome';
 
 
 const trashCellStyle = {
@@ -14,6 +14,11 @@ const trashCellStyle = {
       specCellStyle = {
           cursor: "pointer",
           width: "60px",
+      },
+      buttonCellStyle = {
+          cursor: "pointer",
+          width: "36px",
+          color: "black",
       }
 
 
@@ -29,10 +34,18 @@ function Table(props) {
         <TableRow data={row} keys={props.tableKeys} key={`${i}-${row._id}`} >
              {/** Add Spec Modal WITH button if component is provided. Shipments list **/}
              {!SpecModal ? null : (
-                <td style={specCellStyle}>
-                    <SpecModal shipment={row} sendUpdate={updateSpec} />
-                </td>
+             <td style={specCellStyle}>
+                 <SpecModal shipment={row} sendUpdate={updateSpec} />
+             </td>
              )}
+
+             { typeof props.editShipment !== 'function' ? <span></span> :
+             <td className="text-center success"
+                 style={buttonCellStyle}
+                 onClick={() => props.editShipment(row)}>
+                  {FA_PENCIL}
+             </td>
+             }
 
              {/** Delete button added as a child of TableRow. **/}
              <td className="delete-row-btn danger text-center"

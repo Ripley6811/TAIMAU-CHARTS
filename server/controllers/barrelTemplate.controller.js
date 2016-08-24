@@ -50,4 +50,25 @@ router.delete('/', function (req, res) {
     });
 })
 
+
+router.put('/', function (req, res) {
+    const { template } = req.body;
+    Template.findById(template._id).exec((err, doc) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err);
+        }
+
+        Object.assign(doc, template);
+        doc.save((err, doc) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).send(err);
+            }
+            res.json(doc);
+        })
+    });
+})
+
+
 export default router

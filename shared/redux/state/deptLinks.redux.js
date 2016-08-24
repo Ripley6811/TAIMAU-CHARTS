@@ -23,10 +23,7 @@ export function fetchDepartments() {
     return (dispatch) => {
         // If used in "need" list then requires "return" keyword below (?)
         return callApi(DEPARTMENT_URL).
-        then(docs => dispatch({
-            type: ADD_DEPT_LINKS,
-            records: docs
-        }));
+        then(docs => dispatch({ docs, type: ADD_DEPT_LINKS }));
     };
 }
 
@@ -37,7 +34,7 @@ export default function reducer(state = [], action) {
     switch (action.type) {
             
         case ADD_DEPT_LINKS :
-            return action.records;
+            return action.docs;
 
         default:
             return state; // Nothing changes for unknown actions.

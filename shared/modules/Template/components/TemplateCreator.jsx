@@ -1,15 +1,33 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 
 
 const BARREL_TYPE = Symbol('BARREL_TYPE')
 const TANKER_TYPE = Symbol('TANKER_TYPE')
 
 
+const inputFields = [
+    { key: "company",    type: "text",     t_type: [TANKER_TYPE, BARREL_TYPE], colWidth: 2, label: "公司" },
+    { key: "dept",       type: "text",     t_type: [TANKER_TYPE], colWidth: 2, label: "Dept", placeholder: "K#" },
+    { key: "unit",       type: "text",     t_type: [TANKER_TYPE], colWidth: 2, label: "Unit", placeholder: "純水, 廢水, etc." },
+    { key: "product",    type: "text",     t_type: [TANKER_TYPE, BARREL_TYPE], colWidth: 2, label: "材料名稱" },
+    { key: "pn",         type: "text",     t_type: [TANKER_TYPE, BARREL_TYPE], colWidth: 4, label: "料號" },
+    { key: "lotPrefix",  type: "text",     t_type: [BARREL_TYPE], colWidth: 2, label: "批次字首", placeholder: "P, B, M, etc." },
+    { key: "rtCode",     type: "text",     t_type: [BARREL_TYPE], colWidth: 2, label: "RT Code (四個字)", placeholder: "xxxx ⇐ 6A05xxxx01" },
+    { key: "pkgQty",     type: "text",     t_type: [BARREL_TYPE], colWidth: 2, label: "容量", placeholder: '"25 kg", "10 包", etc.' },
+    { key: "shelfLife",  type: "number",   t_type: [BARREL_TYPE], colWidth: 2, label: "保存期間", placeholder: "#月" },
+    { key: "barcode",    type: "checkbox", t_type: [BARREL_TYPE], colWidth: 2, label: "barcode" },
+    { key: "datamatrix", type: "checkbox", t_type: [BARREL_TYPE], colWidth: 2, label: "datamatrix" },
+]
+
+
 export default
-class TemplateCreator extends React.Component {
+class TemplateCreator extends Component {
     static propTypes = {
-        createTankerTemplate: React.PropTypes.func.isRequired,
-        createBarrelTemplate: React.PropTypes.func.isRequired,
+        template: PropTypes.object.isRequired,
+        editMode: PropTypes.bool.isRequired,
+        saveTemplate: PropTypes.func.isRequired,
+        setFields: PropTypes.func.isRequired,
+        reset: PropTypes.func.isRequired,
     }
 
     validateFieldsAndGetType = () => {
@@ -20,12 +38,10 @@ class TemplateCreator extends React.Component {
             const requiredKeys = ['company','product','lotPrefix','pkgQty'];
             const keysSatisfied = requiredKeys.every(key => valueOf(key));
             if (!keysSatisfied) {
-                alert("A required field is missing a value.");
                 return false;
             }
 
             if (!checked('barcode') && !checked('datamatrix')) {
-                alert("Either 'barcode' or 'datamatrix' must be selected.");
                 return false;
             }
             return BARREL_TYPE;
@@ -33,7 +49,6 @@ class TemplateCreator extends React.Component {
             const requiredKeys = ['company','dept','unit','product','pn'];
             const keysSatisfied = requiredKeys.every(key => valueOf(key));
             if (!keysSatisfied) {
-                alert("A required field is missing a value.");
                 return false;
             }
             return TANKER_TYPE;
@@ -42,12 +57,33 @@ class TemplateCreator extends React.Component {
         return false;
     }
 
+    setFields = () => {
+        const keyValues = {},
+              templateType = this.validateFieldsAndGetType();
+
+        inputFields.forEach(({ key, type, required }) => {
+            switch (type) {
+                case 'text':
+                    Object.assign(keyValues, {[key]: this.refs[key].value.trim()});
+                    break;
+                case 'number':
+                    Object.assign(keyValues, {[key]: Number(this.refs[key].value)});
+                    break;
+                case 'checkbox':
+                    Object.assign(keyValues, {[key]: this.refs[key].checked});
+                    break;
+            }
+        });
+
+        this.props.setFields(keyValues);
+    }
+
     submit = () => {
         const templateType = this.validateFieldsAndGetType(),
               newTemplate = {};
         if (!templateType) return;
 
-        this.fieldData.forEach(({key, type}) => {
+        inputFields.forEach(({key, type}) => {
             switch (type) {
                 case 'text':
                     if (templateType === BARREL_TYPE && key === 'dept') break;
@@ -80,73 +116,52 @@ class TemplateCreator extends React.Component {
                 break;
         }
 
-        this.clearForm();
-    }
-
-    clearForm = () => {
-        this.fieldData.forEach(({key, type: type}) => {
-            if (type === 'text' || type === 'number') {
-                this.refs[key].value = "";
-            }
-        });
-    }
-
-    get fieldData() {
-        return [
-            { key: "company",    type: "text",     colWidth: 2, label: "公司" },
-            { key: "dept",       type: "text",     colWidth: 2, label: "Dept", placeholder: "K#" },
-            { key: "unit",       type: "text",     colWidth: 2, label: "Unit", placeholder: "純水, 廢水, etc." },
-            { key: "product",    type: "text",     colWidth: 2, label: "材料名稱" },
-            { key: "pn",         type: "text",     colWidth: 4, label: "料號" },
-            { key: "lotPrefix",  type: "text",     colWidth: 2, label: "批次字首", placeholder: "P, B, M, etc." },
-            { key: "rtCode",     type: "text",     colWidth: 2, label: "RT Code (四個字)", placeholder: "xxxx ⇐ 6A05xxxx01" },
-            { key: "pkgQty",     type: "text",     colWidth: 2, label: "容量", placeholder: '"25 kg", "10 包", etc.' },
-            { key: "shelfLife",  type: "number",   colWidth: 2, label: "保存期間", placeholder: "#月" },
-            { key: "barcode",    type: "checkbox", colWidth: 2, label: "barcode" },
-            { key: "datamatrix", type: "checkbox", colWidth: 2, label: "datamatrix" },
-        ]
-    }
-
-    get fieldLabels() {
-        return this.fieldData.map(f => f.label);
-    }
-
-    get fieldKeys() {
-        return this.fieldData.map(f => f.key);
+        this.props.reset();
     }
 
     render() {
+        const { template, editMode } = this.props;
+        const templateType = !!template.dept || !!template.unit ? TANKER_TYPE :
+            !!template.lotPrefix || !!template.pkgQty ||
+              !!template.rtCode || !!template.shelfLife ? BARREL_TYPE : undefined;
+
         return (
-      <form>
-        <fieldset>
-            <legend>Create New Template</legend>
+      <div>
+            { this.props.editMode ?
+                <legend>Editing Template <small>({template._id})</small></legend> :
+                <legend>Create New Template</legend> }
 
             <div className="row">
-                {this.fieldData.map(({ key, label, type, colWidth, placeholder }, i) =>
+                {inputFields.map(({ key, label, type, colWidth, t_type, placeholder }, i) =>
                     <div className={`form-group col-sm-${colWidth}`} key={key}>
                         <label className="form-label"
-                            style={{height: "19px"}} >
+                            style={templateType && t_type.indexOf(templateType) < 0 ? {color: "lightgrey"} : {}} >
                             {label}
                         </label>
                         <input
+                            disabled={templateType && t_type.indexOf(templateType) < 0}
                             type={type}
                             name={key}
+                            onChange={this.setFields}
                             className={`${key} form-control`}
                             placeholder={placeholder || ''}
-                            ref={key} />
+                            ref={key}
+                            value={template[key] || ''}
+                            checked={type === 'checkbox' ? template[key] : null} />
                     </div>
                 )}
             </div>
-            <div className="row text-center">
-                <input id="template-submit-btn" className="btn btn-success btn-margin" type="button"
-                    value="提交 / Submit" onClick={this.submit} />
+            <br />
+            <div className="row">
+                <button className="btn btn-warning" ref='saveBtn' onClick={this.props.saveTemplate} >
+                    { editMode ? "Save Updates" : "Save New Record" }
+                </button>
+                &nbsp;
+                <button className="btn btn-primary" onClick={this.props.reset} >
+                    { editMode ? "Cancel Editing" : "Reset All" }
+                </button>
             </div>
-            <div className="row text-center">
-                <input id="template-clear-btn" className="btn btn-primary btn-margin" type="button"
-                    value="Clear Fields" onClick={this.clearForm} />
-            </div>
-        </fieldset>
-      </form>
+      </div>
         )
     }
 }
