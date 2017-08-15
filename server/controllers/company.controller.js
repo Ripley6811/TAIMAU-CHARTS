@@ -11,11 +11,23 @@ const router = new Router()
 
 
 /**
- * RETRIEVE COMPANY (abbr) NAMES
+ * RETRIEVE LIST OF COMPANY (abbr) NAMES
  * 'distinct' returns a list of a specific field without repeated entries.
  */
 router.get('/', function getCompanies(req, res) {
     Company.distinct('abbr_name')
+    .exec((err, docs) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err);
+        }
+        res.json(docs);
+    });
+})
+
+
+router.get('/directory', function getDirectory(req, res) {
+    Company.find({hidden: false}, {__v: 0, products: 0, orders: 0})
     .exec((err, docs) => {
         if (err) {
             console.log(err);

@@ -28,6 +28,7 @@ const BTN_CLASS_STRING = "btn form-control btn-properties",
       COOKIE_QUERY_KEY = "query",
       FA_SPINNING_COG = FontAwesome("cog", "fa-2x slow-spin"),
       PAGE_NAV_BTNS = [
+          {text: "Directory | 企業名錄", route: "/directory"},
           {text: "ChartView | 數量圖表", route: "/"},
           {text: "Shipments | 槽車紀錄", route: "/shipments"},
           {text: "In Barrels | 桶裝紀錄", route: "/barrels"},
@@ -131,6 +132,14 @@ export default connect(
                     {FA_SPINNING_COG}
                   </button>
             </div>
+            <hr />
+                <div className="row">
+                    <div>
+                    <button className={BTN_CLASS_STRING} type="button">
+                        <strong>Co. Name</strong>
+                    </button>
+                    </div>
+                </div>
             <hr />
                 { PAGE_NAV_BTNS.map(({text, route}, i) =>
                     <div className="row" key={i+route}>

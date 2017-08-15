@@ -17,6 +17,7 @@ import barrelShipments from './state/barrelShipments.redux'
 import barrelTemplates from './state/barrelTemplates.redux'
 import tankerShipments from './state/tankerShipments.redux'
 import tankerTemplates from './state/tankerTemplates.redux'
+import directory from './state/companies.redux'
 import query from './state/query.redux'
 
 
@@ -50,5 +51,6 @@ export default combineReducers({
     barrelTemplates,
     tankerShipments,
     tankerTemplates,
+    directory,
     query,
 })

@@ -19,8 +19,7 @@ export const schema = new mongoose.Schema(
         show_tax:       { type: 'Boolean', default: true },
 
 
-
-
+        
         // TODO: Settle the arrangement below. Working on the above first.
         contacts: [{
             title:      'String',

@@ -53,6 +53,7 @@ class BarrelShipmentsView extends Component {
     render() {
         const { props, state } = this;
 
+        // Creates a new list of objects with additional attributes
         const shipments = props.barrelShipments.map(shipment =>
             Object.assign({}, shipment, {
                 makeMMDD: `${1+shipment.makeMonth || ''} / ${shipment.makeDate || ''}`,
