@@ -14,6 +14,7 @@ import { fetchDirectory } from '../../redux/state/companies.redux'
 
 
 const tableFields = [
+    { label: '組名', key: 'group_name'  },
     { label: '簡稱', key: 'abbr_name'   },
     { label: '全名', key: 'full_name'   },
     { label: '英名', key: 'eng_name'    },

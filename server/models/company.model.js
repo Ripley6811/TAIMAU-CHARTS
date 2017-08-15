@@ -7,7 +7,7 @@ export const schema = new mongoose.Schema(
     {
         // Hidden from general view when no longer doing business
         hidden:         { type: 'Boolean', required: true, default: false },
-        group_id:       { type: 'String', trim: true, required: false },
+        group_name:     { type: 'String', trim: true, required: false },
         abbr_name:      { type: 'String', trim: true, required: true, minlength: 2 },
         full_name:      { type: 'String', trim: true, required: false },
         eng_name:       { type: 'String', trim: true, required: false },
