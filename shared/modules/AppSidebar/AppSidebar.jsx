@@ -36,7 +36,7 @@ const BTN_CLASS_STRING = "btn form-control btn-properties",
 
 
 export default connect(
-     // Pull items from store
+    // Pull items from store
     ({deptLinks, query}) => ({deptLinks, query}),
     // Bind actions with dispatch
     { updateSavedQuery, fetchTankerShipments, fetchBarrelShipments }

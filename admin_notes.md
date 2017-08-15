@@ -65,3 +65,7 @@ sudo forever stopall
 
 
 ```
+
+~/Documents/taimau-charts$ sudo NODE_ENV=production forever start index.js
+
+Use same address as other site with port 8
